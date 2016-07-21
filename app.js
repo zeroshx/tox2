@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var methodOverride = require('method-override');
 
+console.log('test');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
