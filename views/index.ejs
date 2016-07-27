@@ -1,11 +1,29 @@
-<!DOCTYPE html>
+<!-- views/profile.ejs -->
+<!doctype html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+
+<head>
+  <title>Node Authentication</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+  <script type="text/javascript" src="/lib/angular/angular.min.js"></script>
+  <script type="text/javascript" src="/lib/angular-route/angular-route.min.js"></script>
+  <script type="text/javascript" src="/lib/angular-resource/angular-resource.min.js"></script>
+</head>
+
+<body data-ng-app="_app">
+  <% include partials/header %>
+  <% include partials/nav %>
+  <% include partials/aside %>
+  <section><div data-ng-view></div></section>
+  <% include partials/footer %>
+
+  <script type="text/javascript" src="/modules/application.js"></script>
+  <script type="text/javascript" src="/routes/application.js"></script>
+  <script type="text/javascript" src="/services/auth.js"></script>
+  <script type="text/javascript" src="/controllers/application.js"></script>
+  <script type="text/javascript" src="/controllers/auth.js"></script>
+
+</body>
+
 </html>

@@ -1,0 +1,12 @@
+<div class="container">
+  <div class="col-sm-6 col-sm-offset-3">
+    <h1><span class="fa fa-sign-in"></span>Home</h1>
+    <div ng-show="!currentUser">
+      <p>Already have a account? <a href="#!login">Login</a></p>
+      <p>Need an account? <a href="#!signup">Signup</a></p>
+    </div>
+    <div ng-show="currentUser">
+      {{currentUser}}
+    </div>
+  </div>
+</div>
