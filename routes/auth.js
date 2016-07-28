@@ -2,42 +2,33 @@ var passport = require('passport');
 var express = require('express');
 var router = express.Router();
 
+// controller
+var ctrl = require('../controllers/auth.js');
+
 router.post('/signup',
   passport.authenticate('local-signup'),
-  function(req, res) {
-    console.log(req.user);
-    res.json(req.user);
-  }
+  ctrl.signup
 );
 
 router.post('/login',
   passport.authenticate('local-login'),
-  function(req, res) {
-    console.log(req.user);
-    res.json(req.user);
-  }
+  ctrl.login
 );
 
-router.get('/logout', function(req, res) {
-  req.logout();
-  res.sendStatus(200);
-});
+router.get('/logout',
+  ctrl.logout
+);
 
-router.get('/alive', function(req, res) {
-  if (req.isAuthenticated()) {
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(401);
-  }
-});
+router.get('/alive',
+  ctrl.alive
+);
 
-// route middleware to make sure a user is logged in
-function isLoggedIn(req, res, next) {
-  // if user is authenticated in the session, carry on
-  if (req.isAuthenticated())
-    return next();
-  // if they aren't redirect them to the home page
-  res.redirect('/');
-};
+router.post('/checkemail',
+  ctrl.checkEmail
+);
+
+router.post('/checknick',
+  ctrl.checkNick
+);
 
 module.exports = router;

@@ -12,22 +12,23 @@ _app.controller('NavCtrl', function($scope, $rootScope, $location, Auth) {
   };
 
   $scope.logout = function() {
-    Auth.logout(function(err) {
-      if (err) {
-        console.log(err);
-      } else {
-        $location.path('/login');
-      }
+    Auth.logout(function() {
+      console.log('logout success.');
+      $location.path('/login');
+    }, function(err) {
+      console.log(err);
     });
   };
 
   $scope.isAlive = function() {
-    Auth.isAlive(function(err) {
-      if (err) {
-        console.log(err);
-      } else {
+    Auth.isAlive(function(res) {
+      if (res.session) {
         console.log("session is alive!");
+      } else {
+        console.log("session is die!");
       }
+    }, function(err) {
+      console.log(err);
     });
   };
 });

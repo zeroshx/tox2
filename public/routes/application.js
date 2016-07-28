@@ -14,6 +14,9 @@ angular.module(ApplicationName)
         .when('/notfound', {
           templateUrl: '/views/404.html'
         })
+        .when('/error', {
+          templateUrl: '/views/error.html'
+        })
         .otherwise('/notfound');
     }
   ]);
