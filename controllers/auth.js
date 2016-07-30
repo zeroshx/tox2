@@ -1,10 +1,24 @@
 var User = require('mongoose').model('User');
 
 exports.signup = function(req, res) {
+  if (req.session.passport.user.hasOwnProperty('failure')) {
+    var fail = req.user;
+    delete req.session.passport;
+    delete req.user;
+    res.json(fail);
+    return;
+  }
   res.json(req.user);
 };
 
 exports.login = function(req, res) {
+  if (req.session.passport.user.hasOwnProperty('failure')) {
+    var fail = req.user;
+    delete req.session.passport;
+    delete req.user;
+    res.json(fail);
+    return;
+  }
   res.json(req.user);
 };
 
@@ -14,51 +28,53 @@ exports.logout = function(req, res) {
 };
 
 exports.alive = function(req, res) {
-  var result = {
-    session : true
-  };
   if (req.isAuthenticated()) {
-    res.json(result);
+    res.json({
+      session: true
+    });
   } else {
-    result.session = false;
-    res.json(result);
+    res.json({
+      session: false
+    });
   }
 };
 
 exports.checkEmail = function(req, res) {
   console.log(req.body.email);
-  User.findOne({email : req.body.email}, function (err, user) {
-    if(err) {
-      console.log(err);
+  User.findOne({
+    email: req.body.email
+  }, function(err, user) {
+    if (err) {
       res.sendStatus(500);
     }
-    var result = {
-      exist : true
-    };
-    if(user) {
-      res.json(result);
+    if (user) {
+      res.json({
+        exist: true
+      });
     } else {
-      result.exist = false;
-      res.json(result);
+      res.json({
+        exist: false
+      });
     }
   });
 };
 
 exports.checkNick = function(req, res) {
   console.log(req.body.nick);
-  User.findOne({nick : req.body.nick}, function (err, user) {
-    if(err) {
-      console.log(err);
+  User.findOne({
+    nick: req.body.nick
+  }, function(err, user) {
+    if (err) {
       res.sendStatus(500);
     }
-    var result = {
-      exist : true
-    };
-    if(user) {
-      res.json(result);
+    if (user) {
+      res.json({
+        exist: true
+      });
     } else {
-      result.exist = false;
-      res.json(result);
+      res.json({
+        exist: false
+      });
     }
   });
 };

@@ -19,34 +19,25 @@ var UserSchema = new Schema({
     },
     required: [true, 'Why no email?']
   },
-  password: {
-    type: String,
-    validate: {
-      validator: function(v, cb) {
-        if (v.length < 8 || v.length > 30) {
-          cb(false);
-        } else {
-          cb(true);
-        }
-      },
-      message: '{VALUE} is not a valid password'
-    },
-    required: [true, 'Why no password?']
-  },
   nick: {
     type: String,
     index: true,
     validate: {
       validator: function(v, cb) {
-        if (v.length < 2 || v.length > 8) {
-          cb(false);
-        } else {
+        var rule = /^[가-힣a-zA-Z0-9]{2,8}$/g.test(v);
+        if (rule) {
           cb(true);
+        } else {
+          cb(false);
         }
       },
-      message: '{VALUE} is not a valid password'
+      message: '{VALUE} is not a valid nick.'
     },
     required: [true, 'Why no nick?']
+  },
+  password: {
+    type: String,
+    required: [true, 'Why no password?']
   },
   phone: {
     type: String,
@@ -122,13 +113,28 @@ var UserSchema = new Schema({
   }
 });
 
-UserSchema.methods.generateHash = function(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+UserSchema.methods.generateHash = function(password, callback) {
+  return bcrypt.genSalt(10, function (err, salt){
+    if(err) {
+      return callback(err);
+    }
+    return bcrypt.hash(password, salt, null, function (err, hash) {
+      if(err) {
+        return callback(err);
+      }
+      return callback(null, hash);
+    });
+  });
 };
 
 // checking if password is valid
-UserSchema.methods.validPassword = function(password) {
-  return bcrypt.compareSync(password, this.password);
+UserSchema.methods.validatePassword = function(password, callback) {
+  return bcrypt.compare(password, this.password, function(err, match) {
+    if(err) {
+      return callback(err);
+    }
+    return callback(null, match);
+  });
 };
 
 module.exports = function() {

@@ -5,8 +5,12 @@ angular.module(ApplicationName)
         .when('/', {
           templateUrl: '/views/home.html'
         })
+        .when('/contents', {
+          templateUrl: '/views/contents.html'
+        })
         .when('/login', {
-          templateUrl: '/views/login.html'
+          templateUrl: '/views/login.html',
+          controller: 'AuthCtrl'
         })
         .when('/signup', {
           templateUrl: '/views/signup.html'

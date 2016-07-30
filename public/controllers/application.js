@@ -14,6 +14,7 @@ _app.controller('NavCtrl', function($scope, $rootScope, $location, Auth) {
   $scope.logout = function() {
     Auth.logout(function() {
       console.log('logout success.');
+      delete $rootScope.currentUser;
       $location.path('/login');
     }, function(err) {
       console.log(err);
