@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="col-sm-6 col-sm-offset-3" >
+    <h1><span class="fa fa-sign-in"></span>Site</h1>
+    <div ng-show="currentUser">
+      {{currentUser}}
+    </div>
+
+    <form class="form" name="createForm" data-ng-submit="create()" novalidate>
+      <div class="form-group">
+        <label>사이트명</label>
+        <input data-ng-change="validateSiteName()" type="text" class="form-control" data-ng-model="site.name">
+      </div>
+      <div class="form-group">
+        <label>메모</label>
+        <input type="text" class="form-control" data-ng-model="site.memo">
+      </div>
+      <div data-ng-class="{'has-error' : validator.type == 'error', 'has-correct' : validator.type == 'correct'}" data-ng-show="validator.message">{{validator.message}}</div>
+      <button type="submit" class="btn btn-warning btn-lg">생성</button>
+    </form>
+
+    <div data-ng-show="sites.length > 0" class="col-md-10">
+      <label>사이트 리스트</label>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Memo</th>
+          <th>Detail</th>
+          <th>Delete</th>
+        </tr>
+        <tr ng-repeat="site in sites | orderBy : 'name'">
+          <td>{{ site._id }}</td>
+          <td>{{ site.name }}</td>
+          <td>{{ site.memo }}</td>
+          <td>
+            <a href="#!/site/{{site._id}}" onclick="window.open(this.href, 'siteDetail', 'scrollbars,width=500,height=500'); return false">  -></a>
+          </td>
+          <td>
+            <a href="" data-ng-click="delete(site._id)">X</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div data-ng-show="siteDetail" class="col-md-10">
+      <form class="form" name="form" data-ng-submit="update()" novalidate>
+        <label>사이트 디테일</label>
+        </br>
+        아이디 : <span>{{siteDetail._id}}</span></br>
+        이름 : <span>{{siteDetail.name}}</span></br>
+        메모 : <input type="text" class="form-control" data-ng-model="siteDetail.memo">
+        <button type="submit" class="btn btn-warning btn-lg">수정</button>
+      </form>
+      <button class="btn btn-warning btn-lg" data-ng-click="delete(siteDetail._id)">삭제</button>
+    </div>
+
+    <a href="" data-ng-click="me()">Me?</a>
+  </div>
+</div>

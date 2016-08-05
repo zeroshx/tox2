@@ -1,4 +1,5 @@
 var User = require('mongoose').model('User');
+var nodemailer = require('../init/nodemailer.js');
 
 exports.signup = function(req, res) {
   if (req.session.passport.user.hasOwnProperty('failure')) {
@@ -40,7 +41,6 @@ exports.alive = function(req, res) {
 };
 
 exports.checkEmail = function(req, res) {
-  console.log(req.body.email);
   User.findOne({
     email: req.body.email
   }, function(err, user) {
@@ -60,7 +60,6 @@ exports.checkEmail = function(req, res) {
 };
 
 exports.checkNick = function(req, res) {
-  console.log(req.body.nick);
   User.findOne({
     nick: req.body.nick
   }, function(err, user) {
@@ -77,4 +76,19 @@ exports.checkNick = function(req, res) {
       });
     }
   });
+};
+
+exports.me = function(req, res) {
+  User.findOne({
+      _id: req.user._id
+    })
+    .populate('site distributor')
+    .select('-password')
+    .exec(function(err, user) {
+      if (err) {
+        nodemailer('controllers/auth.js:me', JSON.stringify(err));
+        return res.sendStatus(500);
+      }
+      return res.json(user);
+    });
 };

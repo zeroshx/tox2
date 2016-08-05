@@ -1,64 +1,93 @@
-var app = angular.module(ApplicationName);
-app.factory('Auth', function($resource) {
+var app = angular.module('Auth');
+app.factory('AuthService', function($resource, $location, $q) {
   return {
-    signup: function(user, callback, errorback) {
-      $resource('/auth/signup').create(user,
-        function(user) {
-          return callback(user);
-        },
-        function(err) {
-          return errorback(err);
-        });
+    signup: function() {
+      return $resource('/auth/signup', {}, {
+        run : {
+          method : 'POST'
+        }
+      });
     },
 
-    login: function(user, callback, errorback) {
-      $resource('/auth/login').auth(user,
-        function(user) {
-          return callback(user);
-        },
-        function(err) {
-          return errorback(err);
-        });
+    login: function() {
+      return $resource('/auth/login', {}, {
+        run : {
+          method : 'POST'
+        }
+      });
     },
 
-    logout: function(callback, errorback) {
-      $resource('/auth/logout').get(
-        function(res) {
-          return callback();
-        },
-        function(err) {
-          return errorback(err);
-        });
+    logout: function() {
+      return $resource('/auth/logout', {}, {
+        run : {
+          method : 'GET'
+        }
+      });
     },
 
-    isAlive: function(callback, errorback) {
+    isAlive: function() {
+      return $resource('/auth/alive', {}, {
+        run : {
+          method : 'GET'
+        }
+      });
+    },
+
+    isAliveQ: function() {
+      var defer = $q.defer();
       $resource('/auth/alive').get(
         function(res) {
-          return callback(res);
-        },
-        function(err) {
-          return errorback(err);
+          if (res.session) {
+            defer.resolve(res.session);
+          } else {
+            defer.reject();
+            $location.path('/login');
+          }
+        }, function(err) {
+          defer.reject();
+          $location.path('/login');
         });
+      return defer.promise;
     },
 
-    checkEmail: function(data, callback, errorback) {
-      $resource('/auth/checkemail').auth(data,
-        function(res) {
-          return callback(res);
-        },
-        function(err) {
-          return errorback(err);
-        });
+    checkEmail: function() {
+      return $resource('/auth/checkemail', {}, {
+        run : {
+          method : 'POST'
+        }
+      });
     },
 
-    checkNick: function(data, callback, errorback) {
-      $resource('/auth/checknick').auth(data,
-        function(res) {
-          return callback(res);
-        },
-        function(err) {
-          return errorback(err);
-        });
+    checkNick: function() {
+      return $resource('/auth/checknick', {}, {
+        run : {
+          method : 'POST'
+        }
+      });
+    },
+
+    me: function() {
+      return $resource('/auth/me', {}, {
+        run : {
+          method : 'GET'
+        }
+      });
+    },
+
+    joinSite: function() {
+      return $resource('/auth/me', {}, {
+        run : {
+          method : 'PUT'
+        }
+      });
+    },
+
+    joinDistributor: function() {
+      return $resource('/auth/me', {}, {
+        run : {
+          method : 'PUT'
+        }
+      });
     }
   };
 });

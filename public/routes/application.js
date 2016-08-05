@@ -3,17 +3,15 @@ angular.module(ApplicationName)
     function($routeProvider) {
       $routeProvider
         .when('/', {
-          templateUrl: '/views/home.html'
-        })
-        .when('/contents', {
-          templateUrl: '/views/contents.html'
-        })
-        .when('/login', {
-          templateUrl: '/views/login.html',
-          controller: 'AuthCtrl'
-        })
-        .when('/signup', {
-          templateUrl: '/views/signup.html'
+          templateUrl: '/views/index.html',
+          controller: 'IndexCtrl'
+          /*
+          resolve: {
+            preAuth: function(AuthService) {
+              return AuthService.isAliveQ();
+            }
+          }
+          */
         })
         .when('/notfound', {
           templateUrl: '/views/404.html'

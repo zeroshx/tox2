@@ -7,6 +7,8 @@ module.exports = function() {
   var mongfig = require('../configs/mongoose.js');
 
   // models
+  var Site = require('../models/Site.js');
+  var Distributor = require('../models/Distributor.js');  
   var User = require('../models/User.js');
 
   // access to db
@@ -30,6 +32,8 @@ module.exports = function() {
   var mdb = mongoose.connect(mongfig.url);
 
   // register models
+  Site();
+  Distributor();
   User();
   return mdb;
 };

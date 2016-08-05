@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 
 // controller
+var capi = require('../controllers/common.js');
 var ctrl = require('../controllers/auth.js');
 
 router.post('/signup',
@@ -29,6 +30,11 @@ router.post('/checkemail',
 
 router.post('/checknick',
   ctrl.checkNick
+);
+
+router.get('/me',
+  capi.authenticate,
+  ctrl.me
 );
 
 module.exports = router;

@@ -1,24 +1,16 @@
-exports.toJsonResult = function (type, value) {
-  var res = {};
-  if(type == 'error') {
-    res = {
-      error : value
-    };
-  } else if(type == 'data') {
-    res = {
-      type : type,
-      data : value
-    };
-  } else if(type == 'message') {
-    res = {
-      type : type,
-      message : value
-    };
-  } else if(type == 'boolean') {
-    res = {
-      type : type,
-      boolean : value
-    };
+exports.refreshSession = function(req, res, next) {
+  if (req.isAuthenticated()) {
+    req.session.touch();
   }
-  return res;
+  next();
+};
+
+exports.authenticate = function(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+    return;
+  }
+  res.json({
+    failure: '인증되지 않은 사용자입니다.'
+  });
 };

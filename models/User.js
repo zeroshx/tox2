@@ -79,6 +79,7 @@ var UserSchema = new Schema({
   config: {
     type: String
   },
+  //TODO: POPULATION WITH NAME!
   site: {
     type: Schema.Types.ObjectId,
     ref: 'Site'

@@ -1,20 +1,12 @@
 var _app = angular.module(ApplicationName);
 
-_app.controller('HeaderCtrl', function($scope) {
-  $scope.me = function() {
-    console.log("This is Header Ctrl.");
-  };
-});
-
-_app.controller('NavCtrl', function($scope, $rootScope, $location, Auth) {
-  $scope.me = function() {
-    console.log("This is Nav Ctrl.");
-  };
+_app.controller('HeaderCtrl', function($scope, $rootScope, $location, AuthService) {
 
   $scope.logout = function() {
-    Auth.logout(function() {
+    AuthService.logout().run(function(res) {
       console.log('logout success.');
-      delete $rootScope.currentUser;
+      $rootScope.currentUser = null;
+      $rootScope.session = false;
       $location.path('/login');
     }, function(err) {
       console.log(err);
@@ -22,16 +14,22 @@ _app.controller('NavCtrl', function($scope, $rootScope, $location, Auth) {
   };
 
   $scope.isAlive = function() {
-    Auth.isAlive(function(res) {
-      if (res.session) {
-        console.log("session is alive!");
-      } else {
-        console.log("session is die!");
-      }
+    AuthService.isAlive().run(function(res) {
+      $rootScope.session = res.session;
+      console.log(res.session);
     }, function(err) {
       console.log(err);
     });
   };
+
+  $scope.isAlive();
+});
+
+_app.controller('NavCtrl', function($scope, $rootScope, $location) {
+  $scope.me = function() {
+    console.log("This is Nav Ctrl.");
+  };
+
 });
 
 _app.controller('AsideCtrl', function($scope) {

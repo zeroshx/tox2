@@ -1,6 +1,14 @@
 <header data-ng-controller="HeaderCtrl">
-<div>
-  HEADER<br>
-  <a href="" data-ng-click="me()">Me?</a>
-</div>
+  <div>
+    HEADER
+    <br>
+    <a href="" data-ng-click="me()">Me?</a>
+    <div data-ng-show="session">
+      <a href="" data-ng-click="logout()">logout</a>
+    </div>
+    <div data-ng-show="!session">
+      <a href="#!/login" >로그인</a>
+    </div>
+    <a href="" data-ng-click="isAlive()">alive?</a>
+  </div>
 </header>

@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var methodOverride = require('method-override');
 var passport = require('passport');
 var flash = require('connect-flash');
@@ -30,6 +31,7 @@ app.use(bodyParser.urlencoded({
 app.use(methodOverride('X-HTTP-Method-Override')) // Google/GData
 app.use(cookieParser());
 app.use(session({
+  name: exfig.session_name,
   secret: exfig.session_secret,
   resave: true,
   saveUninitialized: true,
@@ -37,8 +39,11 @@ app.use(session({
     path: '/',
     httpOnly: true,
     secure: false,
-    maxAge: 10 * 60 * 1000
-  }
+    maxAge: 60 * 60 * 1000 // 1 hour
+  },
+  store: new MongoStore({
+    url: exfig.session_store_url
+  })
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());

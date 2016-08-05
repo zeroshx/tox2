@@ -63,7 +63,7 @@ module.exports = function() {
           }]
         }, function(err, user) {
           if (err) {
-            nodemailer('init/passport.js:signup', JSON.stringify(err));
+            nodemailer('init/passport.js:signup:1', JSON.stringify(err));
             return done(err);
           }
           if (user) {
@@ -82,6 +82,8 @@ module.exports = function() {
             }
           } else {
             var newUser = new User();
+            newUser.site = '57a483ba916cb4742276009e';
+            newUser.distributor = '57a483d1916cb4742276009f';
             newUser.email = req.body.email;
             newUser.nick = req.body.nick;
             newUser.password = req.body.password;
@@ -90,13 +92,13 @@ module.exports = function() {
               if (newUser.password.length >= 8 && newUser.password.length <= 30) {
                 newUser.generateHash(password, function(err, hash) {
                   if(err) {
-                    nodemailer('init/passport.js:signup', JSON.stringify(err));
+                    nodemailer('init/passport.js:signup:2', JSON.stringify(err));
                     return done(err);
                   }
                   newUser.password = hash;
                   newUser.save(function(err) {
                     if (err) {
-                      nodemailer('init/passport.js:signup', JSON.stringify(err));
+                      nodemailer('init/passport.js:signup:3', JSON.stringify(err));
                       return done(err);
                     } else {
                       newUser.password = null;
@@ -129,7 +131,7 @@ module.exports = function() {
         email: email
       }, function(err, user) {
         if (err) {
-          nodemailer('init/passport.js:login', JSON.stringify(err));
+          nodemailer('init/passport.js:login:1', JSON.stringify(err));
           return done(err);
         }
         if (!user) {
@@ -139,7 +141,7 @@ module.exports = function() {
         }
         user.validatePassword(password, function (err, match) {
           if(err) {
-            nodemailer('init/passport.js:login', JSON.stringify(err));
+            nodemailer('init/passport.js:login:2', JSON.stringify(err));
             return done(err);
           }
           if(!match) {
@@ -147,8 +149,15 @@ module.exports = function() {
               failure: '존재하지 않는 이메일 또는 비밀번호가 맞지 않습니다.'
             });
           }
-          user.password = null;
-          return done(null, user);
+          user.login.date = Date.now();
+          user.save(function (err, user) {
+            if(err) {
+              nodemailer('init/passport.js:login:3', JSON.stringify(err));
+              return done(err);
+            }
+            user.password = null;
+            return done(null, user);
+          });
         });
       });
     }));

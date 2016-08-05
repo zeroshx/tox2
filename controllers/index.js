@@ -1,5 +1,3 @@
-var User = require('mongoose').model('User');
-
-exports.create = function(req, res, next) {
-  res.sendStatus(200);
+exports.index = function(req, res) {
+  res.render('app');
 };

@@ -1,5 +1,5 @@
-angular.module(ApplicationName)
-  .controller('AuthCtrl', function($scope, $location, $rootScope, Auth) {
+angular.module('Auth')
+  .controller('AuthCtrl', function($scope, $rootScope, $location, AuthService) {
 
     $scope.user = {
       email: '',
@@ -47,6 +47,7 @@ angular.module(ApplicationName)
           $scope.validator.email.message = '';
         }
       } else {
+        $scope.validator.email.check = false;
         $scope.validator.email.type = 'error';
         $scope.validator.email.message = '이메일 형식으로 써주세요.';
       }
@@ -58,6 +59,7 @@ angular.module(ApplicationName)
         $scope.validator.nick.type = 'correct';
         $scope.validator.nick.message = '중복확인 해보시겠어요~?';
       } else {
+        $scope.validator.nick.check = false;
         $scope.validator.nick.type = 'error';
         $scope.validator.nick.message = '별명은 2~8자에 한글, 영문, 숫자만 가능합니다.';
       }
@@ -75,6 +77,7 @@ angular.module(ApplicationName)
         $scope.validator.password.type = 'correct';
         $scope.validator.password.message = '써도 되긴한데..보안에 취약한 비밀번호에요.';
       } else {
+        $scope.validator.password.check = false;
         $scope.validator.password.type = 'error';
         $scope.validator.password.message = '비밀번호는 영문자, 숫자, 특수문자를 사용하여 8~30자까지 가능합니다.';
       }
@@ -82,9 +85,11 @@ angular.module(ApplicationName)
 
     $scope.validateConfirm = function() {
       if ($scope.validator.password.type != 'correct') {
+        $scope.validator.confirm.check = false;
         $scope.validator.confirm.type = 'error';
         $scope.validator.confirm.message = '비밀번호부터 정확하게 입력해주세요.';
       } else if ($scope.user.password != $scope.user.confirm) {
+        $scope.validator.confirm.check = false;
         $scope.validator.confirm.type = 'error';
         $scope.validator.confirm.message = '입력하신 비밀번호와 일치하지 않네요.';
       } else {
@@ -99,7 +104,7 @@ angular.module(ApplicationName)
         $scope.validator.nick.check &&
         $scope.validator.password.check &&
         $scope.validator.confirm.check) {
-        Auth.signup({
+        AuthService.signup().run({
           email: $scope.user.email,
           nick: $scope.user.nick,
           password: $scope.user.password,
@@ -124,7 +129,7 @@ angular.module(ApplicationName)
 
     $scope.login = function() {
       if ($scope.validator.email.check) {
-        Auth.login({
+        AuthService.login().run({
           email: $scope.user.email,
           password: $scope.user.password,
         }, function(user) {
@@ -133,6 +138,7 @@ angular.module(ApplicationName)
             $scope.validator.server.message = user.failure;
           } else {
             $rootScope.currentUser = user;
+            $rootScope.session = true;
             $location.path('/');
           }
         }, function(err) {
@@ -146,10 +152,11 @@ angular.module(ApplicationName)
     };
 
     $scope.checkEmail = function() {
-      Auth.checkEmail({
+      AuthService.checkEmail().run({
         email: $scope.user.email
       }, function(res) {
         if (res.exist) {
+          $scope.validator.email.check = false;
           $scope.validator.email.type = 'error';
           $scope.validator.email.message = '엇, 이미 사용중인 이메일이네요.';
         } else {
@@ -164,10 +171,11 @@ angular.module(ApplicationName)
     };
 
     $scope.checkNick = function() {
-      Auth.checkNick({
+      AuthService.checkNick().run({
         nick: $scope.user.nick
       }, function(res) {
         if (res.exist) {
+          $scope.validator.nick.check = false;
           $scope.validator.nick.type = 'error';
           $scope.validator.nick.message = '누가 벌써 쓰고 있데요.';
         } else {

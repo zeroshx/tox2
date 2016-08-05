@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="col-sm-6 col-sm-offset-3">
+    <h1><span class="fa fa-sign-in"></span>총판매니저</h1>
+    <div ng-show="currentUser">
+      {{currentUser}}
+    </div>
+
+    <form class="form" name="createForm" data-ng-submit="create()" novalidate>
+      <div class="form-group">
+        <label>총판명</label>
+        <input data-ng-change="validateDistName()" type="text" class="form-control" data-ng-model="dist.name">
+      </div>
+      <div class="form-group">
+        <label>메모</label>
+        <input type="text" class="form-control" data-ng-model="dist.memo">
+      </div>
+      <div data-ng-class="{'has-error' : validator.type == 'error', 'has-correct' : validator.type == 'correct'}" data-ng-show="validator.message">{{validator.message}}</div>
+      <button type="submit" class="btn btn-warning btn-lg">생성</button>
+    </form>
+
+    <div data-ng-show="dists.length > 0" class="col-md-10">
+      <label>총판 리스트</label>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Memo</th>
+          <th>Detail</th>
+          <th>Delete</th>
+        </tr>
+        <tr ng-repeat="dist in dists | orderBy : 'name'">
+          <td>{{ dist._id }}</td>
+          <td>{{ dist.name }}</td>
+          <td>{{ dist.memo }}</td>
+          <td>
+            <a href="#!/distributor/{{dist._id}}" onclick="window.open(this.href, 'distDetail', 'scrollbars,width=500,height=500'); return false">  -></a>
+          </td>
+          <td>
+            <a href="" data-ng-click="delete(dist._id)">X</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div data-ng-show="distDetail" class="col-md-10">
+      <form class="form" name="form" data-ng-submit="update()" novalidate>
+        <label>총판 세부 내용</label>
+        </br>
+        아이디 : <span>{{distDetail._id}}</span></br>
+        이름 : <span>{{distDetail.name}}</span></br>
+        메모 : <input type="text" class="form-control" data-ng-model="distDetail.memo">
+        <button type="submit" class="btn btn-warning btn-lg">수정</button>
+      </form>
+      <button class="btn btn-warning btn-lg" data-ng-click="delete(distDetail._id)">삭제</button>
+    </div>
+
+    <a href="" data-ng-click="me()">Me?</a>
+  </div>
+</div>
