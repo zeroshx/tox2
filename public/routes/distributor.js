@@ -9,6 +9,6 @@ angular.module('Distributor')
         .when('/distributor/:distName', {
           templateUrl: '/views/distributor.html',
           controller: 'DistributorCtrl'
-        })
+        });
     }
   ]);

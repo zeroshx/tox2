@@ -9,6 +9,6 @@ angular.module('Site')
         .when('/site/:siteName', {
           templateUrl: '/views/site.html',
           controller: 'SiteCtrl'
-        })
+        });
     }
   ]);

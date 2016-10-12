@@ -9,6 +9,6 @@ angular.module('Auth')
         .when('/signup', {
           templateUrl: '/views/signup.html',
           controller: 'AuthCtrl'
-        })
+        });
     }
   ]);

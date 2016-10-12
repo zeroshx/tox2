@@ -9,6 +9,6 @@ angular.module('User')
         .when('/user/:userName', {
           templateUrl: '/views/user.html',
           controller: 'UserCtrl'
-        })
+        });
     }
   ]);

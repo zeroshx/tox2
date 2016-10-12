@@ -115,6 +115,7 @@ angular.module('Auth')
             $scope.validator.server.message = user.failure;
           } else {
             $rootScope.currentUser = user;
+            $rootScope.session = true;
             $location.path('/');
           }
         }, function(err) {

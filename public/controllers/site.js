@@ -46,7 +46,7 @@ angular.module('Site')
         }, function(err) {
           $scope.validator.type = 'error';
           $scope.validator.message = '비정상적인 접근은 차단하겠습니다.';
-        })
+        });
       }
     };
     $scope.update = function() {
@@ -59,7 +59,7 @@ angular.module('Site')
       }, function(err) {
         $scope.validator.type = 'error';
         $scope.validator.message = '비정상적인 접근은 차단하겠습니다.';
-      })
+      });
     };
 
     $scope.delete = function(id) {
@@ -68,7 +68,7 @@ angular.module('Site')
       }, function(err) {
         $scope.validator.type = 'error';
         $scope.validator.message = '비정상적인 접근은 차단하겠습니다.';
-      })
+      });
     };
 
     $scope.validateSiteName = function() {
