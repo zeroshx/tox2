@@ -1,4 +1,3 @@
-<!-- views/profile.ejs -->
 <!doctype html>
 <html>
 
@@ -12,11 +11,16 @@
 </head>
 
 <body data-ng-app="_app">
-  <% include partials/header %>
-  <% include partials/nav %>
-  <% include partials/aside %>
+
+  <div data-ng-include="'/views/partials/header.html'"></div>
+
+  <div data-ng-include="'/views/partials/nav.html'"></div>
+
+  <div data-ng-include="'/views/partials/aside.html'"></div>
+
   <section><div data-ng-view></div></section>
-  <% include partials/footer %>
+
+  <div data-ng-include="'/views/partials/footer.html'"></div>
 
 
   <script type="text/javascript" src="/modules/auth.js"></script>
