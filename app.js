@@ -39,7 +39,7 @@ app.use(session({
     path: '/',
     httpOnly: true,
     secure: false,
-    maxAge: 60 * 60 * 1000 // 1 hour
+    maxAge: 30 * 60 * 1000 // 30 minutes
   },
   store: new MongoStore({
     url: exfig.session_store_url
