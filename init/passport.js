@@ -60,16 +60,16 @@ module.exports = function() {
                     req.body.nick,
                     req.body.password,
                     req.body.confirm,
-                    function(err, res) {
-                        if (err && res) {
-                            return done(null, {
-                                failure: res
-                            });
-                        } else if (err) {
+                    function(err, msg, user) {
+                        if (err) {
                             nodemailer('init/passport.js:signup', JSON.stringify(err));
                             return done(err);
+                        } else if (msg) {
+                            return done(null, {
+                                failure: msg
+                            });
                         } else {
-                            return done(null, res);
+                            return done(null, user);
                         }
                     });
             });
@@ -85,16 +85,16 @@ module.exports = function() {
               User.Login(
                   req.body.email,
                   req.body.password,
-                  function(err, res) {
-                      if (err && res) {
-                          return done(null, {
-                              failure: res
-                          });
-                      } else if (err) {
+                  function(err, msg, user) {
+                      if (err) {
                           nodemailer('init/passport.js:login', JSON.stringify(err));
                           return done(err);
+                      } else if (msg) {
+                          return done(null, {
+                              failure: msg
+                          });
                       } else {
-                          return done(null, res);
+                          return done(null, user);
                       }
                   });
             });

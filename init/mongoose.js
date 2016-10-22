@@ -8,8 +8,9 @@ module.exports = function() {
 
   // models
   var Site = require('../models/Site.js');
-  var Distributor = require('../models/Distributor.js');  
+  var Distributor = require('../models/Distributor.js');
   var User = require('../models/User.js');
+  var Match = require('../models/Match.js');
 
   // access to db
   var connection = mongoose.connection;
@@ -35,5 +36,6 @@ module.exports = function() {
   Site();
   Distributor();
   User();
+  Match();
   return mdb;
 };

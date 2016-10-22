@@ -5,13 +5,6 @@ angular.module(ApplicationName)
         .when('/', {
           templateUrl: '/views/index.html',
           controller: 'IndexCtrl'
-          /*
-          resolve: {
-            preAuth: function(AuthService) {
-              return AuthService.isAliveQ();
-            }
-          }
-          */
         })
         .when('/notfound', {
           templateUrl: '/views/404.html'

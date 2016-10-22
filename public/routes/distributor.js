@@ -4,11 +4,21 @@ angular.module('Distributor')
       $routeProvider
         .when('/distributor', {
           templateUrl: '/views/distributor.html',
-          controller: 'DistributorCtrl'
+          controller: 'DistributorCtrl',
+          resolve: {
+            preAuth: function(AuthService) {
+              return AuthService.isAliveQ();
+            }
+          }
         })
         .when('/distributor/:distName', {
           templateUrl: '/views/distributor.html',
-          controller: 'DistributorCtrl'
+          controller: 'DistributorCtrl',
+          resolve: {
+            preAuth: function(AuthService) {
+              return AuthService.isAliveQ();
+            }
+          }
         });
     }
   ]);

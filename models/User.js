@@ -142,11 +142,11 @@ UserSchema.statics.Signup = function(email, nick, password, confirm, callback) {
     var User = this;
 
     if (!User.validateEmail(email)) {
-        return callback(true, '적절하지 않는 이메일 형식입니다.');
+        return callback(null, '적절하지 않는 이메일 형식입니다.');
     }
 
     if (!User.validateNick(nick)) {
-        return callback(true, '적절하지 않는 닉네임입니다.');
+        return callback(null, '적절하지 않는 닉네임입니다.');
     }
 
     User.findOne({
@@ -161,11 +161,11 @@ UserSchema.statics.Signup = function(email, nick, password, confirm, callback) {
         }
         if (user) {
             if (user.email == email) {
-                return callback(true, '이미 존재하는 이메일 입니다.');
+                return callback(null, '이미 존재하는 이메일 입니다.');
             } else if (user.nick == nick) {
-                return callback(true, '이미 존재하는 닉네임 입니다.');
+                return callback(null, '이미 존재하는 닉네임 입니다.');
             } else {
-                return callback(true, '이미 존재하는 회원입니다.');
+                return callback(null, '이미 존재하는 회원입니다.');
             }
         } else {
             var newUser = new User();
@@ -185,15 +185,15 @@ UserSchema.statics.Signup = function(email, nick, password, confirm, callback) {
                                 return callback(err);
                             } else {
                                 newUser.password = null;
-                                return callback(null, newUser);
+                                return callback(null, null, newUser);
                             }
                         });
                     });
                 } else {
-                    return callback(true, '적절하지 않는 비밀번호네요.');
+                    return callback(null, '적절하지 않는 비밀번호네요.');
                 }
             } else {
-                return callback(true, '비밀번호 확인에 실패하였습니다.');
+                return callback(null, '비밀번호 확인에 실패하였습니다.');
             }
         }
     });
@@ -204,11 +204,11 @@ UserSchema.statics.Login = function(email, password, callback) {
     var User = this;
 
     if (!User.validateEmail(email)) {
-        return callback(true, '적절하지 않는 이메일 형식입니다.');
+        return callback(null, '적절하지 않는 이메일 형식입니다.');
     }
 
     if (!User.validatePassword(password)) {
-        return callback(true, '비밀번호는 숫자, 영문자, 특수문자를 포함 8자 이상 30자 이내 입니다.');
+        return callback(null, '비밀번호는 숫자, 영문자, 특수문자를 포함 8자 이상 30자 이내 입니다.');
     }
 
     User.findOne({
@@ -218,14 +218,14 @@ UserSchema.statics.Login = function(email, password, callback) {
             return callback(err);
         }
         if (!user) {
-            return callback(true, '존재하지 않는 이메일 또는 비밀번호가 맞지 않습니다.');
+            return callback(null, '존재하지 않는 이메일 또는 비밀번호가 맞지 않습니다.');
         }
         user.ValidatePassword(password, function(err, match) {
             if (err) {
                 return callback(err);
             }
             if (!match) {
-                return callback(true, '존재하지 않는 이메일 또는 비밀번호가 맞지 않습니다.');
+                return callback(null, '존재하지 않는 이메일 또는 비밀번호가 맞지 않습니다.');
             }
             user.login.date = Date.now();
             user.save(function(err, user) {
@@ -233,10 +233,63 @@ UserSchema.statics.Login = function(email, password, callback) {
                     return callback(err);
                 }
                 user.password = null;
-                return callback(null, user);
+                return callback(null, null, user);
             });
         });
     });
+};
+
+UserSchema.statics.CheckEmail = function(email, callback) {
+    if (this.validateEmail(email)) {
+        this.findOne({
+            email: email
+        }, function(err, user) {
+            if (err) {
+                return callback(err);
+            }
+            if (user) {
+                return callback(null, '이미 존재하는 이메일입니다.');
+            } else {
+                return callback(null, null);
+            }
+        });
+    } else {
+        return callback(null, '이메일 형식으로 작성해주세요.');
+    }
+};
+
+UserSchema.statics.CheckNick = function(nick, callback) {
+    if (this.validateNick(nick)) {
+        this.findOne({
+            nick: nick
+        }, function(err, user) {
+            if (err) {
+                return callback(err);
+            }
+            if (user) {
+                return callback(null, '이미 존재하는 닉네임 입니다.');
+            } else {
+                return callback(null, null);
+            }
+        });
+    } else {
+        return callback(null, '별명은 2~8자에 한글, 영문, 숫자만 가능합니다.');
+    }
+};
+
+UserSchema.statics.Me = function(id, callback) {
+    this.findOne({
+            _id: id
+        })
+        .populate('site distributor')
+        .select('-password')
+        .exec(function(err, user) {
+            if (err) {
+                nodemailer('controllers/auth.js:me', JSON.stringify(err));
+                return callback(err);
+            }
+            return callback(null, null, user);
+        });
 };
 /******************************************************************
 User Model's Statics End.

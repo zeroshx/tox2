@@ -4,11 +4,21 @@ angular.module('Site')
       $routeProvider
         .when('/site', {
           templateUrl: '/views/site.html',
-          controller: 'SiteCtrl'
+          controller: 'SiteCtrl',
+          resolve: {
+            preAuth: function(AuthService) {
+              return AuthService.isAliveQ();
+            }
+          }
         })
         .when('/site/:siteName', {
           templateUrl: '/views/site.html',
-          controller: 'SiteCtrl'
+          controller: 'SiteCtrl',
+          resolve: {
+            preAuth: function(AuthService) {
+              return AuthService.isAliveQ();
+            }
+          }
         });
     }
   ]);
