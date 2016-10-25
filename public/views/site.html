@@ -1,60 +1,116 @@
-<div class="container">
-    <div class="col-sm-6 col-sm-offset-3">
-        <h1><span class="fa fa-sign-in"></span>Site</h1>
-        <div data-ng-hide="siteDetail">
-            
-            <div ng-show="currentUser">
-                {{currentUser}}
-            </div>
-
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="col-sm-10">
+    <div class="row">
+        <h1><span class="fa fa-sign-in"> 사이트 관리</span> <button type="button" class="btn btn-primary btn-xs" data-ng-click="CreateFormOpen()">추가</button></h1>
+    </div>
+    <div class="row">
+        <br>
+        <div data-ng-class="{'alert alert-danger' : validator.type == 'error', 'alert alert-info' : validator.type == 'info', 'alert alert-success' : validator.type == 'correct'}" data-ng-show="validator.message">{{validator.message}}</div>
+    </div>
+    <div data-ng-show="createFormFlag" class="row">
+        <br>
+        <div class="col-sm-offset-3 col-sm-6">
             <form class="form" name="createForm" data-ng-submit="create()" novalidate>
                 <div class="form-group">
-                    <label>사이트명</label>
-                    <input type="text" class="form-control" data-ng-model="site.name">
+                    <label>신규 사이트명</label>
+                    <input type="text" class="form-control" placeholder="(한글, 영문, 숫자 조합으로 2자 이상 16자 이내)" data-ng-model="createName">
                 </div>
                 <div class="form-group">
                     <label>메모</label>
-                    <input type="text" class="form-control" data-ng-model="site.memo">
+                    <textarea class="form-control" rows="3" data-ng-model="createMemo" placeholder="(255자 이내)"></textarea>
                 </div>
-                <div data-ng-class="{'has-error' : validator.type == 'error', 'has-correct' : validator.type == 'correct'}" data-ng-show="validator.message">{{validator.message}}</div>
-                <button type="submit" class="btn btn-warning btn-lg">생성</button>
+                <button type="submit" class="btn btn-success">완료</button>
+                <button type="button" class="btn btn-danger" data-ng-click="CreateFormClose()">취소</button>
             </form>
+        </div>
+    </div>
+    <div data-ng-show="modifyFormFlag" class="row">
+        <br>
+        <div class="col-sm-offset-3 col-sm-6">
+            <form class="form" name="modifyForm" data-ng-submit="update(modifyId)" novalidate>
+                <div class="form-group">
+                    <label>사이트명 수정</label>
+                    <input type="text" class="form-control" data-ng-model="modifyName" placeholder="(한글, 영문, 숫자 조합으로 2자 이상 16자 이내)">
+                </div>
+                <div class="form-group">
+                    <label>메모</label>
+                    <textarea class="form-control" rows="3" data-ng-model="modifyMemo" placeholder="(255자 이내)"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">완료</button>
+                <button type="button" class="btn btn-danger" data-ng-click="ModifyFormClose()">취소</button>
+            </form>
+        </div>
+    </div>
 
-            <div data-ng-show="sites.length > 0" class="col-md-10">
-                <label>사이트 리스트</label>
-                <table>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Memo</th>
-                        <th>Detail</th>
-                        <th>Delete</th>
-                    </tr>
-                    <tr ng-repeat="site in sites | orderBy : 'name'">
-                        <td>{{ site._id }}</td>
-                        <td>{{ site.name }}</td>
-                        <td>{{ site.memo }}</td>
-                        <td>
-                            <a href="#!/site/{{site._id}}" onclick="window.open(this.href, 'siteDetail', 'scrollbars,width=500,height=500'); return false">  -></a>
-                        </td>
-                        <td>
-                            <a href="" data-ng-click="delete(site._id)">X</a>
-                        </td>
-                    </tr>
-                </table>
+    <div data-ng-hide="sites.length > 0" class="row">
+        <br>
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">처음으로</button>
+        </div>
+    </div>
+
+    <div data-ng-show="sites.length > 0" class="row">
+        <br>
+        <div class="col-sm-2">
+            <div class="input-group">
+                <input type="text" class="form-control" data-ng-model="query.pageSize">
+                <span class="input-group-btn"><button class="btn btn-default" type="button" data-ng-click="ChangePageSize()">줄</button></span>
             </div>
         </div>
-
-        <div data-ng-show="siteDetail" class="col-md-10">
-            <form class="form" name="form" data-ng-submit="update()" novalidate>
-                <label>사이트 디테일</label>
-                </br>
-                아이디 : <span>{{siteDetail._id}}</span></br>
-                이름 : <span>{{siteDetail.name}}</span></br>
-                메모 : <input type="text" class="form-control" data-ng-model="siteDetail.memo">
-                <button type="submit" class="btn btn-warning btn-lg">수정</button>
-            </form>
-            <button class="btn btn-warning btn-lg" data-ng-click="delete(siteDetail._id)">삭제</button>
+        <div class="col-sm-offset-4 col-sm-6">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{query.searchFilterName}}<span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li data-ng-repeat="sch in searchFilters"><a href="" data-ng-click="SelectSearchFilter($index)">{{sch.Filter}}</a></li>
+                    </ul>
+                </div>
+                <input type="text" class="form-control" data-ng-model="query.searchKeyword">
+                <div class="input-group-btn" data-ng-show="query.searchKeyword">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">검색</button>
+                </div>
+                <div class="input-group-btn" data-ng-hide="query.searchKeyword">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">전체보기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-hover" data-ng-show="sites.length > 0">
+                <tr>
+                    <th>사이트명</th>
+                    <th>메모</th>
+                    <th>옵션</th>
+                </tr>
+                <tr ng-repeat="site in sites">
+                    <td>{{ site.name }}</td>
+                    <td>{{ site.shortMemo }}</td>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-xs" data-ng-click="ModifyFormOpen(site._id)">수정</button>
+                        <button type="button" class="btn btn-danger btn-xs" data-ng-click="delete(site._id)">삭제</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <center>
+                <ul class="pagination">
+                    <li>
+                        <a href="" aria-label="Previous" data-ng-click="PreviousPage()">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="#!{{page.link}}">{{page.number}}</a></li>
+                    <li>
+                        <a href="" aria-label="Next" data-ng-click="NextPage()">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </center>
         </div>
     </div>
 </div>

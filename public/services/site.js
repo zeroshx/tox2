@@ -1,18 +1,17 @@
 var app = angular.module('Site');
 app.factory('SiteService', function($resource, $location, $q) {
     return {
+        // one: function(id) {
+        //     return $resource('/site/:siteId', {
+        //         siteId: id
+        //     }, {
+        //         run: {
+        //             method: 'GET'
+        //         }
+        //     });
+        // },
         list: function() {
             return $resource('/site', {}, {
-                run: {
-                    method: 'GET',
-                    isArray: true
-                }
-            });
-        },
-        single: function(id) {
-            return $resource('/site/:siteId', {
-                siteId: id
-            }, {
                 run: {
                     method: 'GET'
                 }
@@ -25,8 +24,10 @@ app.factory('SiteService', function($resource, $location, $q) {
                 }
             });
         },
-        update: function() {
-            return $resource('/site', {}, {
+        update: function(id) {
+            return $resource('/site/:siteId', {
+                siteId: id
+            }, {
                 run: {
                     method: 'PUT'
                 }

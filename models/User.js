@@ -19,7 +19,7 @@ var UserSchema = new Schema({
     },
     phone: {
         type: String,
-        default: null
+        default: ''
     },
     money: {
         type: Number,
@@ -31,31 +31,33 @@ var UserSchema = new Schema({
     },
     level: {
         type: String,
+        index: true,
         default: 'Bronze',
         enum: ['Diamond', 'Platinum', 'Gold', 'Silver', 'Bronze']
     },
     state: {
         type: String,
+        index: true,
         default: 'Normal',
         enum: ['Stop', 'Bad', 'Normal', 'Good', 'Excellent']
     },
     memo: {
         type: [String],
-        maxlength: 100
+        default: ['']
     },
     account: {
         bank: {
-            type: String
+            type: String,
+            default: ''
         },
         number: {
-            type: String
+            type: String,
+            default: ''
         },
         password: {
-            type: String
+            type: String,
+            default: ''
         }
-    },
-    config: {
-        type: String
     },
     site: {
         type: Schema.Types.ObjectId,
@@ -67,10 +69,12 @@ var UserSchema = new Schema({
     },
     login: {
         domain: {
-            type: String
+            type: String,
+            default: ''
         },
         ip: {
-            type: String
+            type: String,
+            default: ''
         },
         date: {
             type: Date,
@@ -79,15 +83,21 @@ var UserSchema = new Schema({
     },
     signup: {
         domain: {
-            type: String
+            type: String,
+            default: ''
         },
         ip: {
-            type: String
+            type: String,
+            default: ''
         },
         date: {
             type: Date,
             default: Date.now()
         }
+    },
+    modified_at: {
+        type: Date,
+        default: Date.now()
     }
 });
 
@@ -133,7 +143,7 @@ UserSchema.statics.validateNick = function(nick) {
 };
 
 UserSchema.statics.validatePassword = function(password) {
-    return /^[0-9a-zA-Z<>,\/?:;'"\\{}\[\]()`~@#$%^&+=.\-_*]{8,30}/i.test(password);
+    return /^[0-9a-zA-Z<>,\/?:;'"\\{}\[\]()`~@#$%^&+=.\-_*]{8,30}$/i.test(password);
 };
 
 // signup

@@ -1,6 +1,6 @@
 angular.module('Auth')
     .controller('AuthCtrl', function($scope, $rootScope, $location, AuthService) {
-
+        
         $scope.user = {
             email: '',
             password: '',

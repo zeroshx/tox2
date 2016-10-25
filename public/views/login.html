@@ -1,21 +1,19 @@
-<div class="container">
-  <div class="col-sm-6 col-sm-offset-3">
+<div class="col-sm-offset-2 col-sm-4 col-sm-offset-4">
     <h1><span class="fa fa-sign-in"></span> 로그인</h1>
     <div data-ng-class="{'has-error' : validator.server.type == 'error', 'has-correct' : validator.server.type == 'correct'}" data-ng-show="validator.server.message">{{validator.server.message}}</div>
     <form class="form" name="form" data-ng-submit="login()" novalidate>
-      <div class="form-group">
-        <label>로그인 이메일</label>
-        <div data-ng-class="{'has-error' : validator.email.type == 'error', 'has-correct' : validator.email.type == 'correct'}" data-ng-show="validator.email.message">{{validator.email.message}}</div>
-        <input type="text" class="form-control" name="email" data-ng-model="user.email">
-      </div>
-      <div class="form-group">
-        <label>비밀번호</label>
-        <input type="password" class="form-control" name="password" data-ng-model="user.password">
-      </div>
-      <button type="submit" class="btn btn-warning btn-lg">로그인</button>
+        <div class="form-group">
+            <label>로그인 이메일</label>
+            <div data-ng-class="{'has-error' : validator.email.type == 'error', 'has-correct' : validator.email.type == 'correct'}" data-ng-show="validator.email.message">{{validator.email.message}}</div>
+            <input type="text" class="form-control" name="email" data-ng-model="user.email">
+        </div>
+        <div class="form-group">
+            <label>비밀번호</label>
+            <input type="password" class="form-control" name="password" data-ng-model="user.password">
+        </div>
+        <button type="submit" class="btn btn-warning btn-lg">로그인</button>
     </form>
     <br>
     <p>아직 회원이 아니세요? <a href="#!signup"> 회원가입</a></p>
     <p>첫화면으로 돌아가시게요?<a href="#!/"> 처음으로</a></p>
-  </div>
 </div>
