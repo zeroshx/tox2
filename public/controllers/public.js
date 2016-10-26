@@ -1,6 +1,21 @@
 var _app = angular.module(ApplicationName);
+_app.controller('IndexCtrl', function($scope) {
 
-_app.controller('HeaderCtrl', function($scope, $rootScope, $location, AuthService) {
+    /*
+      if (preAuth && !$rootScope.currentUser) {
+        AuthService.me().run(function(user) {
+          $rootScope.currentUser = user;
+        }, function(error) {
+          console.log('err');
+        });
+      }
+    */
+  $scope.me = function() {
+    console.log("This is Index Ctrl.");
+  };
+});
+
+_app.controller('HeaderCtrl', function($scope) {
 
     $scope.logout = function() {
         AuthService.logout().run(function(res) {
@@ -11,12 +26,10 @@ _app.controller('HeaderCtrl', function($scope, $rootScope, $location, AuthServic
     };
 });
 
-_app.controller('NavCtrl', function($scope, $rootScope, $location) {
-
+_app.controller('NavCtrl', function($scope) {
 });
 
 _app.controller('AsideCtrl', function($scope) {
-
 });
 
 _app.controller('SectionCtrl', function($scope) {

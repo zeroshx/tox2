@@ -6,11 +6,11 @@ var capi = require('../controllers/common.js');
 var ctrl = require('../controllers/site.js');
 
 router.post('/',
-  ctrl.create
+  ctrl.Create
 );
 
 router.get('/',
-  ctrl.list
+  ctrl.List
 );
 
 // router.get('/:id',
@@ -18,11 +18,11 @@ router.get('/',
 // );
 
 router.put('/:id',
-  ctrl.update
+  ctrl.Update
 );
 
 router.delete('/:id',
-  ctrl.delete
+  ctrl.Delete
 );
 
 module.exports = router;

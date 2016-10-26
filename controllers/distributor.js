@@ -1,88 +1,97 @@
 var Distributor = require('mongoose').model('Distributor');
 var nodemailer = require('../init/nodemailer.js');
+//
+// exports.single = function(req, res) {
+//     Distributor.Single(
+//         req.params.distId,
+//         function(err, msg, dist) {
+//             if (err) { // internal error
+//                 nodemailer('controller/distritutor.js:single', JSON.stringify(err));
+//                 return res.sendStatus(500);
+//             } else if (msg) { // exception control
+//                 return res.json({
+//                     failure: msg
+//                 });
+//             } else {
+//                 return res.json(dist);
+//             }
+//         });
+// };
 
-exports.single = function(req, res) {
-    Distributor.Single(
-        req.params.distId,
-        function(err, msg, dist) {
-            if (err) { // internal error
-                nodemailer('controller/distritutor.js:single', JSON.stringify(err));
-                return res.sendStatus(500);
-            } else if (msg) { // exception control
-                return res.json({
-                    failure: msg
-                });
-            } else {
-                return res.json(dist);
-            }
-        });
-};
-
-exports.list = function(req, res) {
+exports.List = function(req, res) {
     Distributor.List(
-        function(err, msg, dists) {
+        req.query.page,
+        req.query.pageSize,
+        req.query.searchFilter,
+        req.query.searchKeyword,
+        function(err, msg, sites) {
             if (err) { // internal error
-                nodemailer('controller/distritutor.js:list', JSON.stringify(err));
+                nodemailer('controller/distributor.js:List', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(dists);
+                return res.json(sites);
             }
         });
 };
 
-exports.create = function(req, res) {
+exports.Create = function(req, res) {
     Distributor.Create(
         req.body.name,
         req.body.memo,
-        function(err, msg, dist) {
+        req.body.bonusWin,
+        req.body.bonusLose,
+        function(err, msg, distributor) {
             if (err) { // internal error
-                nodemailer('controller/distritutor.js:create', JSON.stringify(err));
+                nodemailer('controller/distributor.js:Create', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(dist);
+                return res.json(distributor);
             }
         });
 };
 
-exports.update = function(req, res) {
+exports.Update = function(req, res) {
     Distributor.Update(
-        req.body._id,
+        req.params.id,
+        req.body.name,
         req.body.memo,
-        function(err, msg, dist) {
+        req.body.bonusWin,
+        req.body.bonusLose,
+        function(err, msg, distributor) {
             if (err) { // internal error
-                nodemailer('controller/distritutor.js:update', JSON.stringify(err));
+                nodemailer('controller/distributor.js:Update', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(dist);
+                return res.json(distributor);
             }
         });
 };
 
-exports.delete = function(req, res) {
+exports.Delete = function(req, res) {
     Distributor.Delete(
-        req.params.distId,
-        function(err, msg, dist) {
+        req.params.id,
+        function(err, msg, distributor) {
             if (err) { // internal error
-                nodemailer('controller/distritutor.js:delete', JSON.stringify(err));
+                nodemailer('controller/distributor.js:Delete', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(dist);
+                return res.json(distributor);
             }
         });
 };

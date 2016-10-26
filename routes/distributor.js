@@ -5,29 +5,24 @@ var router = express.Router();
 var capi = require('../controllers/common.js');
 var ctrl = require('../controllers/distributor.js');
 
-// for distributors list
-router.get('/',
-  ctrl.list
-);
-
-// for a distributor info
-router.get('/:distId',
-  ctrl.single
-);
-
-// for creating new distributor
 router.post('/',
-  ctrl.create
+  ctrl.Create
 );
 
-// update distributor
-router.put('/',
-  ctrl.update
+router.get('/',
+  ctrl.List
 );
 
-// delete distributor
-router.delete('/:distId',
-  ctrl.delete
+// router.get('/:id',
+//   ctrl.list
+// );
+
+router.put('/:id',
+  ctrl.Update
+);
+
+router.delete('/:id',
+  ctrl.Delete
 );
 
 module.exports = router;

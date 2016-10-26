@@ -1,5 +1,5 @@
 angular.module('Site')
-    .controller('SiteCtrl', function($rootScope, $scope, $window, $location, $routeParams, $httpParamSerializer, SiteService) {
+    .controller('SiteCtrl', function($rootScope, $scope, $routeParams, CRUDService, PublicService) {
 
         /****************************************************************************
             Basic Vars setting
@@ -19,7 +19,7 @@ angular.module('Site')
             message: ''
         };
 
-        $scope.sites = [];
+        $scope.docs = [];
 
 
         /****************************************************************************
@@ -48,12 +48,12 @@ angular.module('Site')
                     $scope.validator.message = '검색하시려면 검색필터를 선택해주세요.';
                 } else {
                     $scope.query.page = 1;
-                    $scope.list();
+                    $scope.List();
                 }
             } else {
                 $scope.query.searchKeyword = '';
                 $scope.query.page = 1;
-                $scope.list();
+                $scope.List();
             }
         };
 
@@ -61,117 +61,100 @@ angular.module('Site')
             Pagination setting
         ****************************************************************************/
         $scope.pages = [];
-        $scope.Pagination = function(curPage, totalPage, baseUrl, curQuery) {
-            var pages = [];
-            var query = {};
-            angular.copy(curQuery, query);
-            var where = curPage % 8;
-            if (where === 0) {
-                where = 8;
-            }
-
-            pages[where - 1] = {
-                number: curPage,
-                active: true,
-                link: baseUrl + '?' + $httpParamSerializer(query)
-            };
-
-            for (i = 0; i < (where - 1); i++) {
-                query.page = curPage - i - 1;
-                pages[where - i - 2] = {
-                    number: curPage - i - 1,
-                    active: false,
-                    link: baseUrl + '?' + $httpParamSerializer(query)
-                };
-            }
-
-            for (i = 0; i < (8 - where); i++) {
-                if (curPage + i + 1 <= totalPage) {
-                    query.page = curPage + i + 1;
-                    pages[where + i] = {
-                        number: curPage + i + 1,
-                        active: false,
-                        link: baseUrl + '?' + $httpParamSerializer(query)
-                    };
-                }
-            }
-
-            return pages;
-        };
 
         $scope.NextPage = function() {
             if ($scope.query.page < $scope.totalPage) {
                 $scope.query.page++;
-                $location.url($scope.baseUrl + '?' + $httpParamSerializer($scope.query));
+                $scope.List();
             }
         };
 
         $scope.PreviousPage = function() {
             if (($scope.query.page - 1) > 0) {
                 $scope.query.page--;
-                $location.url($scope.baseUrl + '?' + $httpParamSerializer($scope.query));
+                $scope.List();
             }
         };
 
         $scope.LastPage = function() {
             $scope.query.page = $scope.totalPage;
-            $location.url($scope.baseUrl + '?' + $httpParamSerializer($scope.query));
+            $scope.List();
+        };
+
+        $scope.FirstPage = function() {
+            $scope.query.page = 1;
+            $scope.List();
         };
 
         /****************************************************************************
             Form On/Off setting
         ****************************************************************************/
-        $scope.createFormFlag = false;
-        $scope.modifyFormFlag = false;
+        $scope.formSwitch = false;
+        $scope.formMode = '';
+        $scope.targetId = '';
+        $scope.targetName = '';
+        $scope.targetMemo = '';
+        $scope.targetBonusWin = '';
+        $scope.targetBonusLose = '';
 
-        $scope.CreateFormOpen = function() {
-            $scope.createFormFlag = true;
-            $scope.modifyFormFlag = false;
-        };
+        $scope.FormOpen = function(mode, id) {
+            $scope.formMode = mode;
+            $scope.formSwitch = true;
 
-        $scope.CreateFormClose = function() {
-            $scope.createFormFlag = false;
-            $scope.createName = '';
-            $scope.createMemo = '';
-        };
-
-        $scope.ModifyFormOpen = function(id) {
-            $scope.createFormFlag = false;
-            $scope.modifyFormFlag = true;
-            for (i = 0; i < $scope.sites.length; i++) {
-                if ($scope.sites[i]._id == id) {
-                    $scope.modifyId = $scope.sites[i]._id;
-                    $scope.modifyName = $scope.sites[i].name;
-                    $scope.modifyMemo = $scope.sites[i].memo;
-                    break;
+            if (mode === 'UPDATE') {
+                var siteCheck = false;
+                for (var i in $scope.docs) {
+                    if ($scope.docs[i]._id === id) {
+                        siteCheck = true;
+                        $scope.targetId = $scope.docs[i]._id;
+                        $scope.targetName = $scope.docs[i].name;
+                        $scope.targetMemo = $scope.docs[i].memo;
+                        $scope.targetBonusWin = $scope.docs[i].bonus.win;
+                        $scope.targetBonusLose = $scope.docs[i].bonus.lose;
+                    }
                 }
+                if (!siteCheck) {
+                    $scope.validator.type = 'error';
+                    $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
+                }
+            } else { // mode === 'CREATE'
+                $scope.targetId = '';
+                $scope.targetName = '';
+                $scope.targetMemo = '';
+                $scope.targetBonusWin = '';
+                $scope.targetBonusLose = '';
             }
         };
 
-        $scope.ModifyFormClose = function() {
-            $scope.modifyFormFlag = false;
-            $scope.modifyId = '';
-            $scope.modifyName = '';
-            $scope.modifyMemo = '';
+        $scope.FormClose = function() {
+            $scope.formSwitch = false;
+            $scope.forMode = '';
+            $scope.targetName = '';
+            $scope.targetMemo = '';
+            $scope.targetBonusWin = '';
+            $scope.targetBonusLose = '';
         };
 
 
         /****************************************************************************
             Http CRUD setting
         ****************************************************************************/
-        $scope.create = function() {
-            SiteService.create().run({
-                name: $scope.createName,
-                memo: $scope.createMemo
+        $scope.Create = function() {
+            CRUDService.Create($scope.baseUrl).run({
+                name: $scope.targetName,
+                memo: $scope.targetMemo,
+                bonusWin: $scope.targetBonusWin,
+                bonusLose: $scope.targetBonusLose
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
                     $scope.validator.message = res.failure;
                 } else {
                     $scope.validator.message = '';
-                    $scope.CreateFormClose();
+                    $scope.selectAllSwitch = false;
+                    $scope.FormClose();
                     alert("추가되었습니다.");
-                    $scope.list();
+                    $scope.List();
                 }
             }, function(err) {
                 $scope.validator.type = 'error';
@@ -179,22 +162,23 @@ angular.module('Site')
             });
         };
 
-        $scope.list = function() {
-            SiteService.list().run($scope.query, function(res) {
+        $scope.List = function() {
+            CRUDService.Read($scope.baseUrl).run($scope.query, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
                     $scope.validator.message = res.failure;
-                    $scope.sites = [];
+                    $scope.docs = [];
                     $scope.query.searchKeyword = '';
                 } else {
                     $scope.totalPage = res.count;
                     if ($scope.query.page > $scope.totalPage) {
                         $scope.LastPage();
                     }
-                    $scope.sites = res.sites;
+                    $scope.docs = res.docs;
                     $scope.CreateMemoShortcut();
-                    $scope.pages = $scope.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
+                    $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
+                    $scope.selectAllSwitch = false;
                 }
             }, function(err) {
                 $scope.validator.type = 'error';
@@ -202,19 +186,22 @@ angular.module('Site')
             });
         };
 
-        $scope.update = function(id) {
-            SiteService.update(id).run({
-                name: $scope.modifyName,
-                memo: $scope.modifyMemo
+        $scope.Update = function(id) {
+            CRUDService.Update($scope.baseUrl, id).run({
+                name: $scope.targetName,
+                memo: $scope.targetMemo,
+                bonusWin: $scope.targetBonusWin,
+                bonusLose: $scope.targetBonusLose
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
                     $scope.validator.message = res.failure;
                 } else {
                     $scope.validator.message = '';
-                    $scope.ModifyFormClose();
+                    $scope.selectAllSwitch = false;
+                    $scope.FormClose();
                     alert('수정되었습니다.');
-                    $scope.list();
+                    $scope.List();
                 }
             }, function(err) {
                 $scope.validator.type = 'error';
@@ -222,20 +209,42 @@ angular.module('Site')
             });
         };
 
-        $scope.delete = function(id) {
-            SiteService.delete(id).run(function(res) {
+        $scope.Delete = function(id, mode) {
+            CRUDService.Delete($scope.baseUrl, id).run(function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
                     $scope.validator.message = res.failure;
                 } else {
-                    $scope.validator.message = '';
-                    alert('삭제되었습니다.');
-                    $scope.list();
+                    if (mode === 'ONE') {
+                        $scope.validator.message = '';
+                        $scope.selectAllSwitch = false;
+                        alert('삭제되었습니다.');
+                        $scope.List();
+                    } else {
+                        $scope.deleteSuccess++;
+                        if($scope.deleteSuccess === $scope.deleteTotal){
+                            $scope.validator.message = '';
+                            $scope.selectAllSwitch = false;
+                            alert("삭제되었습니다.");
+                            $scope.List();
+                        }
+                    }
                 }
             }, function(err) {
                 $scope.validator.type = 'error';
                 $scope.validator.message = '비정상적인 접근입니다.';
             });
+        };
+
+        $scope.DeleteAll = function() {
+            $scope.deleteTotal = 0;
+            $scope.deleteSuccess = 0;
+            for (var i in $scope.docs) {
+                if ($scope.docs[i].checked) {
+                    $scope.deleteTotal++;
+                    $scope.Delete($scope.docs[i]._id, 'MANY');
+                }
+            }
         };
 
 
@@ -243,19 +252,31 @@ angular.module('Site')
             Etc Functions
         ****************************************************************************/
         $scope.CreateMemoShortcut = function() {
-            for (i = 0; i < $scope.sites.length; i++) {
-                if ($scope.sites[i].memo.length > 20) {
-                    $scope.sites[i].shortMemo = $scope.sites[i].memo.slice(0, 20);
-                    $scope.sites[i].shortMemo += '...';
+            for (i = 0; i < $scope.docs.length; i++) {
+                if ($scope.docs[i].memo.length > 20) {
+                    $scope.docs[i].shortMemo = $scope.docs[i].memo.slice(0, 20);
+                    $scope.docs[i].shortMemo += '...';
                 } else {
-                    $scope.sites[i].shortMemo = $scope.sites[i].memo;
+                    $scope.docs[i].shortMemo = $scope.docs[i].memo;
                 }
             }
         };
 
         $scope.ChangePageSize = function() {
             $scope.query.page = 1;
-            $location.url($scope.baseUrl + '?' + $httpParamSerializer($scope.query));
+            $scope.List();
+        };
+
+        $scope.SelectAll = function() {
+            if($scope.selectAllSwitch) {
+                for (var i in $scope.docs) {
+                    $scope.docs[i].checked = true;
+                }
+            } else {
+                for (var j in $scope.docs) {
+                    $scope.docs[j].checked = false;
+                }
+            }
         };
 
 
@@ -263,5 +284,5 @@ angular.module('Site')
             Controller Init
         ****************************************************************************/
         $scope.SelectSearchFilter(0);
-        $scope.list();
+        $scope.List();
     });

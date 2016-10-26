@@ -1,15 +1,41 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var SiteSchema = new Schema({
+var Model = new Schema({
     name: {
         type: String,
         unique: true,
+        validate: {
+            validator: function(v) {
+                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
+            },
+            message: '{VALUE}는 적절한 사이트명이 아닙니다.'
+        },
         required: [true, '사이트 이름이 없습니다.']
     },
     memo: {
         type: String,
+        maxlength: 100,
         default: ''
+    },
+    bonus: {
+        win: {
+            type: Number,
+            min: 0,
+            max: 100,
+            default: 0
+        },
+        lose: {
+            type: Number,
+            min: 0,
+            max: 100,
+            default: 0
+        }
+    },
+    headcount: {
+        type: Number,
+        min: 0,
+        default: 0
     },
     created_at: {
         type: Date,
@@ -22,50 +48,32 @@ var SiteSchema = new Schema({
 });
 
 /******************************************************************
-Site Model's Statics Begin.
+Model's Statics Begin.
 ******************************************************************/
-SiteSchema.statics.validateId = function(id) {
-    if (typeof(id) !== 'string') {
-        return false;
-    }
-    return true;
-};
 
-SiteSchema.statics.validateName = function(name) {
-    if (typeof(name) !== 'string') {
-        return false;
-    }
-    return /^[가-힣a-zA-Z0-9]{2,16}$/g.test(name);
-};
-
-SiteSchema.statics.validateMemo = function(memo) {
-    if (typeof(memo) !== 'string') {
-        return false;
-    }
-    return memo.length < 200 ? true : false;
-};
-
-// SiteSchema.statics.Single = function(id, callback) {
+// Model.statics.Single = function(id, callback) {
 //     this.findOne({
 //         _id: id
-//     }, function(err, site) {
+//     }, function(err, doc) {
 //         if (err) {
 //             return callback(err);
 //         }
-//         if (site) {
-//             return callback(null, null, site);
+//         if (doc) {
+//             return callback(null, null, doc);
 //         } else {
 //             return callback(null, '존재하지 않는 사이트입니다.');
 //         }
 //     });
 // };
 
-SiteSchema.statics.List = function(page, pageSize, filter, keyword, callback) {
-    var Site = this;
+Model.statics.List = function(page, pageSize, filter, keyword, callback) {
+    var Document = this;
 
     if (typeof(page) !== 'string' || typeof(pageSize) !== 'string') {
         return callback(null, '비정상적인 접근입니다.');
     }
+    page = parseInt(page);
+    pageSize = parseInt(pageSize);
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
@@ -89,114 +97,117 @@ SiteSchema.statics.List = function(page, pageSize, filter, keyword, callback) {
             }];
         }
     }
-    
-    Site.count(query, function(err, count) {
+
+    Document.count(query, function(err, count) {
         if (err) {
             return callback(err);
         }
         if (count !== 0) {
-            page = parseInt(page);
-            pageSize = parseInt(pageSize);
-            Site.find(query).skip((page - 1) * pageSize).limit(pageSize).exec(function(err, sites) {
+            Document.find(query).skip((page - 1) * pageSize).limit(pageSize).exec(function(err, docs) {
                 if (err) {
                     return callback(err);
                 }
                 return callback(null, null, {
                     count: Math.ceil(count / pageSize),
-                    sites: sites
+                    docs: docs
                 });
             });
         } else {
-            return callback(null, '검색결과가 없습니다.');
+            if(typeof(keyword) === 'string' && keyword.length > 0) {
+                return callback(null, '검색 결과가 없습니다.');
+            } else {
+                return callback(null, '사이트가 없습니다.');
+            }
         }
     });
 };
 
-SiteSchema.statics.Create = function(name, memo, callback) {
+Model.statics.Create = function(
+    name,
+    memo,
+    bonusWin,
+    bonusLose,
+    callback
+) {
 
-    var Site = this;
+    var Document = this;
 
-    if (!this.validateName(name)) {
-        return callback(null, '사이트명은 한글, 영문, 숫자 조합으로 2자 이상 16자 이내만 가능합니다.');
-    }
-
-    if (!this.validateMemo(memo)) {
-        return callback(null, '메모는 255자 이내만 가능합니다.');
-    }
-
-    this.findOne({
+    Document.findOne({
         name: name
-    }, function(err, site) {
+    }, function(err, doc) {
         if (err) {
-            callback(err);
+            return callback(err);
         }
-        if (site) {
+        if (doc) {
             return callback(null, '이미 존재하는 사이트입니다.');
         }
-        var newSite = new Site();
+        var newSite = new Document();
         newSite.name = name;
         newSite.memo = memo;
+        newSite.bonus = {
+            win: bonusWin,
+            lose: bonusLose
+        };
         newSite.save(function(err) {
             if (err) {
-                callback(err);
+                return callback(err);
             }
             return callback(null, null, newSite);
         });
     });
 };
 
-SiteSchema.statics.Update = function(id, name, memo, callback) {
+Model.statics.Update = function(
+    id,
+    name,
+    memo,
+    bonusWin,
+    bonusLose,
+    callback
+) {
 
-    if (!this.validateId(id)) {
-        return callback(null, '비정상적인 접근입니다.');
-    }
+    var Document = this;
 
-    if (!this.validateName(name)) {
-        return callback(null, '사이트명은 한글, 영문, 숫자 조합으로 2자 이상 16자 이내만 가능합니다.');
-    }
-
-    if (!this.validateMemo(memo)) {
-        return callback(null, '메모는 255자 이내만 가능합니다.');
-    }
-
-    this.findOneAndUpdate({
+    Document.findOneAndUpdate({
         _id: id
     }, {
         $set: {
             name: name,
             memo: memo,
+            bonus: {
+                win: bonusWin,
+                lose: bonusLose
+            },
             modified_at: Date.now()
         }
-    }, function(err, site) {
+    }, function(err, doc) {
         if (err) {
             return callback(err);
         }
-        if (site === null) {
+        if (doc === null) {
             return callback(null, '수정에 실패하였습니다.');
         }
-        return callback(null, null, site);
+        return callback(null, null, doc);
     });
 };
 
-SiteSchema.statics.Delete = function(id, callback) {
+Model.statics.Delete = function(id, callback) {
 
-    if (!this.validateId(id)) {
-        return callback(null, '비정상적인 접근입니다.');
-    }
+    var Document = this;
 
-    this.findOneAndRemove({
+    Document.findOneAndRemove({
         _id: id
-    }, function(err, site) {
+    }, function(err, doc) {
         if (err) {
             return callback(err);
         }
-        return callback(null, null, site);
+        return callback(null, null, doc);
     });
 };
 /******************************************************************
-Site Model's Statics End.
+Model's Statics End.
 ******************************************************************/
 
 module.exports = function() {
-    mongoose.model('Site', SiteSchema);
+    mongoose.model('Site', Model);
 };

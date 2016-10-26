@@ -17,7 +17,7 @@ var nodemailer = require('../init/nodemailer.js');
 //         });
 // };
 
-exports.list = function(req, res) {
+exports.List = function(req, res) {
     Site.List(
         req.query.page,
         req.query.pageSize,
@@ -25,7 +25,7 @@ exports.list = function(req, res) {
         req.query.searchKeyword,
         function(err, msg, sites) {
             if (err) { // internal error
-                nodemailer('controller/site.js:list', JSON.stringify(err));
+                nodemailer('controller/site.js:List', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
@@ -37,13 +37,15 @@ exports.list = function(req, res) {
         });
 };
 
-exports.create = function(req, res) {
+exports.Create = function(req, res) {
     Site.Create(
         req.body.name,
         req.body.memo,
+        req.body.bonusWin,
+        req.body.bonusLose,
         function(err, msg, site) {
             if (err) { // internal error
-                nodemailer('controller/site.js:create', JSON.stringify(err));
+                nodemailer('controller/site.js:Create', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
@@ -55,14 +57,16 @@ exports.create = function(req, res) {
         });
 };
 
-exports.update = function(req, res) {
+exports.Update = function(req, res) {
     Site.Update(
         req.params.id,
         req.body.name,
         req.body.memo,
+        req.body.bonusWin,
+        req.body.bonusLose,
         function(err, msg, site) {
             if (err) { // internal error
-                nodemailer('controller/site.js:update', JSON.stringify(err));
+                nodemailer('controller/site.js:Update', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
@@ -74,12 +78,12 @@ exports.update = function(req, res) {
         });
 };
 
-exports.delete = function(req, res) {
+exports.Delete = function(req, res) {
     Site.Delete(
         req.params.id,
         function(err, msg, site) {
             if (err) { // internal error
-                nodemailer('controller/site.js:delete', JSON.stringify(err));
+                nodemailer('controller/site.js:Delete', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
