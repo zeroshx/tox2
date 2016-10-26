@@ -26,6 +26,9 @@ angular.module('Distributor')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [{
+            Filter: '관리자 ',
+            mode: 'manager'
+        }, {
             Filter: '이름 ',
             mode: 'name'
         }, {
@@ -47,13 +50,11 @@ angular.module('Distributor')
                     $scope.validator.type = 'info';
                     $scope.validator.message = '검색하시려면 검색필터를 선택해주세요.';
                 } else {
-                    $scope.query.page = 1;
-                    $scope.List();
+                    $scope.FirstPage();
                 }
             } else {
                 $scope.query.searchKeyword = '';
-                $scope.query.page = 1;
-                $scope.List();
+                $scope.FirstPage();
             }
         };
 
@@ -90,12 +91,7 @@ angular.module('Distributor')
             Form On/Off setting
         ****************************************************************************/
         $scope.formSwitch = false;
-        $scope.formMode = '';
-        $scope.targetId = '';
-        $scope.targetName = '';
-        $scope.targetMemo = '';
-        $scope.targetBonusWin = '';
-        $scope.targetBonusLose = '';
+        $scope.forMode = '';
 
         $scope.FormOpen = function(mode, id) {
             $scope.formMode = mode;
@@ -109,6 +105,7 @@ angular.module('Distributor')
                         $scope.targetId = $scope.docs[i]._id;
                         $scope.targetName = $scope.docs[i].name;
                         $scope.targetMemo = $scope.docs[i].memo;
+                        $scope.targetManager = $scope.docs[i].manager;
                         $scope.targetBonusWin = $scope.docs[i].bonus.win;
                         $scope.targetBonusLose = $scope.docs[i].bonus.lose;
                     }
@@ -118,21 +115,14 @@ angular.module('Distributor')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else { // mode === 'CREATE'
-                $scope.targetId = '';
-                $scope.targetName = '';
-                $scope.targetMemo = '';
-                $scope.targetBonusWin = '';
-                $scope.targetBonusLose = '';
+                $scope.ResetTarget();
             }
         };
 
         $scope.FormClose = function() {
             $scope.formSwitch = false;
             $scope.forMode = '';
-            $scope.targetName = '';
-            $scope.targetMemo = '';
-            $scope.targetBonusWin = '';
-            $scope.targetBonusLose = '';
+            $scope.ResetTarget();
         };
 
 
@@ -143,6 +133,7 @@ angular.module('Distributor')
             CRUDService.Create($scope.baseUrl).run({
                 name: $scope.targetName,
                 memo: $scope.targetMemo,
+                manager: $scope.targetManager,
                 bonusWin: $scope.targetBonusWin,
                 bonusLose: $scope.targetBonusLose
             }, function(res) {
@@ -190,6 +181,7 @@ angular.module('Distributor')
             CRUDService.Update($scope.baseUrl, id).run({
                 name: $scope.targetName,
                 memo: $scope.targetMemo,
+                manager: $scope.targetManager,
                 bonusWin: $scope.targetBonusWin,
                 bonusLose: $scope.targetBonusLose
             }, function(res) {
@@ -279,10 +271,20 @@ angular.module('Distributor')
             }
         };
 
+        $scope.ResetTarget = function() {
+            $scope.targetId = '';
+            $scope.targetName = '';
+            $scope.targetMemo = '';
+            $scope.targetManager = '';
+            $scope.targetBonusWin = '';
+            $scope.targetBonusLose = '';
+        };
+
 
         /****************************************************************************
             Controller Init
         ****************************************************************************/
         $scope.SelectSearchFilter(0);
+        $scope.ResetTarget();
         $scope.List();
     });

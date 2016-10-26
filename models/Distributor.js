@@ -13,9 +13,14 @@ var Model = new Schema({
         },
         required: [true, '총판 이름이 없습니다.']
     },
-    manager:{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
+    manager: {
+        type: String,
+        validate: {
+            validator: function(v) {
+                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
+            },
+            message: '{VALUE}는 적절한 닉네임이 아닙니다.'
+        }
     },
     bonus: {
         win: {
@@ -82,7 +87,11 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === 'name') {
+        if (filter === 'manager') {
+            query.manager = {
+                $regex: '.*' + keyword + '.*'
+            };
+        } else if (filter === 'name') {
             query.name = {
                 $regex: '.*' + keyword + '.*'
             };
@@ -108,17 +117,20 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
             return callback(err);
         }
         if (count !== 0) {
-            Document.find(query).skip((page - 1) * pageSize).limit(pageSize).exec(function(err, docs) {
-                if (err) {
-                    return callback(err);
-                }
-                return callback(null, null, {
-                    count: Math.ceil(count / pageSize),
-                    docs: docs
+            Document.find(query)
+                .skip((page - 1) * pageSize)
+                .limit(pageSize)
+                .exec(function(err, docs) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    return callback(null, null, {
+                        count: Math.ceil(count / pageSize),
+                        docs: docs
+                    });
                 });
-            });
         } else {
-            if(typeof(keyword) === 'string' && keyword.length > 0) {
+            if (typeof(keyword) === 'string' && keyword.length > 0) {
                 return callback(null, '검색 결과가 없습니다.');
             } else {
                 return callback(null, '사이트가 없습니다.');
@@ -128,6 +140,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 };
 
 Model.statics.Create = function(
+    manager,
     name,
     memo,
     bonusWin,
@@ -147,6 +160,7 @@ Model.statics.Create = function(
             return callback(null, '이미 존재하는 사이트입니다.');
         }
         var newDoc = new Document();
+        newDoc.manager = manager;
         newDoc.name = name;
         newDoc.memo = memo;
         newDoc.bonus = {
@@ -163,6 +177,7 @@ Model.statics.Create = function(
 };
 
 Model.statics.Update = function(
+    manager,
     id,
     name,
     memo,
@@ -179,6 +194,7 @@ Model.statics.Update = function(
         $set: {
             name: name,
             memo: memo,
+            manager: manager,
             bonus: {
                 win: bonusWin,
                 lose: bonusLose

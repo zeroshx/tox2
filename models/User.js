@@ -139,7 +139,7 @@ UserSchema.statics.validateEmail = function(email) {
 };
 
 UserSchema.statics.validateNick = function(nick) {
-    return /^[가-힣a-zA-Z0-9]{2,8}$/g.test(nick);
+    return /^[가-힣a-zA-Z0-9]{2,16}$/g.test(nick);
 };
 
 UserSchema.statics.validatePassword = function(password) {
@@ -297,6 +297,24 @@ UserSchema.statics.Me = function(id, callback) {
             if (err) {
                 nodemailer('controllers/auth.js:me', JSON.stringify(err));
                 return callback(err);
+            }
+            if(!user) {
+                return callback(null, '회원 정보가 존재하지 않습니다.');
+            }
+            return callback(null, null, user);
+        });
+};
+
+UserSchema.statics.GetUserWithNick = function(nick, callback) {
+    this.findOne({
+            nick: nick
+        }, function(err, user) {
+            if (err) {
+                nodemailer('controllers/auth.js:me', JSON.stringify(err));
+                return callback(err);
+            }
+            if(!user) {
+                return callback(null, '회원 정보가 존재하지 않습니다.');
             }
             return callback(null, null, user);
         });

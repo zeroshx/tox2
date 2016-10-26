@@ -16,28 +16,44 @@
     <div data-ng-show="formSwitch" class="row">
         <br>
         <form class="form" name="siteForm" novalidate>
-            <div class="col-sm-offset-3 col-sm-6">
-                <div class="form-group">
-                    <label>총판명</label>
-                    <input type="text" class="form-control" data-ng-model="targetName" placeholder="(한글, 영문, 숫자 조합으로 2자 이상 16자 이내)">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-offset-1 col-sm-5">
+                        <div class="form-group">
+                            <label>총판명</label>
+                            <input type="text" class="form-control" data-ng-model="targetName" placeholder="(한글, 영문, 숫자 조합으로 2자 이상 16자 이내)">
+                        </div>
+                        <div class="form-group">
+                            <label>메모</label>
+                            <textarea class="form-control" rows="3" data-ng-model="targetMemo" placeholder="(100자 이내)"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="row">
+                            <div class="form-group col-sm-12">
+                                <label>총판관리자 닉네임</label>
+                                <input type="text" class="form-control" data-ng-model="targetManager">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <label>승리 보너스(%)</label>
+                                <input type="text" class="form-control" data-ng-model="targetBonusWin" placeholder="(0~100% 이내)">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label>패배 보너스(%)</label>
+                                <input type="text" class="form-control" data-ng-model="targetBonusLose" placeholder="(0~100% 이내)">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-sm-6">
-                        <label>승리 보너스(%)</label>
-                        <input type="text" class="form-control" data-ng-model="targetBonusWin" placeholder="(0~100% 이내)">
-                    </div>
-                    <div class="form-group col-sm-6">
-                        <label>패배 보너스(%)</label>
-                        <input type="text" class="form-control" data-ng-model="targetBonusLose" placeholder="(0~100% 이내)">
-                    </div>
+                    <center>
+                        <button type="submit" class="btn btn-primary" data-ng-show="formMode === 'CREATE'" data-ng-click="Create()">추가</button>
+                        <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE'" data-ng-click="Update(targetId)">수정</button>
+                        <button type="button" class="btn btn-danger" data-ng-click="FormClose()">취소</button>
+                    </center>
                 </div>
-                <div class="form-group">
-                    <label>메모</label>
-                    <textarea class="form-control" rows="3" data-ng-model="targetMemo" placeholder="(100자 이내)"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary" data-ng-show="formMode === 'CREATE'" data-ng-click="Create()">추가</button>
-                <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE'" data-ng-click="Update(targetId)">수정</button>
-                <button type="button" class="btn btn-danger" data-ng-click="FormClose()">취소</button>
             </div>
         </form>
     </div>
@@ -83,6 +99,7 @@
                 <tr>
                     <th><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
                     <th>총판</th>
+                    <th>관리자(닉네임)</th>
                     <th>승리 / 패배 보너스(%)</th>
                     <th>회원수</th>
                     <th>메모</th>
@@ -91,6 +108,7 @@
                 <tr ng-repeat="doc in docs">
                     <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
                     <td>{{ doc.name }}</td>
+                    <td>{{ doc.manager }}</td>
                     <td>{{ doc.bonus.win }} / {{ doc.bonus.lose }}</td>
                     <td>{{ doc.headcount }}</td>
                     <td>{{ doc.memo }}</td>

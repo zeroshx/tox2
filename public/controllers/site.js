@@ -47,13 +47,11 @@ angular.module('Site')
                     $scope.validator.type = 'info';
                     $scope.validator.message = '검색하시려면 검색필터를 선택해주세요.';
                 } else {
-                    $scope.query.page = 1;
-                    $scope.List();
+                    $scope.FirstPage();
                 }
             } else {
                 $scope.query.searchKeyword = '';
-                $scope.query.page = 1;
-                $scope.List();
+                $scope.FirstPage();
             }
         };
 
@@ -91,11 +89,6 @@ angular.module('Site')
         ****************************************************************************/
         $scope.formSwitch = false;
         $scope.formMode = '';
-        $scope.targetId = '';
-        $scope.targetName = '';
-        $scope.targetMemo = '';
-        $scope.targetBonusWin = '';
-        $scope.targetBonusLose = '';
 
         $scope.FormOpen = function(mode, id) {
             $scope.formMode = mode;
@@ -118,21 +111,14 @@ angular.module('Site')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else { // mode === 'CREATE'
-                $scope.targetId = '';
-                $scope.targetName = '';
-                $scope.targetMemo = '';
-                $scope.targetBonusWin = '';
-                $scope.targetBonusLose = '';
+                $scope.ResetTarget();
             }
         };
 
         $scope.FormClose = function() {
             $scope.formSwitch = false;
             $scope.forMode = '';
-            $scope.targetName = '';
-            $scope.targetMemo = '';
-            $scope.targetBonusWin = '';
-            $scope.targetBonusLose = '';
+            $scope.ResetTarget();
         };
 
 
@@ -279,10 +265,18 @@ angular.module('Site')
             }
         };
 
+        $scope.ResetTarget = function() {
+            $scope.targetId = '';
+            $scope.targetName = '';
+            $scope.targetMemo = '';
+            $scope.targetBonusWin = '';
+            $scope.targetBonusLose = '';
+        };
 
         /****************************************************************************
             Controller Init
         ****************************************************************************/
         $scope.SelectSearchFilter(0);
+        $scope.ResetTarget();
         $scope.List();
     });
