@@ -1,23 +1,7 @@
 var Distributor = require('mongoose').model('Distributor');
 var User = require('mongoose').model('User');
 var nodemailer = require('../init/nodemailer.js');
-//
-// exports.single = function(req, res) {
-//     Distributor.Single(
-//         req.params.distId,
-//         function(err, msg, dist) {
-//             if (err) { // internal error
-//                 nodemailer('controller/distritutor.js:single', JSON.stringify(err));
-//                 return res.sendStatus(500);
-//             } else if (msg) { // exception control
-//                 return res.json({
-//                     failure: msg
-//                 });
-//             } else {
-//                 return res.json(dist);
-//             }
-//         });
-// };
+
 
 exports.List = function(req, res) {
     Distributor.List(
@@ -25,7 +9,7 @@ exports.List = function(req, res) {
         req.query.pageSize,
         req.query.searchFilter,
         req.query.searchKeyword,
-        function(err, msg, sites) {
+        function(err, msg, dists) {
             if (err) { // internal error
                 nodemailer('controller/distributor.js:List', JSON.stringify(err));
                 return res.sendStatus(500);
@@ -34,7 +18,7 @@ exports.List = function(req, res) {
                     failure: msg
                 });
             } else {
-                return res.json(sites);
+                return res.json(dists);
             }
         });
 };
@@ -53,12 +37,13 @@ exports.Create = function(req, res) {
         } else {
             // 2. create
             Distributor.Create(
+                user._id,
                 user.nick,
                 req.body.name,
                 req.body.memo,
                 req.body.bonusWin,
                 req.body.bonusLose,
-                function(err, msg, distributor) {
+                function(err, msg, dist) {
                     if (err) { // internal error
                         nodemailer('controller/distributor.js:Create', JSON.stringify(err));
                         return res.sendStatus(500);
@@ -67,7 +52,7 @@ exports.Create = function(req, res) {
                             failure: msg
                         });
                     } else {
-                        return res.json(distributor);
+                        return res.json(dist);
                     }
                 });
         }
@@ -88,13 +73,14 @@ exports.Update = function(req, res) {
         } else {
             // 2. create
             Distributor.Update(
+                user._id,
                 user.nick,
                 req.params.id,
                 req.body.name,
                 req.body.memo,
                 req.body.bonusWin,
                 req.body.bonusLose,
-                function(err, msg, distributor) {
+                function(err, msg, dist) {
                     if (err) { // internal error
                         nodemailer('controller/distributor.js:Update', JSON.stringify(err));
                         return res.sendStatus(500);
@@ -103,7 +89,7 @@ exports.Update = function(req, res) {
                             failure: msg
                         });
                     } else {
-                        return res.json(distributor);
+                        return res.json(dist);
                     }
                 });
         }
@@ -114,7 +100,7 @@ exports.Update = function(req, res) {
 exports.Delete = function(req, res) {
     Distributor.Delete(
         req.params.id,
-        function(err, msg, distributor) {
+        function(err, msg, dist) {
             if (err) { // internal error
                 nodemailer('controller/distributor.js:Delete', JSON.stringify(err));
                 return res.sendStatus(500);
@@ -123,7 +109,7 @@ exports.Delete = function(req, res) {
                     failure: msg
                 });
             } else {
-                return res.json(distributor);
+                return res.json(dist);
             }
         });
 };

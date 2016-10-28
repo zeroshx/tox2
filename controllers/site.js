@@ -1,22 +1,6 @@
 var Site = require('mongoose').model('Site');
 var nodemailer = require('../init/nodemailer.js');
 
-// exports.one = function(req, res) {
-//     Site.Single(req.params.siteId,
-//         function(err, msg, site) {
-//             if (err) { // internal error
-//                 nodemailer('controller/site.js:single', JSON.stringify(err));
-//                 return res.sendStatus(500);
-//             } else if (msg) { // exception control
-//                 return res.json({
-//                     failure: msg
-//                 });
-//             } else {
-//                 return res.json(site);
-//             }
-//         });
-// };
-
 exports.List = function(req, res) {
     Site.List(
         req.query.page,

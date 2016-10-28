@@ -15,7 +15,7 @@
     <!-- 3. Custom form zone -->
     <div data-ng-show="formSwitch" class="row">
         <br>
-        <form class="form" name="siteForm" novalidate>
+        <form class="form" name="targetForm" novalidate>
             <div class="col-sm-offset-3 col-sm-6">
                 <div class="form-group">
                     <label>사이트명</label>
@@ -93,7 +93,7 @@
                     <td>{{ doc.name }}</td>
                     <td>{{ doc.bonus.win }} / {{ doc.bonus.lose }}</td>
                     <td>{{ doc.headcount }}</td>
-                    <td>{{ doc.memo }}</td>
+                    <td>{{ doc.short_memo }}</td>
                     <td>
                         <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
                         <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>

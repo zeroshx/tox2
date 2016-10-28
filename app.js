@@ -28,7 +28,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(methodOverride('X-HTTP-Method-Override')) // Google/GData
+app.use(methodOverride('X-HTTP-Method-Override')); // Google/GData
 app.use(cookieParser());
 app.use(session({
   name: exfig.session_name,

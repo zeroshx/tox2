@@ -37,11 +37,11 @@ var Model = new Schema({
         min: 0,
         default: 0
     },
-    created_at: {
+    createdAt: {
         type: Date,
         default: Date.now()
     },
-    modified_at: {
+    modifiedAt: {
         type: Date,
         default: Date.now()
     }
@@ -113,10 +113,10 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
                 });
             });
         } else {
-            if(typeof(keyword) === 'string' && keyword.length > 0) {
+            if (typeof(keyword) === 'string' && keyword.length > 0) {
                 return callback(null, '검색 결과가 없습니다.');
             } else {
-                return callback(null, '사이트가 없습니다.');
+                return callback(null, '아무 데이터도 존재하지 않습니다.');
             }
         }
     });
@@ -139,7 +139,7 @@ Model.statics.Create = function(
             return callback(err);
         }
         if (doc) {
-            return callback(null, '이미 존재하는 사이트입니다.');
+            return callback(null, '이미 존재합니다.');
         }
         var newSite = new Document();
         newSite.name = name;
@@ -178,8 +178,10 @@ Model.statics.Update = function(
                 win: bonusWin,
                 lose: bonusLose
             },
-            modified_at: Date.now()
+            modifiedAt: Date.now()
         }
+    }, {
+        runValidators: true
     }, function(err, doc) {
         if (err) {
             return callback(err);

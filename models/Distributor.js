@@ -5,6 +5,7 @@ var Model = new Schema({
     name: {
         type: String,
         unique: true,
+        index: true,
         validate: {
             validator: function(v) {
                 return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
@@ -14,12 +15,13 @@ var Model = new Schema({
         required: [true, '총판 이름이 없습니다.']
     },
     manager: {
-        type: String,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 닉네임이 아닙니다.'
+        nick: {
+            type: String,
+            index: true
+        },
+        detail: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
         }
     },
     bonus: {
@@ -46,11 +48,11 @@ var Model = new Schema({
         maxlength: 100,
         default: ''
     },
-    created_at: {
+    createdAt: {
         type: Date,
         default: Date.now()
     },
-    modified_at: {
+    modifiedAt: {
         type: Date,
         default: Date.now()
     }
@@ -89,7 +91,9 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
     if (typeof(keyword) === 'string' && keyword.length > 0) {
         if (filter === 'manager') {
             query.manager = {
-                $regex: '.*' + keyword + '.*'
+                nick: {
+                    $regex: '.*' + keyword + '.*'
+                }
             };
         } else if (filter === 'name') {
             query.name = {
@@ -111,36 +115,36 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
             }];
         }
     }
-
     Document.count(query, function(err, count) {
-        if (err) {
-            return callback(err);
-        }
-        if (count !== 0) {
-            Document.find(query)
-                .skip((page - 1) * pageSize)
-                .limit(pageSize)
-                .exec(function(err, docs) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    return callback(null, null, {
-                        count: Math.ceil(count / pageSize),
-                        docs: docs
-                    });
-                });
-        } else {
-            if (typeof(keyword) === 'string' && keyword.length > 0) {
-                return callback(null, '검색 결과가 없습니다.');
-            } else {
-                return callback(null, '사이트가 없습니다.');
+            if (err) {
+                return callback(err);
             }
-        }
-    });
+            if (count !== 0) {
+                Document.find(query)
+                    .skip((page - 1) * pageSize)
+                    .limit(pageSize)
+                    .exec(function(err, docs) {
+                        if (err) {
+                            return callback(err);
+                        }
+                        return callback(null, null, {
+                            count: Math.ceil(count / pageSize),
+                            docs: docs
+                        });
+                    });
+            } else {
+                if (typeof(keyword) === 'string' && keyword.length > 0) {
+                    return callback(null, '검색 결과가 없습니다.');
+                } else {
+                    return callback(null, '아무 데이터도 존재하지 않습니다.');
+                }
+            }
+        });
 };
 
 Model.statics.Create = function(
-    manager,
+    managerId,
+    managerNick,
     name,
     memo,
     bonusWin,
@@ -157,12 +161,15 @@ Model.statics.Create = function(
             return callback(err);
         }
         if (doc) {
-            return callback(null, '이미 존재하는 사이트입니다.');
+            return callback(null, '이미 존재합니다.');
         }
         var newDoc = new Document();
-        newDoc.manager = manager;
         newDoc.name = name;
         newDoc.memo = memo;
+        newDoc.manager = {
+            detail: managerId,
+            nick: managerNick
+        };
         newDoc.bonus = {
             win: bonusWin,
             lose: bonusLose
@@ -177,7 +184,8 @@ Model.statics.Create = function(
 };
 
 Model.statics.Update = function(
-    manager,
+    managerId,
+    managerNick,
     id,
     name,
     memo,
@@ -194,13 +202,18 @@ Model.statics.Update = function(
         $set: {
             name: name,
             memo: memo,
-            manager: manager,
+            manager: {
+                nick: managerNick,
+                detail: managerId
+            },
             bonus: {
                 win: bonusWin,
                 lose: bonusLose
             },
-            modified_at: Date.now()
+            modifiedAt: Date.now()
         }
+    }, {
+        runValidators: true
     }, function(err, doc) {
         if (err) {
             return callback(err);

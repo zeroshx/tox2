@@ -11,6 +11,8 @@ module.exports = function() {
   var Distributor = require('../models/Distributor.js');
   var User = require('../models/User.js');
   var Match = require('../models/Match.js');
+  var MatchKind = require('../models/MatchKind.js');
+  var MatchLeague = require('../models/MatchLeague.js');
 
   // access to db
   var connection = mongoose.connection;
@@ -37,5 +39,7 @@ module.exports = function() {
   Distributor();
   User();
   Match();
+  MatchKind();
+  MatchLeague();
   return mdb;
 };

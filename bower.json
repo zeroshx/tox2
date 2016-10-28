@@ -15,9 +15,10 @@
     "test",
     "tests"
   ],
-  "dependencies" : {
-    "angular" : "latest",
+  "dependencies": {
+    "angular": "latest",
     "angular-route": "latest",
-    "angular-resource": "latest"
+    "angular-resource": "latest",
+    "ng-file-upload": "^12.2.12"
   }
 }

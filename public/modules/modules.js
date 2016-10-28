@@ -4,6 +4,7 @@ angular.module('Auth',[]);
 angular.module('Distributor',[]);
 angular.module('Site',[]);
 angular.module('User',[]);
+angular.module('Match',['ngFileUpload']);
 
 var _app = angular.module(ApplicationName, [
   'ngRoute',
@@ -11,7 +12,8 @@ var _app = angular.module(ApplicationName, [
   'Auth',
   'Site',
   'Distributor',
-  'User'
+  'User',
+  'Match'
 ]);
 
 _app.config(['$locationProvider', function config($locationProvider) {

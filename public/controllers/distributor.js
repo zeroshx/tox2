@@ -105,7 +105,7 @@ angular.module('Distributor')
                         $scope.targetId = $scope.docs[i]._id;
                         $scope.targetName = $scope.docs[i].name;
                         $scope.targetMemo = $scope.docs[i].memo;
-                        $scope.targetManager = $scope.docs[i].manager;
+                        $scope.targetManager = $scope.docs[i].manager.nick;
                         $scope.targetBonusWin = $scope.docs[i].bonus.win;
                         $scope.targetBonusLose = $scope.docs[i].bonus.lose;
                     }
@@ -166,7 +166,7 @@ angular.module('Distributor')
                         $scope.LastPage();
                     }
                     $scope.docs = res.docs;
-                    $scope.CreateMemoShortcut();
+                    $scope.CreateShortcut('memo', 20);
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
@@ -243,20 +243,25 @@ angular.module('Distributor')
         /****************************************************************************
             Etc Functions
         ****************************************************************************/
-        $scope.CreateMemoShortcut = function() {
+        $scope.CreateShortcut = function(element, length) {
             for (i = 0; i < $scope.docs.length; i++) {
-                if ($scope.docs[i].memo.length > 20) {
-                    $scope.docs[i].shortMemo = $scope.docs[i].memo.slice(0, 20);
-                    $scope.docs[i].shortMemo += '...';
+                if ($scope.docs[i][element].length > length) {
+                    $scope.docs[i]['short_'+element] = $scope.docs[i][element].slice(0, length);
+                    $scope.docs[i]['short_'+element] += '...';
                 } else {
-                    $scope.docs[i].shortMemo = $scope.docs[i].memo;
+                    $scope.docs[i]['short_'+element] = $scope.docs[i][element];
                 }
             }
         };
 
         $scope.ChangePageSize = function() {
-            $scope.query.page = 1;
-            $scope.List();
+            $scope.query.pageSize = parseInt($scope.query.pageSize);
+            if($scope.query.pageSize > 0) {
+                $scope.query.page = 1;
+                $scope.List();
+            } else {
+                alert("1이상의 수를 입력해주세요.");
+            }
         };
 
         $scope.SelectAll = function() {
