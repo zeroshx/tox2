@@ -299,7 +299,7 @@ UserSchema.statics.Me = function(id, callback) {
                 return callback(err);
             }
             if(!user) {
-                return callback(null, '회원 정보가 존재하지 않습니다.');
+                return callback(null, '데이터가 존재하지 않습니다.');
             }
             return callback(null, null, user);
         });
@@ -314,7 +314,7 @@ UserSchema.statics.GetUserWithNick = function(nick, callback) {
                 return callback(err);
             }
             if(!user) {
-                return callback(null, '회원 정보가 존재하지 않습니다.');
+                return callback(null, '데이터가 존재하지 않습니다.');
             }
             return callback(null, null, user);
         });

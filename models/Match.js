@@ -1,110 +1,176 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var MatchSchema = new Schema({
+var Model = new Schema({
     home: {
         name: {
             type: String,
             index: true,
-            required: [true, '홈팀명이 없습니다.']
+            validate: {
+                validator: function(v) {
+                    return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{0,30}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 홈팀명이 아닙니다.'
+            }
         },
         score: {
             type: Number,
-            default: -1
+            min: 0
         }
     },
     away: {
         name: {
             type: String,
             index: true,
-            required: [true, '원정팀명이 없습니다.']
+            validate: {
+                validator: function(v) {
+                    return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{0,30}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 원정팀명이 아닙니다.'
+            }
         },
         score: {
             type: Number,
-            default: -1
+            min: 0
         }
     },
     rate: {
         home: {
+            type: String,
+            validate: {
+                validator: function(v) {
+                    return /^(\d{1,2})(\.(?=\d))?\d{0,2}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 배당값이 아닙니다.'
+            }
+        },
+        draw: {
+            type: String,
+            validate: {
+                validator: function(v) {
+                    return /^(\d{1,2})(\.(?=\d))?\d{0,2}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 배당값이 아닙니다.'
+            }
+        },
+        away: {
+            type: String,
+            validate: {
+                validator: function(v) {
+                    return /^(\d{1,2})(\.(?=\d))?\d{0,2}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 배당값이 아닙니다.'
+            }
+        }
+    },
+    bet: {
+        home: {
             type: Number,
+            min: 0,
             default: 0
         },
         draw: {
             type: Number,
+            min: 0,
             default: 0
         },
         away: {
             type: Number,
+            min: 0,
             default: 0
+        }
+    },
+    variety : [{
+        name: {
+            type: String,
+            validate: {
+                validator: function(v) {
+                    return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{2,30}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 픽명이 아닙니다.'
+            }
+        },
+        pick: {
+            type: String,
+            enum: [
+                '선택1', '선택2', '선택3', '선택4', '선택5', '선택6', '선택7', '선택8', '선택9', '선택10',
+                '선택11', '선택12', '선택13', '선택14', '선택15', '선택16', '선택17', '선택18', '선택19', '선택20'
+            ]
+        },
+        rate: {
+            type: Number,
+            min: 0
+        }
+    }],
+    offset: {
+        type: String,
+        validate: {
+            validator: function(v) {
+                return /^[-]?[0-9]{1}\.[0-9]{1}$/g.test(v);
+            },
+            message: '{VALUE}는 적절한 기준점이 아닙니다.'
         }
     },
     state: {
         type: String,
         index: true,
-        default: 'CREATE',
-        enum: ['CREATE', 'OPEN', 'CLOSE', 'FINISH']
+        enum: ['등록', '배팅', '마감', '종료'],
+        required: [true, '매치 상태가 없습니다.']
     },
     btype: { // betting type
         type: String,
         index: true,
-        default: '2-WAY',
-        enum: ['2-WAY', '3-WAY', 'N-WAY']
+        enum: ['2-WAY', '3-WAY', 'VARIETY'],
+        required: [true, '배팅 타입이 없습니다.']
     },
-    gtype: { // game type
+    mtype: { // match type
         type: String,
         index: true,
-        default: 'WDL',
-        enum: ['WDL', 'HDC', 'UOV']
+        enum: ['일반', '핸디캡', '언더오버'],
+        required: [true, '매치 타입이 없습니다']
+    },
+    kind: {
+        type: String,
+        index: true,
+        validate: {
+            validator: function(v) {
+                return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{2,16}$/.test(v);
+            },
+            message: '{VALUE}는 적절한 종목명 아닙니다.'
+        },
+        required: [true, '종목명이 없습니다.']
+    },
+    league: {
+        type: String,
+        index: true,
+        validate: {
+            validator: function(v) {
+                return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{2,30}$/.test(v);
+            },
+            message: '{VALUE}는 적절한 리그명이 아닙니다.'
+        },
+        required: [true, '리그명이 없습니다.']
+    },
+    schedule: {
+        type: Date,
+        required: [true, '매치 일정이 없습니다.']
     },
     result: {
         type: String,
-        default: 'WAIT',
         enum: [
-            'WAIT',
+            '대기',
             // used in 3-way
-            'HOME', 'DRAW', 'AWAY',
-            // used in 2-way
-            'LEFT', 'RIGHT',
+            '홈승', '무승부', '원정승',
             // used in n-way
-            'PICK1', 'PICK2', 'PICK3', 'PICK4', 'PICK5', 'PICK6', 'PICK7', 'PICK8', 'PICK9', 'PICK10',
-            'PICK11', 'PICK12', 'PICK13', 'PICK14', 'PICK15', 'PICK16', 'PICK17', 'PICK18', 'PICK19', 'PICK20'
+            '선택1', '선택2', '선택3', '선택4', '선택5', '선택6', '선택7', '선택8', '선택9', '선택10',
+            '선택11', '선택12', '선택13', '선택14', '선택15', '선택16', '선택17', '선택18', '선택19', '선택20'
         ]
     },
-    league: {
-        type: Schema.Types.ObjectId,
-        ref: 'MatchLeague',
-        index: true,
-        default: null
-    },
-    kind: {
-        type: Schema.Types.ObjectId,
-        ref: 'MatchKind',
-        index: true,
-        default: null
-    },
-    schedule: {
-        date: {
-            type: String,
-            default: 'yyyy-mm-dd'
-        },
-        hour: {
-            type: String,
-            default: 0
-        },
-        min: {
-            type: String,
-            default: 0
-        },
-        sec: {
-            type: String,
-            default: 0
-        }
-    },
-    created_at: {
+    createdAt: {
         type: Date,
         default: Date.now()
     },
-    modified_at: {
+    modifiedAt: {
         type: Date,
         default: Date.now()
     }
@@ -113,222 +179,180 @@ var MatchSchema = new Schema({
 /******************************************************************
 Match Model's Statics Begin.
 ******************************************************************/
-MatchSchema.statics.validateName = function(name) {
-    return /^[가-힣a-zA-Z0-9()]{2,30}$/g.test(name);
-};
+Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
-MatchSchema.statics.validateScore = function(score) {
-    return /^[0-9]{1,10}$/g.test(score);
-};
+    var Document = this;
 
-MatchSchema.statics.validateRate = function(rate) {
-    return /^(\d{1,2})(\.(?=\d))?\d{0,2}$/g.test(rate);
-};
+    page = parseInt(page);
+    pageSize = parseInt(pageSize);
 
-MatchSchema.statics.validateDate = function(date) {
-    return /^\d{4}-\d{2}-\d{2}$/g.test(date);
-};
-
-MatchSchema.statics.validateTime = function(time, mode) {
-    if (mode == 'hour') {
-        return ('00' <= time && time < '24');
-    } else {
-        return ('00' <= time && time < '60');
+    if(isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+        return callback(null, '비정상적인 접근입니다.');
     }
-};
 
-MatchSchema.statics.Single = function(id, callback) {
-    this.findOne({
-        _id: id
-    }, function(err, match) {
+    var query = {};
+    if (typeof(keyword) === 'string' && keyword.length > 0) {
+        if (filter === 'name') {
+            query.name = {
+                $regex: '.*' + keyword + '.*'
+            };
+        }
+    }
+
+    Document.count(query, function(err, count) {
         if (err) {
             return callback(err);
         }
-        if (match) {
-            return callback(null, null, match);
+        if (count !== 0) {
+            Document.find(query).skip((page - 1) * pageSize).limit(pageSize).exec(function(err, docs) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, null, {
+                    count: Math.ceil(count / pageSize),
+                    docs: docs
+                });
+            });
         } else {
-            return callback(null, '존재하지 않는 경기입니다.');
+            if (typeof(keyword) === 'string' && keyword.length > 0) {
+                return callback(null, '검색 결과가 없습니다.');
+            } else {
+                return callback(null, '아무 데이터도 존재하지 않습니다.');
+            }
         }
     });
 };
 
-MatchSchema.statics.List = function(callback) {
-    this.find(function(err, matches) {
+Model.statics.Create = function(
+    homeName, homeScore,
+    awayName, awayScore,
+    homeRate, drawRate, awayRate,
+    offset, variety,
+    state, btype, mtype,
+    kind, league,
+    schedule,
+    result,
+    callback
+) {
+
+    var Document = this;
+
+    if(btype === 'VARIETY') {
+        homeName = '';
+        awayName = '';
+        homeScore = 0;
+        awayScore = 0;
+        homeRate = '0.00';
+        drawRate = '0.00';
+        awayRate = '0.00';
+    } else if (btype === '2-WAY') {
+        drawRate = '0.00';
+        variety = [];
+    } else { // 3-way
+        variety = [];
+    }
+
+    if(mtype === '일반') {
+        offset = '0.0';
+    }
+
+    if(state !== '종료') {
+        result = '대기';
+        homeScore = 0;
+        awayScore = 0;
+    }
+
+    var newDoc = new Document();
+    newDoc.home.name = homeName;
+    newDoc.home.score = homeScore;
+    newDoc.away.name = awayName;
+    newDoc.away.score = awayScore;
+    newDoc.rate.home = homeRate;
+    newDoc.rate.draw = drawRate;
+    newDoc.rate.away = awayRate;
+    newDoc.variety = variety;
+    newDoc.offset = offset;
+    newDoc.state = state;
+    newDoc.btype = btype;
+    newDoc.mtype = mtype;
+    newDoc.kind = kind;
+    newDoc.league = league;
+    newDoc.schedule = schedule;
+    newDoc.result = result;
+
+    newDoc.save(function(err) {
         if (err) {
             return callback(err);
         }
-        return callback(null, null, matches);
+        return callback(null, null, newDoc);
     });
 };
 
-MatchSchema.statics.Create = function(
-    home_name, home_score,
-    away_name, away_score,
-    rate_home, rate_draw, rate_away,
-    state, btype, gtype,
-    league_id,
-    kind_id,
-    schedule_date, schedule_hour, schedule_min, schedule_sec,
-    result,
-    callback
-) {
-    var Match = this;
-
-    if (!this.validateName(home_name)) {
-        return callback(null, '홈팀명은 한글, 영문, 숫자 조합으로 2자 이상 30자 이내만 가능합니다.');
-    }
-
-    if (!this.validateName(away_name)) {
-        return callback(null, '원정팀명은 한글, 영문, 숫자 조합으로 2자 이상 30자 이내만 가능합니다.');
-    }
-
-    if (!this.validateScore(home_score)) {
-        return callback(null, '홈팀 점수가 적절하지 않습니다.');
-    }
-
-    if (!this.validateScore(away_score)) {
-        return callback(null, '원정팀 점수가 적절하지 않습니다.');
-    }
-
-    if (!this.validateRate(rate_home)) {
-        return callback(null, '홈팀 승리 배당률이 적절하지 않습니다.');
-    }
-
-    if (!this.validateRate(rate_away)) {
-        return callback(null, '원정팀 승리 배당률이 적절하지 않습니다.');
-    }
-
-    if (!this.validateRate(rate_draw)) {
-        return callback(null, '무승부 배당률이 적절하지 않습니다.');
-    }
-
-    if (!this.validateDate(schedule_date)) {
-        return callback(null, '경기 일정 형식이 적절하지 않습니다.');
-    }
-
-    if (!this.validateTime(schedule_hour, 'hour')) {
-        return callback(null, '경기 일정 형식이 적절하지 않습니다.');
-    }
-
-    if (!this.validateTime(schedule_min, 'min')) {
-        return callback(null, '경기 시간(분) 형식이 적절하지 않습니다.');
-    }
-
-    if (!this.validateTime(schedule_sec, 'sec')) {
-        return callback(null, '경기 시간(초) 형식이 적절하지 않습니다.');
-    }
-
-    var newMatch = new Match();
-    newMatch.home.name = home_name;
-    newMatch.home.score = home_score;
-    newMatch.away.name = away_name;
-    newMatch.away.score = away_score;
-    newMatch.rate.home = rate_home;
-    newMatch.rate.draw = rate_draw;
-    newMatch.rate.away = rate_away;
-    newMatch.state = state;
-    newMatch.btype = btype;
-    newMatch.gtype = gtype;
-    newMatch.league = league_id;
-    newMatch.kind = kind_id;
-    newMatch.schedule.date = schedule_date;
-    newMatch.schedule.hour = schedule_hour;
-    newMatch.schedule.min = schedule_min;
-    newMatch.schedule.sec = schedule_sec;
-    newMatch.result = result;
-    newMatch.save(function(err) {
-        if (err) {
-            callback(err);
-        }
-        return callback(null, null, newMatch);
-    });
-};
-
-MatchSchema.statics.Update = function(
+Model.statics.Update = function(
     id,
-    home_name, home_score,
-    away_name, away_score,
-    rate_home, rate_draw, rate_away,
-    state, btype, gtype,
-    league_id,
-    kind_id,
-    schedule_date, schedule_hour, schedule_min, schedule_sec,
+    homeName, homeScore,
+    awayName, awayScore,
+    homeRate, drawRate, awayRate,
+    offset, variety,
+    state, btype, mtype,
+    kind, league,
+    schedule,
     result,
     callback
 ) {
-    
-    if (!this.validateName(home_name)) {
-        return callback(null, '홈팀명은 한글, 영문, 숫자 조합으로 2자 이상 30자 이내만 가능합니다.');
+
+    var Document = this;
+
+    if(btype === 'VARIETY') {
+        homeName = '';
+        awayName = '';
+        homeScore = 0;
+        awayScore = 0;
+        homeRate = '0.00';
+        drawRate = '0.00';
+        awayRate = '0.00';
+    } else if (btype === '2-WAY') {
+        drawRate = '0.00';
+        variety = [];
+    } else { // 3-way
+        variety = [];
     }
 
-    if (!this.validateName(away_name)) {
-        return callback(null, '원정팀명은 한글, 영문, 숫자 조합으로 2자 이상 30자 이내만 가능합니다.');
+    if(mtype === '일반') {
+        offset = '0.0';
     }
 
-    if (!this.validateScore(home_score)) {
-        return callback(null, '홈팀 점수가 적절하지 않습니다.');
+    if(state !== '종료') {
+        result = '대기';
+        homeScore = 0;
+        awayScore = 0;
     }
 
-    if (!this.validateScore(away_score)) {
-        return callback(null, '원정팀 점수가 적절하지 않습니다.');
-    }
-
-    if (!this.validateRate(rate_home)) {
-        return callback(null, '홈팀 승리 배당률이 적절하지 않습니다.');
-    }
-
-    if (!this.validateRate(rate_away)) {
-        return callback(null, '원정팀 승리 배당률이 적절하지 않습니다.');
-    }
-
-    if (!this.validateRate(rate_draw)) {
-        return callback(null, '무승부 배당률이 적절하지 않습니다.');
-    }
-
-    if (!this.validateDate(schedule_date)) {
-        return callback(null, '경기 일정 형식이 적절하지 않습니다.');
-    }
-
-    if (!this.validateTime(schedule_hour, 'hour')) {
-        return callback(null, '경기 일정 형식이 적절하지 않습니다.');
-    }
-
-    if (!this.validateTime(schedule_min, 'min')) {
-        return callback(null, '경기 시간(분) 형식이 적절하지 않습니다.');
-    }
-
-    if (!this.validateTime(schedule_sec, 'sec')) {
-        return callback(null, '경기 시간(초) 형식이 적절하지 않습니다.');
-    }
-
-    this.findOneAndUpdate({
+    Document.findOneAndUpdate({
         _id: id
     }, {
         $set: {
             home: {
-                name : home_name,
-                score : home_score
+                name : homeName,
+                score : homeScore
             },
             away: {
-                name : away_name,
-                score : away_score
+                name : awayName,
+                score : awayScore
             },
             rate: {
-                home: rate_home,
-                draw: rate_draw,
-                away: rate_away
+                home: homeRate,
+                draw: drawRate,
+                away: awayRate
             },
+            variety: variery,
+            offset: offset,
             state: state,
             btype: btype,
-            gtype: gtype,
-            league: league_id,
-            kind: kind_id,
-            schedule: {
-                date: schedule_date,
-                hour: schedule_hour,
-                min: schedule_min,
-                sec: schedule_sec
-            },
+            mtype: mtype,
+            kind: kind,
+            league: league,
+            schedule: schedule,
             result: result,
             modified_at: Date.now()
         }
@@ -340,8 +364,11 @@ MatchSchema.statics.Update = function(
     });
 };
 
-MatchSchema.statics.Delete = function(id, callback) {
-    this.findOneAndRemove({
+Model.statics.Delete = function(id, callback) {
+
+    var Document = this;
+
+    Document.findOneAndRemove({
         _id: id
     }, function(err, match) {
         if (err) {
@@ -355,5 +382,5 @@ Match Model's Statics End.
 ******************************************************************/
 
 module.exports = function() {
-    mongoose.model('Match', MatchSchema);
+    mongoose.model('Match', Model);
 };

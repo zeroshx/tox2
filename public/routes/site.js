@@ -3,8 +3,7 @@ angular.module('Site')
         function($routeProvider) {
             $routeProvider
                 .when('/site', {
-                    templateUrl: '/views/site.html',
-                    controller: 'SiteCtrl',
+                    templateUrl: '/views/site.html'
                     //   resolve: {
                     //     preAuth: function(AuthService) {
                     //       return AuthService.isAliveQ();

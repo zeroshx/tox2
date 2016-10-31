@@ -3,30 +3,27 @@ var router = express.Router();
 
 // controller
 var capi = require('../controllers/common.js');
-var ctrl = require('../controllers/site.js');
+var ctrl = require('../controllers/matchkind.js');
 
 router.post('/',
-  ctrl.Create
+    ctrl.Create
 );
 
 router.get('/',
-  ctrl.List
+    ctrl.List
 );
 
 router.get('/all',
-  ctrl.ListAll
+    ctrl.ListAll
 );
 
-// router.get('/:id',
-//   ctrl.list
-// );
-
 router.put('/:id',
-  ctrl.Update
+    ctrl.Update
 );
 
 router.delete('/:id',
-  ctrl.Delete
+    ctrl.Delete
 );
+
 
 module.exports = router;

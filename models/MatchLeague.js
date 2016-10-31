@@ -8,7 +8,7 @@ var Model = new Schema({
         index: true,
         validate: {
             validator: function(v) {
-                return /^[가-힣a-zA-Z0-9\-\(\)'"`]{2,32}$/.test(v);
+                return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{2,30}$/.test(v);
             },
             message: '{VALUE}는 적절한 리그명이 아닙니다.'
         },
@@ -19,15 +19,13 @@ var Model = new Schema({
         index: true,
         validate: {
             validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{1,16}$/.test(v);
+                return /^[가-힣a-zA-Z0-9]{1,30}$/.test(v);
             },
             message: '{VALUE}는 적절한 국가명이 아닙니다.'
-        },
-        default: ''
+        }
     },
     imagePath: {
-        type: String,
-        default: ''
+        type: String
     },
     createdAt: {
         type: Date,
@@ -46,11 +44,12 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
     var Document = this;
 
-    if (typeof(page) !== 'string' || typeof(pageSize) !== 'string') {
-        return callback(null, '비정상적인 접근입니다.');
-    }
     page = parseInt(page);
     pageSize = parseInt(pageSize);
+
+    if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+        return callback(null, '비정상적인 접근입니다.');
+    }
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
@@ -90,6 +89,20 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
                 return callback(null, '아무 데이터도 존재하지 않습니다.');
             }
         }
+    });
+};
+
+Model.statics.ListAll = function(callback) {
+
+    var Document = this;
+
+    Document.find(function(err, docs) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, null, {
+            docs: docs
+        });
     });
 };
 

@@ -15,21 +15,18 @@ var Model = new Schema({
     },
     memo: {
         type: String,
-        maxlength: 100,
-        default: ''
+        maxlength: 100
     },
     bonus: {
         win: {
             type: Number,
             min: 0,
-            max: 100,
-            default: 0
+            max: 100
         },
         lose: {
             type: Number,
             min: 0,
-            max: 100,
-            default: 0
+            max: 100
         }
     },
     headcount: {
@@ -50,30 +47,15 @@ var Model = new Schema({
 /******************************************************************
 Model's Statics Begin.
 ******************************************************************/
-
-// Model.statics.Single = function(id, callback) {
-//     this.findOne({
-//         _id: id
-//     }, function(err, doc) {
-//         if (err) {
-//             return callback(err);
-//         }
-//         if (doc) {
-//             return callback(null, null, doc);
-//         } else {
-//             return callback(null, '존재하지 않는 사이트입니다.');
-//         }
-//     });
-// };
-
 Model.statics.List = function(page, pageSize, filter, keyword, callback) {
     var Document = this;
 
-    if (typeof(page) !== 'string' || typeof(pageSize) !== 'string') {
-        return callback(null, '비정상적인 접근입니다.');
-    }
     page = parseInt(page);
     pageSize = parseInt(pageSize);
+
+    if(isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+        return callback(null, '비정상적인 접근입니다.');
+    }
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
@@ -122,6 +104,23 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
     });
 };
 
+Model.statics.ListAll = function(callback) {
+
+    var Document = this;
+
+    Document.find(function(err, docs) {
+        if (err) {
+            return callback(err);
+        }
+        if(!docs) {
+            callback(null, '존재하지 않습니다.');
+        }
+        return callback(null, null, {
+            docs:docs
+        });
+    });
+};
+
 Model.statics.Create = function(
     name,
     memo,
@@ -145,8 +144,8 @@ Model.statics.Create = function(
         newSite.name = name;
         newSite.memo = memo;
         newSite.bonus = {
-            win: bonusWin,
-            lose: bonusLose
+            win: bonusWin|0,
+            lose: bonusLose|0
         };
         newSite.save(function(err) {
             if (err) {
@@ -175,8 +174,8 @@ Model.statics.Update = function(
             name: name,
             memo: memo,
             bonus: {
-                win: bonusWin,
-                lose: bonusLose
+                win: bonusWin|0,
+                lose: bonusLose|0
             },
             modifiedAt: Date.now()
         }
@@ -202,6 +201,23 @@ Model.statics.Delete = function(id, callback) {
     }, function(err, doc) {
         if (err) {
             return callback(err);
+        }
+        return callback(null, null, doc);
+    });
+};
+
+Model.statics.GetSiteWithName = function(name, callback) {
+
+    var Document = this;
+
+    Document.findOne({
+        name: name
+    }, function(err, doc) {
+        if (err) {
+            return callback(err);
+        }
+        if(!doc) {
+            callback(null, '데이터가 존재하지 않습니다.');
         }
         return callback(null, null, doc);
     });

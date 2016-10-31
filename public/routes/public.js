@@ -3,8 +3,7 @@ angular.module(ApplicationName)
     function($routeProvider) {
       $routeProvider
         .when('/', {
-          templateUrl: '/views/index.html',
-          controller: 'IndexCtrl'
+          templateUrl: '/views/index.html'
         })
         .when('/notfound', {
           templateUrl: '/views/404.html'

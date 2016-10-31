@@ -1,15 +1,11 @@
-header {
-    background-color: #fed4d4
+footer {
+    background-color: #dbdbfa
 }
 
 nav {
-    background-color: #fafec1
+    padding-top: 50px
 }
 
 aside {
-    background-color: #b2c8bb
-}
-
-footer {
-    background-color: #dbdbfa
+    padding-top: 50px
 }

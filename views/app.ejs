@@ -5,12 +5,12 @@
     <title>Node Authentication</title>
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
 
     <!-- jQuery.js and bootstrap.js -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <!-- Angular.js -->
     <script type="text/javascript" src="/lib/ng-file-upload/ng-file-upload-shim.min.js"></script>
@@ -18,6 +18,7 @@
     <script type="text/javascript" src="/lib/ng-file-upload/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="/lib/angular-route/angular-route.min.js"></script>
     <script type="text/javascript" src="/lib/angular-resource/angular-resource.min.js"></script>
+
 </head>
 
 <body class="container-fluid" data-ng-app="_app">
@@ -29,8 +30,8 @@
         <nav class="col-sm-12" data-ng-include="'/views/partials/nav.html'"></nav>
     </div>
     <div class="row">
-        <aside class="col-sm-2" data-ng-include="'/views/partials/aside.html'"></aside>
-        <section class="col-sm-10 data-ng-view"></section>
+        <aside class="col-sm-1" data-ng-include="'/views/partials/aside.html'"></aside>
+        <section class="col-sm-11 data-ng-view"></section>
     </div>
     <div class="row">
         <footer class="col-sm-12" data-ng-include="'/views/partials/footer.html'"></footer>
@@ -55,6 +56,8 @@
 
     <script type="text/javascript" src="/routes/match.js"></script>
     <script type="text/javascript" src="/controllers/match.js"></script>
+    <script type="text/javascript" src="/controllers/matchkind.js"></script>
+    <script type="text/javascript" src="/controllers/matchleague.js"></script>
 
     <script type="text/javascript" src="/routes/user.js"></script>
     <script type="text/javascript" src="/controllers/user.js"></script>

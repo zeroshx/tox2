@@ -21,6 +21,21 @@ exports.List = function(req, res) {
         });
 };
 
+exports.ListAll = function(req, res) {
+    Site.ListAll(function(err, msg, sites) {
+        if (err) { // internal error
+            nodemailer('controller/site.js:List', JSON.stringify(err));
+            return res.sendStatus(500);
+        } else if (msg) { // exception control
+            return res.json({
+                failure: msg
+            });
+        } else {
+            return res.json(sites);
+        }
+    });
+};
+
 exports.Create = function(req, res) {
     Site.Create(
         req.body.name,

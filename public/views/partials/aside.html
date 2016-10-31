@@ -1,6 +1,5 @@
 <div data-ng-controller="AsideCtrl">
-    <a href="#/">Home</a>
-    <a href="#/login">login</a>
-    <a href="#/signup">signup</a>
-    {{asideTest}}
+    <ul class="nav nav-stacked ">
+      <li data-ng-repeat="sm in submenu"><a href="#{{sm.link}}">{{sm.name}}</a></li>
+    </ul>
 </div>

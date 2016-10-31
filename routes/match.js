@@ -5,36 +5,20 @@ var router = express.Router();
 var capi = require('../controllers/common.js');
 var ctrl = require('../controllers/match.js');
 
-router.post('/kind',
-    ctrl.kind.Create
+router.post('/',
+    ctrl.Create
 );
 
-router.get('/kind',
-    ctrl.kind.List
+router.get('/',
+    ctrl.List
 );
 
-router.put('/kind/:id',
-    ctrl.kind.Update
+router.put('/:id',
+    ctrl.Update
 );
 
-router.delete('/kind/:id',
-    ctrl.kind.Delete
-);
-
-router.post('/league',
-    ctrl.league.Create
-);
-
-router.get('/league',
-    ctrl.league.List
-);
-
-router.put('/league/:id',
-    ctrl.league.Update
-);
-
-router.delete('/league/:id',
-    ctrl.league.Delete
+router.delete('/:id',
+    ctrl.Delete
 );
 
 module.exports = router;

@@ -3,8 +3,7 @@ angular.module('Distributor')
         function($routeProvider) {
             $routeProvider
                 .when('/distributor', {
-                    templateUrl: '/views/distributor.html',
-                    controller: 'DistributorCtrl',
+                    templateUrl: '/views/distributor.html'
                     //   resolve: {
                     //     preAuth: function(AuthService) {
                     //       return AuthService.isAliveQ();

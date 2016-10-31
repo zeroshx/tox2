@@ -15,7 +15,7 @@ _app.controller('IndexCtrl', function($scope) {
   };
 });
 
-_app.controller('HeaderCtrl', function($scope) {
+_app.controller('HeaderCtrl', function($rootScope, $scope) {
 
     $scope.logout = function() {
         AuthService.logout().run(function(res) {
@@ -24,6 +24,8 @@ _app.controller('HeaderCtrl', function($scope) {
             $location.path('/login');
         }, function(err) {});
     };
+
+    $scope.submenu = $rootScope.submenu;
 });
 
 _app.controller('NavCtrl', function($scope) {

@@ -21,6 +21,14 @@ angular.module('Distributor')
 
         $scope.docs = [];
 
+        /****************************************************************************
+            Input Site Select setting
+        ****************************************************************************/
+        $scope.siteList = [];
+        $scope.SelectSite = function(name) {
+            $scope.targetSite = name;
+        };
+
 
         /****************************************************************************
             Search setting
@@ -31,6 +39,9 @@ angular.module('Distributor')
         }, {
             Filter: '이름 ',
             mode: 'name'
+        }, {
+            Filter: '사이트 ',
+            mode: 'site'
         }, {
             Filter: '메모 ',
             mode: 'memo'
@@ -57,6 +68,7 @@ angular.module('Distributor')
                 $scope.FirstPage();
             }
         };
+
 
         /****************************************************************************
             Pagination setting
@@ -87,6 +99,7 @@ angular.module('Distributor')
             $scope.List();
         };
 
+
         /****************************************************************************
             Form On/Off setting
         ****************************************************************************/
@@ -94,6 +107,7 @@ angular.module('Distributor')
         $scope.forMode = '';
 
         $scope.FormOpen = function(mode, id) {
+            $scope.SiteList();
             $scope.formMode = mode;
             $scope.formSwitch = true;
 
@@ -105,7 +119,8 @@ angular.module('Distributor')
                         $scope.targetId = $scope.docs[i]._id;
                         $scope.targetName = $scope.docs[i].name;
                         $scope.targetMemo = $scope.docs[i].memo;
-                        $scope.targetManager = $scope.docs[i].manager.nick;
+                        $scope.targetManager = $scope.docs[i].manager;
+                        $scope.targetSite = $scope.docs[i].site;
                         $scope.targetBonusWin = $scope.docs[i].bonus.win;
                         $scope.targetBonusLose = $scope.docs[i].bonus.lose;
                     }
@@ -134,6 +149,7 @@ angular.module('Distributor')
                 name: $scope.targetName,
                 memo: $scope.targetMemo,
                 manager: $scope.targetManager,
+                site: $scope.targetSite,
                 bonusWin: $scope.targetBonusWin,
                 bonusLose: $scope.targetBonusLose
             }, function(res) {
@@ -177,11 +193,26 @@ angular.module('Distributor')
             });
         };
 
+        $scope.SiteList = function() {
+            CRUDService.Read('/site/all').run(function(res) {
+                if (res.failure) {
+                    $scope.validator.type = 'error';
+                    $scope.validator.message = res.failure;
+                } else {
+                    $scope.siteList = res.docs;
+                }
+            }, function(err) {
+                $scope.validator.type = 'error';
+                $scope.validator.message = '비정상적인 접근입니다.';
+            });
+        };
+
         $scope.Update = function(id) {
             CRUDService.Update($scope.baseUrl, id).run({
                 name: $scope.targetName,
                 memo: $scope.targetMemo,
                 manager: $scope.targetManager,
+                site: $scope.targetSite,
                 bonusWin: $scope.targetBonusWin,
                 bonusLose: $scope.targetBonusLose
             }, function(res) {
@@ -214,7 +245,7 @@ angular.module('Distributor')
                         $scope.List();
                     } else {
                         $scope.deleteSuccess++;
-                        if($scope.deleteSuccess === $scope.deleteTotal){
+                        if ($scope.deleteSuccess === $scope.deleteTotal) {
                             $scope.validator.message = '';
                             $scope.selectAllSwitch = false;
                             alert("삭제되었습니다.");
@@ -246,17 +277,17 @@ angular.module('Distributor')
         $scope.CreateShortcut = function(element, length) {
             for (i = 0; i < $scope.docs.length; i++) {
                 if ($scope.docs[i][element].length > length) {
-                    $scope.docs[i]['short_'+element] = $scope.docs[i][element].slice(0, length);
-                    $scope.docs[i]['short_'+element] += '...';
+                    $scope.docs[i]['short_' + element] = $scope.docs[i][element].slice(0, length);
+                    $scope.docs[i]['short_' + element] += '...';
                 } else {
-                    $scope.docs[i]['short_'+element] = $scope.docs[i][element];
+                    $scope.docs[i]['short_' + element] = $scope.docs[i][element];
                 }
             }
         };
 
         $scope.ChangePageSize = function() {
             $scope.query.pageSize = parseInt($scope.query.pageSize);
-            if($scope.query.pageSize > 0) {
+            if ($scope.query.pageSize > 0) {
                 $scope.query.page = 1;
                 $scope.List();
             } else {
@@ -265,7 +296,7 @@ angular.module('Distributor')
         };
 
         $scope.SelectAll = function() {
-            if($scope.selectAllSwitch) {
+            if ($scope.selectAllSwitch) {
                 for (var i in $scope.docs) {
                     $scope.docs[i].checked = true;
                 }
@@ -281,6 +312,7 @@ angular.module('Distributor')
             $scope.targetName = '';
             $scope.targetMemo = '';
             $scope.targetManager = '';
+            $scope.targetSite = '';
             $scope.targetBonusWin = '';
             $scope.targetBonusLose = '';
         };
