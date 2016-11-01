@@ -13,7 +13,6 @@ angular.module('Match')
             pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : '',
-            searchFilterName: $routeParams.searchFilterName ? $routeParams.searchFilterName : '',
             listMode: $routeParams.listMode ? $routeParams.listMode : 'WAY',
             state: $routeParams.state ? $routeParams.state : '전체',
             mtype: $routeParams.mtype ? $routeParams.mtype : '전체',
@@ -32,49 +31,24 @@ angular.module('Match')
         /****************************************************************************
             Sub Menu setting
         ****************************************************************************/
-        $rootScope.submenu = [{
-            name: '배팅 관리',
-            link: '/match/betting'
-        }, {
-            name: '경기 관리',
-            link: '/match'
-        }, {
-            name: '종목 관리',
-            link: '/match/kind'
-        }, {
-            name: '리그 관리',
-            link: '/match/league'
-        }];
+        for(var i in $rootScope.mainmenu) {
+            if($rootScope.mainmenu[i].name === '매치') {
+                $rootScope.submenu = $rootScope.mainmenu[i].submenu;
+            }
+        }
 
 
         /****************************************************************************
             Search setting
         ****************************************************************************/
-        $scope.searchFilters = [{
-            Filter: '홈팀 ',
-            mode: 'home'
-        }, {
-            Filter: '원정팀 ',
-            mode: 'away'
-        }, {
-            Filter: '매치주제 ',
-            mode: 'subject'
-        }];
-
-        $scope.SelectSearchFilter = function(i) {
-            $scope.query.searchFilterName = $scope.searchFilters[i].Filter;
-            $scope.query.searchFilter = $scope.searchFilters[i].mode;
-        };
+        $scope.searchFilters = [
+            '홈팀', '원정팀', '매치주제'
+        ];
 
         $scope.Search = function(mode) {
-
             if (mode === 'RESET') {
                 $scope.ResetQuery();
-                $scope.SelectSearchFilter(0);
-                $scope.ResetTarget();
-                $scope.List();
-                $scope.LeagueList();
-                $scope.KindList();
+                $scope.Reset();
             } else {
                 $scope.FirstPage();
             }
@@ -84,6 +58,11 @@ angular.module('Match')
             Pagination setting
         ****************************************************************************/
         $scope.pages = [];
+
+        $scope.MovePage = function(page) {
+            $scope.query.page = page;
+            $scope.List();
+        };
 
         $scope.NextPage = function() {
             if ($scope.query.page < $scope.totalPage) {
@@ -295,15 +274,13 @@ angular.module('Match')
                     $scope.docs = [];
                     $scope.query.searchKeyword = '';
                 } else {
-                    $scope.totalPage = res.count;
-                    if ($scope.query.page > $scope.totalPage) {
-                        $scope.LastPage();
-                    }
                     $scope.docs = res.docs;
+                    $scope.totalPage = res.count;
+                    $scope.CreateExtraData();
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
+                    $scope.viewMode = $scope.query.listMode;
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
-                    $scope.viewMode = $scope.query.listMode;
                 }
             }, function(err) {
                 $scope.validator.type = 'error';
@@ -391,7 +368,6 @@ angular.module('Match')
             $scope.query.pageSize = 20;
             $scope.query.searchKeyword = '';
             $scope.query.searchFilter = '';
-            $scope.query.searchFilterName = '';
             $scope.query.listMode = 'WAY';
             $scope.query.state = '전체';
             $scope.query.mtype = '전체';
@@ -522,17 +498,41 @@ angular.module('Match')
             $scope.targetResult = result;
         };
 
+        $scope.CreateExtraData = function() {
+            if($scope.query.listMode === 'VARIETY') {
+                for(var i in $scope.docs) {
+                    $scope.docs[i].totalBet = 0;
+                    $scope.docs[i].totalBetCount = 0;
+                    for(var j in $scope.docs[i].variety.picks) {
+                        $scope.docs[i].totalBet += $scope.docs[i].variety.picks[j].bet;
+                        $scope.docs[i].totalBetCount += $scope.docs[i].variety.picks[j].count;
+                    }
+                    $scope.docs[i].totalBetCurrency = $filter('number')($scope.docs[i].totalBet);
+                }
+            } else {    // Way mode
+                for(var m in $scope.docs) {
+                    $scope.docs[m].home.betCurrency = $filter('number')($scope.docs[m].home.bet);
+                    $scope.docs[m].tie.betCurrency = $filter('number')($scope.docs[m].tie.bet);
+                    $scope.docs[m].away.betCurrency = $filter('number')($scope.docs[m].away.bet);
+                }
+            }
+        };
+
         $scope.DisplayValue = function() {
-            console.log($scope);
+            console.log($scope[$scope.debugName]);
+        };
+
+
+        $scope.Reset = function () {
+            $scope.ResetTarget();
+            $scope.List();
+            $scope.LeagueList();
+            $scope.KindList();
         };
 
 
         /****************************************************************************
             Controller Init
         ****************************************************************************/
-        $scope.SelectSearchFilter(0);
-        $scope.ResetTarget();
-        $scope.List();
-        $scope.LeagueList();
-        $scope.KindList();
+        $scope.Reset();
     });

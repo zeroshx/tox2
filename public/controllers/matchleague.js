@@ -12,8 +12,7 @@ angular.module('Match')
             page: parseInt($routeParams.page ? $routeParams.page : 1),
             pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
-            searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : '',
-            searchFilterName: $routeParams.searchFilterName ? $routeParams.searchFilterName : ''
+            searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : ''
         };
 
         $scope.validator = {
@@ -25,39 +24,41 @@ angular.module('Match')
 
 
         /****************************************************************************
+            Sub Menu setting
+        ****************************************************************************/
+        for(var i in $rootScope.mainmenu) {
+            if($rootScope.mainmenu[i].name === '매치') {
+                $rootScope.submenu = $rootScope.mainmenu[i].submenu;
+            }
+        }
+
+
+        /****************************************************************************
             Search setting
         ****************************************************************************/
-        $scope.searchFilters = [{
-            Filter: '리그명 ',
-            mode: 'name'
-        }, {
-            Filter: '국가명 ',
-            mode: 'country'
-        }];
+        $scope.searchFilters = [
+            '리그명', '국가'
+        ];
 
-        $scope.SelectSearchFilter = function(i) {
-            $scope.query.searchFilterName = $scope.searchFilters[i].Filter;
-            $scope.query.searchFilter = $scope.searchFilters[i].mode;
-        };
-
-        $scope.Search = function() {
-            if ($scope.query.searchKeyword.length > 0) {
-                if ($scope.query.searchFilter.length === 0) {
-                    $scope.validator.type = 'info';
-                    $scope.validator.message = '검색하시려면 검색필터를 선택해주세요.';
-                } else {
-                    $scope.FirstPage();
-                }
+        $scope.Search = function(mode) {
+            if (mode === 'RESET') {
+                $scope.ResetQuery();
+                $scope.Reset();
             } else {
-                $scope.query.searchKeyword = '';
                 $scope.FirstPage();
             }
         };
+
 
         /****************************************************************************
             Pagination setting
         ****************************************************************************/
         $scope.pages = [];
+
+        $scope.MovePage = function(page) {
+            $scope.query.page = page;
+            $scope.List();
+        };
 
         $scope.NextPage = function() {
             if ($scope.query.page < $scope.totalPage) {
@@ -187,12 +188,9 @@ angular.module('Match')
                     $scope.docs = [];
                     $scope.query.searchKeyword = '';
                 } else {
-                    $scope.totalPage = res.count;
-                    if ($scope.query.page > $scope.totalPage) {
-                        $scope.LastPage();
-                    }
                     $scope.docs = res.docs;
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
+                    $scope.totalPage = res.count;
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
                 }
@@ -277,16 +275,28 @@ angular.module('Match')
             }
         };
 
+        $scope.ResetQuery = function() {
+            $scope.query.page = 1;
+            $scope.query.pageSize = 20;
+            $scope.query.searchKeyword = '';
+            $scope.query.searchFilter = '';
+        };
+
         $scope.ResetTarget = function() {
             $scope.targetId = '';
             $scope.targetName = '';
             $scope.targetCountry = '';
         };
 
+        $scope.Reset = function () {
+            $scope.ResetTarget();
+            $scope.List();
+        };
+
+
         /****************************************************************************
             Controller Init
         ****************************************************************************/
-        $scope.SelectSearchFilter(0);
-        $scope.ResetTarget();
-        $scope.List();
+        $scope.Reset();
+
     });

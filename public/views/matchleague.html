@@ -66,32 +66,41 @@
         <!-- 4. exception of no data zone -->
         <div data-ng-hide="docs.length > 0" class="row">
             <br>
-            <button type="button" class="btn btn-success btn-lg" data-ng-click="Search()">처음으로</button>
+            <button type="button" class="btn btn-success btn-lg" data-ng-click="Search('RESET')">처음으로</button>
         </div>
 
-        <!-- 5. search option and page setting zone -->
-        <div data-ng-show="docs.length > 0" class="row">
-            <br>
-            <div class="col-sm-2">
-                <div class="input-group">
-                    <input type="text" class="form-control" data-ng-model="query.pageSize">
-                    <span class="input-group-btn"><button class="btn btn-default" type="button" data-ng-click="ChangePageSize()">줄</button></span>
-                </div>
-            </div>
-            <div class="col-sm-offset-4 col-sm-6">
-                <div class="input-group">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{query.searchFilterName}}<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <li data-ng-repeat="sch in searchFilters"><a href="" data-ng-click="SelectSearchFilter($index)">{{sch.Filter}}</a></li>
-                        </ul>
-                    </div>
-                    <input type="text" class="form-control" data-ng-model="query.searchKeyword">
-                    <div class="input-group-btn" data-ng-show="query.searchKeyword">
-                        <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">검색</button>
-                    </div>
-                    <div class="input-group-btn" data-ng-hide="query.searchKeyword">
-                        <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">전체보기</button>
+        <br>
+        <div class="row" data-ng-show="docs.length > 0">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" data-ng-model="query.pageSize">
+                                    <span class="input-group-btn"><button class="btn btn-default" type="button" data-ng-click="ChangePageSize()">줄</button></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-offset-4 col-sm-6">
+                                <div class="input-group pull-right">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span data-ng-show="query.searchFilter">{{query.searchFilter}} </span>
+                                            <span data-ng-hide="query.searchFilter">선택 </span>
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li data-ng-repeat="sch in searchFilters"><a href="" data-ng-click="query.searchFilter = sch">{{sch}}</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" class="form-control" data-ng-model="query.searchKeyword">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">검색하기</button>
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-ng-click="Search('RESET')">처음으로</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -137,7 +146,7 @@
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="#{{page.link}}">{{page.number}}</a></li>
+                        <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="MovePage(page.number)">{{page.number}}</a></li>
                         <li>
                             <a href="" aria-label="Next" data-ng-click="NextPage()">
                                 <span aria-hidden="true">&raquo;</span>

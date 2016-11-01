@@ -124,6 +124,11 @@ var Model = new Schema({
                 type: Number,
                 min: 0
             },
+            bet: {
+                type: Number,
+                min: 0,
+                default: 0
+            },
             count: {
                 type: Number,
                 min: 0,
@@ -277,19 +282,19 @@ Model.statics.List = function(
 
     var subquery = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === 'home') {
+        if (filter === '홈팀') {
             subquery = {
                 'home.name': {
                     $regex: '.*' + keyword + '.*'
                 }
             };
-        } else if (filter === 'away') {
+        } else if (filter === '원정팀') {
             subquery = {
                 'away.name': {
                     $regex: '.*' + keyword + '.*'
                 }
             };
-        } else if (filter === 'subject') {
+        } else if (filter === '매치주제') {
             subquery = {
                 'variety.subject': {
                     $regex: '.*' + keyword + '.*'

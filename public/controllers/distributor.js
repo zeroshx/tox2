@@ -10,8 +10,7 @@ angular.module('Distributor')
             page: parseInt($routeParams.page ? $routeParams.page : 1),
             pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
-            searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : '',
-            searchFilterName: $routeParams.searchFilterName ? $routeParams.searchFilterName : ''
+            searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : ''
         };
 
         $scope.validator = {
@@ -22,6 +21,16 @@ angular.module('Distributor')
         $scope.docs = [];
 
         /****************************************************************************
+            Sub Menu setting
+        ****************************************************************************/
+        for(var i in $rootScope.mainmenu) {
+            if($rootScope.mainmenu[i].name === '총판') {
+                $rootScope.submenu = $rootScope.mainmenu[i].submenu;
+            }
+        }
+
+
+        /****************************************************************************
             Input Site Select setting
         ****************************************************************************/
         $scope.siteList = [];
@@ -29,42 +38,33 @@ angular.module('Distributor')
             $scope.targetSite = name;
         };
 
+        $scope.SiteList = function() {
+            CRUDService.Read('/site/all').run(function(res) {
+                if (res.failure) {
+                    $scope.validator.type = 'error';
+                    $scope.validator.message = res.failure;
+                } else {
+                    $scope.siteList = res.docs;
+                }
+            }, function(err) {
+                $scope.validator.type = 'error';
+                $scope.validator.message = '비정상적인 접근입니다.';
+            });
+        };
+
 
         /****************************************************************************
             Search setting
         ****************************************************************************/
-        $scope.searchFilters = [{
-            Filter: '관리자 ',
-            mode: 'manager'
-        }, {
-            Filter: '이름 ',
-            mode: 'name'
-        }, {
-            Filter: '사이트 ',
-            mode: 'site'
-        }, {
-            Filter: '메모 ',
-            mode: 'memo'
-        }, {
-            Filter: '이름+메모 ',
-            mode: 'name+memo'
-        }];
+        $scope.searchFilters = [
+            '관리자', '총판명', '사이트', '메모', '이름+메모'
+        ];
 
-        $scope.SelectSearchFilter = function(i) {
-            $scope.query.searchFilterName = $scope.searchFilters[i].Filter;
-            $scope.query.searchFilter = $scope.searchFilters[i].mode;
-        };
-
-        $scope.Search = function() {
-            if ($scope.query.searchKeyword.length > 0) {
-                if ($scope.query.searchFilter.length === 0) {
-                    $scope.validator.type = 'info';
-                    $scope.validator.message = '검색하시려면 검색필터를 선택해주세요.';
-                } else {
-                    $scope.FirstPage();
-                }
+        $scope.Search = function(mode) {
+            if (mode === 'RESET') {
+                $scope.ResetQuery();
+                $scope.Reset();
             } else {
-                $scope.query.searchKeyword = '';
                 $scope.FirstPage();
             }
         };
@@ -74,6 +74,11 @@ angular.module('Distributor')
             Pagination setting
         ****************************************************************************/
         $scope.pages = [];
+
+        $scope.MovePage = function(page) {
+            $scope.query.page = page;
+            $scope.List();
+        };
 
         $scope.NextPage = function() {
             if ($scope.query.page < $scope.totalPage) {
@@ -177,29 +182,12 @@ angular.module('Distributor')
                     $scope.docs = [];
                     $scope.query.searchKeyword = '';
                 } else {
-                    $scope.totalPage = res.count;
-                    if ($scope.query.page > $scope.totalPage) {
-                        $scope.LastPage();
-                    }
                     $scope.docs = res.docs;
+                    $scope.totalPage = res.count;
                     $scope.CreateShortcut('memo', 20);
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
-                }
-            }, function(err) {
-                $scope.validator.type = 'error';
-                $scope.validator.message = '비정상적인 접근입니다.';
-            });
-        };
-
-        $scope.SiteList = function() {
-            CRUDService.Read('/site/all').run(function(res) {
-                if (res.failure) {
-                    $scope.validator.type = 'error';
-                    $scope.validator.message = res.failure;
-                } else {
-                    $scope.siteList = res.docs;
                 }
             }, function(err) {
                 $scope.validator.type = 'error';
@@ -307,6 +295,13 @@ angular.module('Distributor')
             }
         };
 
+        $scope.ResetQuery = function() {
+            $scope.query.page = 1;
+            $scope.query.pageSize = 20;
+            $scope.query.searchKeyword = '';
+            $scope.query.searchFilter = '';
+        };
+
         $scope.ResetTarget = function() {
             $scope.targetId = '';
             $scope.targetName = '';
@@ -317,11 +312,15 @@ angular.module('Distributor')
             $scope.targetBonusLose = '';
         };
 
+        $scope.Reset = function () {
+            $scope.List();
+            $scope.SiteList();
+            $scope.ResetTarget();
+        };
 
         /****************************************************************************
             Controller Init
         ****************************************************************************/
-        $scope.SelectSearchFilter(0);
-        $scope.ResetTarget();
-        $scope.List();
+        $scope.Reset();
+
     });

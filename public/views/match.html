@@ -271,12 +271,28 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-sm-2">
-                                <label>상세 필터</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" data-ng-model="query.pageSize">
+                                    <span class="input-group-btn"><button class="btn btn-default" type="button" data-ng-click="ChangePageSize()">줄</button></span>
+                                </div>
                             </div>
-                            <div class="col-sm-offset-8 col-sm-2">
-                                <div class="pull-right">
-                                    <button type="button" class="btn btn-success btn-sm" data-ng-click="Search()">검색</button>
-                                    <button type="button" class="btn btn-primary btn-sm" data-ng-click="Search('RESET')">처음으로</button>
+                            <div class="col-sm-offset-4 col-sm-6">
+                                <div class="input-group pull-right">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span data-ng-show="query.searchFilter">{{query.searchFilter}} </span>
+                                            <span data-ng-hide="query.searchFilter">선택 </span>
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li data-ng-repeat="sch in searchFilters"><a href="" data-ng-click="query.searchFilter = sch">{{sch}}</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" class="form-control" data-ng-model="query.searchKeyword">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">검색하기</button>
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-ng-click="Search('RESET')">처음으로</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -383,136 +399,114 @@
             </div>
         </div>
 
-        <!-- 5. search option and page setting zone -->
-        <div data-ng-show="docs.length > 0" class="row">
-            <div class="col-sm-2">
-                <div class="input-group">
-                    <input type="text" class="form-control" data-ng-model="query.pageSize">
-                    <span class="input-group-btn"><button class="btn btn-default" type="button" data-ng-click="ChangePageSize()">줄</button></span>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <button class="btn btn-warning btn-sm" type="button">배팅가능</button>
-                <button class="btn btn-danger btn-sm" type="button">배팅마감</button>
-                <button class="btn btn-primary btn-sm" type="button">핸디캡</button>
-                <button class="btn btn-success btn-sm" type="button">언더오버</button>
-            </div>
-            <div class="col-sm-5">
-                <div class="input-group">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{query.searchFilterName}}<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <li data-ng-repeat="sch in searchFilters"><a href="" data-ng-click="SelectSearchFilter($index)">{{sch.Filter}}</a></li>
-                        </ul>
-                    </div>
-                    <input type="text" class="form-control" data-ng-model="query.searchKeyword">
-                    <div class="input-group-btn" data-ng-show="query.searchKeyword">
-                        <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">검색</button>
-                    </div>
-                    <div class="input-group-btn" data-ng-hide="query.searchKeyword">
-                        <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">전체보기</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- 6. main list zone -->
         <div class="row">
             <div class="col-sm-12" data-ng-show="docs.length > 0">
-                <table class="table table-bordered table-center" data-ng-show="viewMode === 'WAY'">
-                    <thead>
-                        <tr class="active">
-                            <th rowspan="2"><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
-                            <th rowspan="2">일시</th>
-                            <th rowspan="2">상태</th>
-                            <th rowspan="2">종목</th>
-                            <th rowspan="2">리그</th>
-                            <th colspan="3">친정</th>
-                            <th colspan="1">무</th>
-                            <th colspan="3">원정</th>
-                            <th colspan="3">배팅액</th>
-                            <th rowspan="2">결과</th>
-                            <th rowspan="2">설정</th>
-                        </tr>
-                        <tr class="active">
-                            <th>팀명</th>
-                            <th>점수</th>
-                            <th>배당</th>
-                            <th>(기준)</th>
-                            <th>배당</th>
-                            <th>점수</th>
-                            <th>팀명</th>
-                            <th>친</th>
-                            <th>무</th>
-                            <th>원</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr data-ng-repeat="doc in docs">
-                            <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
-                            <td class="font-12px">{{ doc.schedule }}</td>
-                            <td class="td_font_bold" data-ng-class="{'danger': doc.state === '마감', 'warning': doc.state === '배팅'}">{{ doc.state }}</td>
-                            <td class="font-12px">{{ doc.kind }}</td>
-                            <td class="font-12px">{{ doc.league }}</td>
-                            <td class="font-12px">{{ doc.home.name }}</td>
-                            <td>{{ doc.home.score }}</td>
-                            <td class= "td_font_bold" >{{ doc.home.rate }}</td>
-                            <td class= "td_font_bold" data-ng-show="doc.mtype === '일반'">
-                                <span data-ng-show="doc.btype === '2-WAY'">VS</span>
-                                <span data-ng-show="doc.btype === '3-WAY'">{{ doc.tie.rate }}</span>
-                            </td>
-                            <td data-ng-class="{'info td_font_bold' : doc.mtype === '핸디캡', 'success td_font_bold' : doc.mtype === '언더오버'}" data-ng-show="doc.mtype !== '일반'">({{ doc.offset }})</td>
-                            <td class= "td_font_bold" >{{ doc.away.rate }}</td>
-                            <td>{{ doc.away.score }}</td>
-                            <td class="font-12px">{{ doc.away.name }}</td>
-                            <td class= "td_font_bold font-12px" >{{ doc.home.bet }}</td>
-                            <td class= "td_font_bold font-12px" >{{ doc.tie.bet }}</td>
-                            <td class= "td_font_bold font-12px" >{{ doc.away.bet }}</td>
-                            <td>{{ doc.result }}</td>
-                            <td>
-                                <button type="button" class="btn btn-primary btn-xs" data-ng-click="" data-ng-disabled="doc.state === '종료'">종료</button>
-                                <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
-                                <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button class="btn btn-warning btn-sm" type="button">배팅가능</button>
+                        <button class="btn btn-danger btn-sm" type="button">배팅마감</button>
+                        <button class="btn btn-primary btn-sm" type="button">핸디캡</button>
+                        <button class="btn btn-success btn-sm" type="button">언더오버</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered table-center" data-ng-show="viewMode === 'WAY'">
+                            <thead>
+                                <tr class="active">
+                                    <th rowspan="2"><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
+                                    <th rowspan="2">일시</th>
+                                    <th rowspan="2">상태</th>
+                                    <th rowspan="2">종목</th>
+                                    <th rowspan="2">리그</th>
+                                    <th colspan="3">친정</th>
+                                    <th colspan="1">무</th>
+                                    <th colspan="3">원정</th>
+                                    <th colspan="3">배팅액</th>
+                                    <th rowspan="2">결과</th>
+                                    <th rowspan="2">설정</th>
+                                </tr>
+                                <tr class="active">
+                                    <th>팀명</th>
+                                    <th>점수</th>
+                                    <th>배당</th>
+                                    <th>(기준)</th>
+                                    <th>배당</th>
+                                    <th>점수</th>
+                                    <th>팀명</th>
+                                    <th>친</th>
+                                    <th>무</th>
+                                    <th>원</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="doc in docs">
+                                    <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
+                                    <td class="font-12px">{{ doc.schedule }}</td>
+                                    <td class="td_font_bold" data-ng-class="{'danger': doc.state === '마감', 'warning': doc.state === '배팅'}">{{ doc.state }}</td>
+                                    <td class="font-12px">{{ doc.kind }}</td>
+                                    <td class="font-12px">{{ doc.league }}</td>
+                                    <td class="font-12px">{{ doc.home.name }}</td>
+                                    <td>{{ doc.home.score }}</td>
+                                    <td class="td_font_bold">{{ doc.home.rate }}</td>
+                                    <td class="td_font_bold" data-ng-show="doc.mtype === '일반'">
+                                        <span data-ng-show="doc.btype === '2-WAY'">VS</span>
+                                        <span data-ng-show="doc.btype === '3-WAY'">{{ doc.tie.rate }}</span>
+                                    </td>
+                                    <td data-ng-class="{'info td_font_bold' : doc.mtype === '핸디캡', 'success td_font_bold' : doc.mtype === '언더오버'}" data-ng-show="doc.mtype !== '일반'">({{ doc.offset }})</td>
+                                    <td class="td_font_bold">{{ doc.away.rate }}</td>
+                                    <td>{{ doc.away.score }}</td>
+                                    <td class="font-12px">{{ doc.away.name }}</td>
+                                    <td class="td_font_bold font-12px">{{ doc.home.betCurrency }}</td>
+                                    <td class="td_font_bold font-12px">{{ doc.tie.betCurrency }}</td>
+                                    <td class="td_font_bold font-12px">{{ doc.away.betCurrency }}</td>
+                                    <td>{{ doc.result }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-xs" data-ng-click="" data-ng-disabled="doc.state === '종료'">종료</button>
+                                        <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
+                                        <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                <table class="table table-bordered table-center" data-ng-show="viewMode === 'VARIETY'">
-                    <thead>
-                        <tr class="active">
-                            <th><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
-                            <th>일시</th>
-                            <th>상태</th>
-                            <th>종목</th>
-                            <th>리그</th>
-                            <th>매치주제</th>
-                            <th>선택지 개수</th>
-                            <th>배팅수</th>
-                            <th>배팅총액</th>
-                            <th rowspan="2">설정</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr data-ng-repeat="doc in docs">
-                            <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
-                            <td class="font-12px">{{ doc.schedule }}</td>
-                            <td class="td_font_bold" data-ng-class="{'danger': doc.state === '마감', 'warning': doc.state === '배팅'}">{{ doc.state }}</td>
-                            <td class="font-12px">{{ doc.kind }}</td>
-                            <td class="font-12px">{{ doc.league }}</td>
-                            <td class="font-12px">{{ doc.variety.subject }}</td>
-                            <td class="font-12px">{{ doc.variety.picks.length }}</td>
-                            <td class="font-12px">{{ doc.variety.countTotal }}</td>
-                            <td class="font-12px">{{ doc.variety.betTotal }}</td>
-                            <td>
-                                <button type="button" class="btn btn-primary btn-xs" data-ng-click="">종료</button>
-                                <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
-                                <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
+                        <table class="table table-bordered table-center" data-ng-show="viewMode === 'VARIETY'">
+                            <thead>
+                                <tr class="active">
+                                    <th><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
+                                    <th>일시</th>
+                                    <th>상태</th>
+                                    <th>종목</th>
+                                    <th>리그</th>
+                                    <th>매치주제</th>
+                                    <th>선택지 개수</th>
+                                    <th>배팅수</th>
+                                    <th>배팅총액</th>
+                                    <th rowspan="2">설정</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="doc in docs">
+                                    <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
+                                    <td class="font-12px">{{ doc.schedule }}</td>
+                                    <td class="td_font_bold" data-ng-class="{'danger': doc.state === '마감', 'warning': doc.state === '배팅'}">{{ doc.state }}</td>
+                                    <td class="font-12px">{{ doc.kind }}</td>
+                                    <td class="font-12px">{{ doc.league }}</td>
+                                    <td class="font-12px">{{ doc.variety.subject }}</td>
+                                    <td class="font-12px">{{ doc.variety.picks.length }}</td>
+                                    <td class="font-12px">{{ doc.totalBetCount }}</td>
+                                    <td class="font-12px">{{ doc.totalBetCurrency }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-xs" data-ng-click="">종료</button>
+                                        <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
+                                        <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <button type="button" class="btn btn-danger btn-md" data-ng-click="DeleteAll()">선택삭제</button>
             </div>
         </div>
@@ -527,7 +521,7 @@
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="#{{page.link}}">{{page.number}}</a></li>
+                        <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="MovePage(page.number)">{{page.number}}</a></li>
                         <li>
                             <a href="" aria-label="Next" data-ng-click="NextPage()">
                                 <span aria-hidden="true">&raquo;</span>
@@ -537,5 +531,8 @@
                 </center>
             </div>
         </div>
+
+        <button type="button" class="btn btn-danger btn-md" data-ng-click="DisplayValue()">디버깅</button>
+        <input type="text" data-ng-model="debugName">
     </div>
 </div>

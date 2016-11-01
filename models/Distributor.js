@@ -81,23 +81,23 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === 'manager') {
+        if (filter === '관리자') {
             query.manager = {
                 $regex: '.*' + keyword + '.*'
             };
-        } else if (filter === 'site') {
+        } else if (filter === '사이트') {
             query.site = {
                 $regex: '.*' + keyword + '.*'
             };
-        } else if (filter === 'name') {
+        } else if (filter === '총판명') {
             query.name = {
                 $regex: '.*' + keyword + '.*'
             };
-        } else if (filter === 'memo') {
+        } else if (filter === '메모') {
             query.memo = {
                 $regex: '.*' + keyword + '.*'
             };
-        } else if (filter === 'name+memo') {
+        } else if (filter === '이름+메모') {
             query.$or = [{
                 name: {
                     $regex: '.*' + keyword + '.*'

@@ -15,78 +15,10 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">입/출금<span class="caret"></span></a>
+                    <li class="dropdown" data-ng-repeat="menu in mainmenu">
+                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{menu.name}}<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="">입금 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">출금 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">캐쉬 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">포인트 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">입/출금 통계</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">매치<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#/match">매치 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#/match/kind">종목 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#/match/league">리그 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">실시간 배팅 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">배팅 통계</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">회원<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="">회원 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">접속기록</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">회원 통계</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">고객센터<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="">고객문의</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">게시판 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">메세지 관리</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">사이트<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#/site">사이트 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">사이트 상세설정</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">총판<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#/distributor">총판 관리</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">총판 회원 관리</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">설정<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="">레벨 설정</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">배팅 설정</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="">블랙리스트 관리</a></li>
+                            <li data-ng-repeat="sub in menu.submenu"><a href="#{{sub.path}}">{{sub.name}}</a></li>
                         </ul>
                     </li>
                 </ul>

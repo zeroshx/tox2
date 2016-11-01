@@ -53,15 +53,11 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === 'name') {
+        if (filter === '리그명') {
             query.name = {
                 $regex: '.*' + keyword + '.*'
             };
-        } else if (filter === 'image') {
-            query.imagePath = {
-                $regex: '.*' + keyword + '.*'
-            };
-        } else if (filter === 'country') {
+        } else if (filter === '국가') {
             query.country = {
                 $regex: '.*' + keyword + '.*'
             };

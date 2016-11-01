@@ -11,5 +11,4 @@ router.get('/',
   capi.refreshSession,
   ctrl.index
 );
-
 module.exports = router;

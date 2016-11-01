@@ -59,15 +59,15 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === 'name') {
+        if (filter === '사이트명') {
             query.name = {
                 $regex: '.*' + keyword + '.*'
             };
-        } else if (filter === 'memo') {
+        } else if (filter === '메모') {
             query.memo = {
                 $regex: '.*' + keyword + '.*'
             };
-        } else if (filter === 'name+memo') {
+        } else if (filter === '사이트명+메모') {
             query.$or = [{
                 name: {
                     $regex: '.*' + keyword + '.*'

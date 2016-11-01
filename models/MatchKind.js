@@ -43,12 +43,8 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === 'name') {
+        if (filter === '종목명') {
             query.name = {
-                $regex: '.*' + keyword + '.*'
-            };
-        } else if (filter === 'image') {
-            query.imagePath = {
                 $regex: '.*' + keyword + '.*'
             };
         }
