@@ -207,8 +207,8 @@ angular.module('Distributor')
             });
         };
 
-        $scope.Update = function(id) {
-            CRUDService.Update($scope.baseUrl, id).run({
+        $scope.Update = function() {
+            CRUDService.Update($scope.baseUrl, $scope.targetId).run({
                 name: $scope.targetName,
                 memo: $scope.targetMemo,
                 manager: $scope.targetManager,

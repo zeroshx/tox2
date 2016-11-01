@@ -45,7 +45,7 @@ angular.module('Match')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [{
-            Filter: '이름 ',
+            Filter: '종목명 ',
             mode: 'name'
         }];
 

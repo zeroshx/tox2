@@ -6,6 +6,8 @@ angular.module('Match')
         ****************************************************************************/
         $scope.baseUrl = '/match';
 
+        $scope.viewMode = 'WAY';
+
         $scope.query = {
             page: parseInt($routeParams.page ? $routeParams.page : 1),
             pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
@@ -13,11 +15,11 @@ angular.module('Match')
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : '',
             searchFilterName: $routeParams.searchFilterName ? $routeParams.searchFilterName : '',
             listMode: $routeParams.listMode ? $routeParams.listMode : 'WAY',
-            state: $routeParams.state ? $routeParams.state : 'ALL',
-            mtype: $routeParams.mtype ? $routeParams.mtype : 'ALL',
-            kind: $routeParams.kind ? $routeParams.kind : 'ALL',
-            league: $routeParams.league ? $routeParams.league : 'ALL',
-            result: $routeParams.result ? $routeParams.result : 'ALL'
+            state: $routeParams.state ? $routeParams.state : '전체',
+            mtype: $routeParams.mtype ? $routeParams.mtype : '전체',
+            kind: $routeParams.kind ? $routeParams.kind : '전체',
+            league: $routeParams.league ? $routeParams.league : '전체',
+            result: $routeParams.result ? $routeParams.result : '전체'
         };
 
         $scope.validator = {
@@ -54,6 +56,9 @@ angular.module('Match')
         }, {
             Filter: '원정팀 ',
             mode: 'away'
+        }, {
+            Filter: '매치주제 ',
+            mode: 'subject'
         }];
 
         $scope.SelectSearchFilter = function(i) {
@@ -61,16 +66,16 @@ angular.module('Match')
             $scope.query.searchFilter = $scope.searchFilters[i].mode;
         };
 
-        $scope.Search = function() {
-            if ($scope.query.searchKeyword.length > 0) {
-                if ($scope.query.searchFilter.length === 0) {
-                    $scope.validator.type = 'info';
-                    $scope.validator.message = '검색하시려면 검색필터를 선택해주세요.';
-                } else {
-                    $scope.FirstPage();
-                }
+        $scope.Search = function(mode) {
+
+            if (mode === 'RESET') {
+                $scope.ResetQuery();
+                $scope.SelectSearchFilter(0);
+                $scope.ResetTarget();
+                $scope.List();
+                $scope.LeagueList();
+                $scope.KindList();
             } else {
-                $scope.query.searchKeyword = '';
                 $scope.FirstPage();
             }
         };
@@ -111,8 +116,6 @@ angular.module('Match')
         $scope.formMode = '';
 
         $scope.FormOpen = function(mode, id) {
-            $scope.LeagueList();
-            $scope.KindList();
             $scope.formMode = mode;
             $scope.formSwitch = true;
 
@@ -122,7 +125,23 @@ angular.module('Match')
                     if ($scope.docs[i]._id === id) {
                         docCheck = true;
                         $scope.targetId = $scope.docs[i]._id;
-                        $scope.targetName = $scope.docs[i].name;
+                        $scope.targetHomeName = $scope.docs[i].home.name;
+                        $scope.targetAwayName = $scope.docs[i].away.name;
+                        $scope.targetHomeScore = $scope.docs[i].home.score;
+                        $scope.targetAwayScore = $scope.docs[i].away.score;
+                        $scope.targetHomeRate = $scope.docs[i].home.rate;
+                        $scope.targetTieRate = $scope.docs[i].tie.rate;
+                        $scope.targetAwayRate = $scope.docs[i].away.rate;
+                        $scope.targetVarietySubject = $scope.docs[i].variety.subject;
+                        $scope.targetVarietyPicks = $scope.docs[i].variety.picks;
+                        $scope.targetOffset = $scope.docs[i].offset;
+                        $scope.targetLeague = $scope.docs[i].league;
+                        $scope.targetKind = $scope.docs[i].kind;
+                        $scope.targetState = $scope.docs[i].state;
+                        $scope.targetBtype = $scope.docs[i].btype;
+                        $scope.targetMtype = $scope.docs[i].mtype;
+                        $scope.targetSchedule = new Date($scope.docs[i].schedule);
+                        $scope.targetResult = $scope.docs[i].result;
                     }
                 }
                 if (!docCheck) {
@@ -150,6 +169,7 @@ angular.module('Match')
             $scope.formSwitch = false;
             $scope.forMode = '';
             $scope.ResetTarget();
+            $scope.validator.message = '';
         };
 
         /****************************************************************************
@@ -202,16 +222,17 @@ angular.module('Match')
                 homeScore: $scope.targetHomeScore,
                 awayScore: $scope.targetAwayScore,
                 homeRate: $scope.targetHomeRate,
-                drawRate: $scope.targetDrawRate,
+                tieRate: $scope.targetTieRate,
                 awayRate: $scope.targetAwayRate,
-                variety: $scope.targetVariety,
+                varietySubject: $scope.targetVarietySubject,
+                varietyPicks: $scope.targetVarietyPicks,
                 offset: $scope.targetOffset,
                 league: $scope.targetLeague,
                 kind: $scope.targetKind,
                 state: $scope.targetState,
                 btype: $scope.targetBtype,
                 mtype: $scope.targetMtype,
-                schedule:$scope.targetSchedule,
+                schedule: $filter('date')($scope.targetSchedule, 'yyyy-MM-dd HH:mm'),
                 result: $scope.targetResult
             }, function(res) {
                 if (res.failure) {
@@ -230,12 +251,25 @@ angular.module('Match')
             });
         };
 
-        $scope.Update = function(id) {
-            CRUDService.Update($scope.baseUrl, id).run({
-                name: $scope.targetName,
-                memo: $scope.targetMemo,
-                bonusWin: $scope.targetBonusWin,
-                bonusLose: $scope.targetBonusLose
+        $scope.Update = function() {
+            CRUDService.Update($scope.baseUrl, $scope.targetId).run({
+                homeName: $scope.targetHomeName,
+                awayName: $scope.targetAwayName,
+                homeScore: $scope.targetHomeScore,
+                awayScore: $scope.targetAwayScore,
+                homeRate: $scope.targetHomeRate,
+                tieRate: $scope.targetTieRate,
+                awayRate: $scope.targetAwayRate,
+                varietySubject: $scope.targetVarietySubject,
+                varietyPicks: $scope.targetVarietyPicks,
+                offset: $scope.targetOffset,
+                league: $scope.targetLeague,
+                kind: $scope.targetKind,
+                state: $scope.targetState,
+                btype: $scope.targetBtype,
+                mtype: $scope.targetMtype,
+                schedule: $filter('date')($scope.targetSchedule, 'yyyy-MM-dd HH:mm'),
+                result: $scope.targetResult
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -269,6 +303,7 @@ angular.module('Match')
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
+                    $scope.viewMode = $scope.query.listMode;
                 }
             }, function(err) {
                 $scope.validator.type = 'error';
@@ -351,6 +386,20 @@ angular.module('Match')
             }
         };
 
+        $scope.ResetQuery = function() {
+            $scope.query.page = 1;
+            $scope.query.pageSize = 20;
+            $scope.query.searchKeyword = '';
+            $scope.query.searchFilter = '';
+            $scope.query.searchFilterName = '';
+            $scope.query.listMode = 'WAY';
+            $scope.query.state = '전체';
+            $scope.query.mtype = '전체';
+            $scope.query.kind = '전체';
+            $scope.query.league = '전체';
+            $scope.query.result = '전체';
+        };
+
         $scope.ResetTarget = function() {
             $scope.targetId = '';
             $scope.targetHomeName = '';
@@ -360,7 +409,7 @@ angular.module('Match')
             $scope.targetOffset = '';
             $scope.targetHomeRate = '';
             $scope.targetAwayRate = '';
-            $scope.targetDrawRate = '';
+            $scope.targetTieRate = '';
             $scope.targetLeague = '';
             $scope.targetKind = '';
             $scope.targetSchedule = '';
@@ -368,7 +417,8 @@ angular.module('Match')
             $scope.targetMtype = '';
             $scope.targetResult = '';
             $scope.targetState = '';
-            $scope.targetVariety = [];
+            $scope.targetVarietySubject = '';
+            $scope.targetVarietyPicks = [];
         };
 
         $scope.SelectKind = function(kind) {
@@ -387,29 +437,27 @@ angular.module('Match')
 
             if (btype === '2-WAY') {
                 $scope.targetMtype = '일반';
-                $scope.targetVariety = [];
             } else if (btype === '3-WAY') {
                 $scope.targetMtype = '일반';
-                $scope.targetVariety = [];
             } else if (btype === 'VARIETY') {
                 $scope.targetMtype = '일반';
-                $scope.targetVariety = [{
-                        pick: '선택1',
-                        name: '',
-                        rate: ''
-                    }, {
-                        pick: '선택2',
-                        name: '',
-                        rate: ''
-                    }, {
-                        pick: '선택3',
-                        name: '',
-                        rate: ''
-                    }, {
-                        pick: '선택4',
-                        name: '',
-                        rate: ''
-                    }];
+                $scope.targetVarietyPicks = [{
+                    pick: '선택1',
+                    name: '',
+                    rate: ''
+                }, {
+                    pick: '선택2',
+                    name: '',
+                    rate: ''
+                }, {
+                    pick: '선택3',
+                    name: '',
+                    rate: ''
+                }, {
+                    pick: '선택4',
+                    name: '',
+                    rate: ''
+                }];
             } else {
                 $scope.validator.type = 'error';
                 $scope.validator.message = '비정상적인 접근입니다.';
@@ -448,9 +496,9 @@ angular.module('Match')
         };
 
         $scope.AddPick = function() {
-            if ($scope.targetVariety.length < 20) {
-                $scope.targetVariety.push({
-                    pick: '선택'+($scope.targetVariety.length+1),
+            if ($scope.targetVarietyPicks.length < 20) {
+                $scope.targetVarietyPicks.push({
+                    pick: '선택' + ($scope.targetVarietyPicks.length + 1),
                     name: '',
                     rate: ''
                 });
@@ -461,8 +509,9 @@ angular.module('Match')
         };
 
         $scope.RemovePick = function() {
-            if ($scope.targetVariety.length > 3) {
-                $scope.targetVariety.splice($scope.targetVariety.length - 1, 1);
+            if ($scope.targetVarietyPicks.length > 3) {
+                $scope.targetVarietyPicks.splice($scope.targetVarietyPicks.length - 1, 1);
+                $scope.targetResult = '';
             } else {
                 $scope.validator.type = 'info';
                 $scope.validator.message = '2개 이하의 픽 경기는 2-WAY, 3-WAY 타입으로 생성해주세요.';
@@ -484,4 +533,6 @@ angular.module('Match')
         $scope.SelectSearchFilter(0);
         $scope.ResetTarget();
         $scope.List();
+        $scope.LeagueList();
+        $scope.KindList();
     });

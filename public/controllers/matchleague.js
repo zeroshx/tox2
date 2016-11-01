@@ -28,10 +28,10 @@ angular.module('Match')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [{
-            Filter: '이름 ',
+            Filter: '리그명 ',
             mode: 'name'
         }, {
-            Filter: '국가 ',
+            Filter: '국가명 ',
             mode: 'country'
         }];
 

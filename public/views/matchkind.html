@@ -98,22 +98,26 @@
         <!-- 6. main list zone -->
         <div class="row">
             <div class="col-sm-12" data-ng-show="docs.length > 0">
-                <table class="table table-hover">
-                    <tr>
-                        <th><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
-                        <th>종목</th>
-                        <th>이미지</th>
-                        <th>옵션</th>
-                    </tr>
-                    <tr data-ng-repeat="doc in docs">
-                        <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
-                        <td>{{ doc.name }}</td>
-                        <td><img width="20px" height="20px" data-ng-if="doc.imagePath" data-ng-src="{{doc.imagePath}}"></td>
-                        <td>
-                            <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
-                            <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
-                        </td>
-                    </tr>
+                <table class="table table-hover table-center">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
+                            <th>종목</th>
+                            <th>이미지</th>
+                            <th>옵션</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="doc in docs">
+                            <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
+                            <td>{{ doc.name }}</td>
+                            <td><img width="20px" height="20px" data-ng-show="doc.imagePath" data-ng-src="{{doc.imagePath}}"></td>
+                            <td>
+                                <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
+                                <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
                 <button type="button" class="btn btn-danger btn-md" data-ng-click="DeleteAll()">선택삭제</button>
             </div>

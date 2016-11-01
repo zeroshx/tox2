@@ -7,6 +7,12 @@ exports.List = function(req, res) {
         req.query.pageSize,
         req.query.searchFilter,
         req.query.searchKeyword,
+        req.query.listMode,
+        req.query.state,
+        req.query.mtype,
+        req.query.kind,
+        req.query.league,
+        req.query.result,
         function(err, msg, matches) {
             if (err) { // internal error
                 nodemailer('controller/match.js:List', JSON.stringify(err));
@@ -23,11 +29,11 @@ exports.List = function(req, res) {
 
 exports.Create = function(req, res) {
     Match.Create(
-        req.body.homeName, req.body.homeScore,
-        req.body.awayName, req.body.awayScore,
-        req.body.homeRate, req.body.drawRate, req.body.awayRate,
+        req.body.homeName, req.body.homeScore, req.body.homeRate,
+        req.body.tieRate,
+        req.body.awayName, req.body.awayScore, req.body.awayRate,
+        req.body.varietySubject, req.body.varietyPicks,
         req.body.offset,
-        req.body.variety,
         req.body.state, req.body.btype, req.body.mtype,
         req.body.kind, req.body.league,
         req.body.schedule,
@@ -47,7 +53,29 @@ exports.Create = function(req, res) {
 };
 
 exports.Update = function(req, res) {
-    res.sendStatus(200);
+    Match.Update(
+        req.params.id,
+        req.body.homeName, req.body.homeScore, req.body.homeRate,
+        req.body.tieRate,
+        req.body.awayName, req.body.awayScore, req.body.awayRate,
+        req.body.varietySubject, req.body.varietyPicks,
+        req.body.offset,
+        req.body.state, req.body.btype, req.body.mtype,
+        req.body.kind, req.body.league,
+        req.body.schedule,
+        req.body.result,
+        function(err, msg, match) {
+            if (err) { // internal error
+                nodemailer('controller/match.js:Create', JSON.stringify(err));
+                return res.sendStatus(500);
+            } else if (msg) { // exception control
+                return res.json({
+                    failure: msg
+                });
+            } else {
+                return res.json(match);
+            }
+        });
 };
 
 exports.Delete = function(req, res) {

@@ -1,11 +1,29 @@
-footer {
-    background-color: #dbdbfa
-}
-
 nav {
     padding-top: 50px
 }
 
 aside {
     padding-top: 50px
+}
+
+.table-center thead tr th {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table-center tbody tr td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+table tbody tr .font-12px{
+    font-size: 12px;
+}
+
+table tbody tr .font-10px{
+    font-size: 10px;
+}
+
+.td_font_bold {
+    font-weight: bold;
 }
