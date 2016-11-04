@@ -8,8 +8,13 @@ module.exports = function() {
 
   // models
   var Site = require('../models/Site.js');
+  var SiteLevel = require('../models/SiteLevel.js');
+  var SiteConfig = require('../models/SiteConfig.js');
+
   var Distributor = require('../models/Distributor.js');
+
   var User = require('../models/User.js');
+
   var Match = require('../models/Match.js');
   var MatchKind = require('../models/MatchKind.js');
   var MatchLeague = require('../models/MatchLeague.js');
@@ -41,5 +46,7 @@ module.exports = function() {
   Match();
   MatchKind();
   MatchLeague();
+  SiteLevel();
+  SiteConfig();
   return mdb;
 };

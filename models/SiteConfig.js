@@ -2,18 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Model = new Schema({
-    name: {
-        type: String,
-        unique: true,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 총판명이 아닙니다.'
-        },
-        required: [true, '총판 이름이 없습니다.']
-    },
     site: {
         type: String,
         index: true,
@@ -21,44 +9,56 @@ var Model = new Schema({
             validator: function(v) {
                 return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
             },
-            message: '{VALUE}는 적절한 사이트 이름이 아닙니다.'
+            message: '{VALUE}는 적절한 사이트명이 아닙니다.'
         },
         required: [true, '사이트 이름이 없습니다.']
     },
-    manager: {
-        type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 관리자 이름이 아닙니다.'
-        },
-        required: [true, '관리자 이름이 없습니다.']
-    },
-    bonus: {
-        win: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '승리 보너스가 없습니다.']
-        },
-        lose: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '패배 보너스가 없습니다.']
-        }
-    },
-    memo: {
-        type: String,
-        maxlength: 100
-    },
-    headcount: {
+    betCancelLimit: {
         type: Number,
         min: 0,
-        required: [true, '회원 수가 없습니다.']
+        required: [true, '배칭 취소 제한 시간이 없습니다.']
     },
+    betCancelCount: {
+        type: Number,
+        min: 0,
+        required: [true, '배칭 취소 제한 횟수가 없습니다.']
+    },
+    kindConfig: [{
+        name: {
+            type: String,
+            validate: {
+                validator: function(v) {
+                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 종목명 아닙니다.'
+            },
+            required: [true, '종목명이 없습니다.']
+        },
+        som: { // single or multi
+            type: String,
+            enum: [
+                '단일', '조합'
+            ],
+            required: [true, '단일/조합 구분이 없습니다.']
+        },
+        maxMulti: {
+            type: Number,
+            min: 1,
+            required: [true, '조합 최대 묶음 수가 없습니다.']
+        },
+        nah: { // normal and handicap
+            type: Boolean,
+            required: [true, '일반+핸디캡 플래그가 없습니다.']
+        },
+        nau: { // normal and underover
+            type: Boolean,
+            required: [true, '일반+언더오버 플래그가 없습니다.']
+        },
+        hau: { // handicap and underover
+            type: Boolean,
+            required: [true, '핸디캡+언더오버 플래그가 없습니다.']
+        }
+    }],
     createdAt: {
         type: String
     },
@@ -77,40 +77,19 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
     page = parseInt(page);
     pageSize = parseInt(pageSize);
 
-    if(isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+    if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
         return callback(null, '비정상적인 접근입니다.');
     }
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === '관리자') {
-            query.manager = {
-                $regex: '.*' + keyword + '.*'
-            };
-        } else if (filter === '사이트') {
+        if (filter === '사이트') {
             query.site = {
                 $regex: '.*' + keyword + '.*'
             };
-        } else if (filter === '총판') {
-            query.name = {
-                $regex: '.*' + keyword + '.*'
-            };
-        } else if (filter === '메모') {
-            query.memo = {
-                $regex: '.*' + keyword + '.*'
-            };
-        } else if (filter === '총판+메모') {
-            query.$or = [{
-                name: {
-                    $regex: '.*' + keyword + '.*'
-                }
-            }, {
-                memo: {
-                    $regex: '.*' + keyword + '.*'
-                }
-            }];
         }
     }
+
     Document.count(query, function(err, count) {
         if (err) {
             return callback(err);
@@ -139,56 +118,46 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 };
 
 Model.statics.Create = function(
-    name,
     site,
-    manager,
-    memo,
-    bonusWin,
-    bonusLose,
+    betCancelLimit,
+    betCancelCount,
+    kindConfig,
     callback
 ) {
-
     var Document = this;
 
-    Document.findOne({
-        name: name
-    }, function(err, doc) {
+    Document.CheckPermission(site, function(err, doc) {
         if (err) {
             return callback(err);
         }
-        if (doc) {
-            return callback(null, '이미 존재합니다.');
+        if (doc) { // true or false
+            return callback(null, '이미 설정 내역이 존재하는 사이트입니다.(' + site + ')');
+        } else {
+
+            var moment = new Date();
+            var newDoc = new Document();
+            newDoc.site = site;
+            newDoc.betCancelLimit = betCancelLimit;
+            newDoc.betCancelCount = betCancelCount;
+            newDoc.kindConfig = kindConfig;
+            newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
+            newDoc.modifiedAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
+            newDoc.save(function(err) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, null, newDoc);
+            });
         }
-        var newDoc = new Document();
-        newDoc.name = name;
-        newDoc.memo = memo;
-        newDoc.site = site;
-        newDoc.manager = manager;
-        newDoc.bonus = {
-            win: bonusWin,
-            lose: bonusLose
-        };
-        newDoc.headcount = 0;
-        var moment = new Date();
-        newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
-        newDoc.modifiedAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
-        newDoc.save(function(err) {
-            if (err) {
-                return callback(err);
-            }
-            return callback(null, null, newDoc);
-        });
     });
 };
 
 Model.statics.Update = function(
     id,
-    name,
     site,
-    manager,
-    memo,
-    bonusWin,
-    bonusLose,
+    betCancelLimit,
+    betCancelCount,
+    kindConfig,
     callback
 ) {
 
@@ -199,14 +168,10 @@ Model.statics.Update = function(
         _id: id
     }, {
         $set: {
-            name: name,
             site: site,
-            manager: manager,
-            memo: memo,
-            bonus: {
-                win: bonusWin,
-                lose: bonusLose
-            },
+            betCancelLimit: betCancelLimit,
+            betCancelCount: betCancelCount,
+            kindConfig: kindConfig,
             modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }
     }, {
@@ -235,10 +200,24 @@ Model.statics.Delete = function(id, callback) {
         return callback(null, null, doc);
     });
 };
+
+Model.statics.CheckPermission = function(site, callback) {
+
+    var Document = this;
+
+    Document.findOne({
+        site: site
+    }, function(err, doc) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, doc);
+    });
+};
 /******************************************************************
 Model's Statics End.
 ******************************************************************/
 
 module.exports = function() {
-    mongoose.model('Distributor', Model);
+    mongoose.model('SiteConfig', Model);
 };

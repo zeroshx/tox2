@@ -1,5 +1,7 @@
-var User = require('mongoose').model('User');
+var Model = require('mongoose').model('User');
 var nodemailer = require('../init/nodemailer.js');
+
+var root = 'controller/user.js';
 
 exports.signup = function(req, res) {
     if (req.session.passport.user.hasOwnProperty('failure')) {
@@ -37,11 +39,11 @@ exports.alive = function(req, res) {
 };
 
 exports.checkEmail = function(req, res) {
-    User.CheckEmail(
+    Model.CheckEmail(
         req.body.email,
         function(err, msg) {
         if (err) { // internal error
-            nodemailer('controller/user.js:checkEmail', JSON.stringify(err));
+            nodemailer(root + ':checkEmail', JSON.stringify(err));
             return res.sendStatus(500);
         } else if (msg) { // exception control
             return res.json({
@@ -54,11 +56,11 @@ exports.checkEmail = function(req, res) {
 };
 
 exports.checkNick = function(req, res) {
-    User.CheckNick(
+    Model.CheckNick(
         req.body.nick,
         function(err, msg) {
         if (err) { // internal error
-            nodemailer('controller/user.js:checkNick', JSON.stringify(err));
+            nodemailer(root + ':checkNick', JSON.stringify(err));
             return res.sendStatus(500);
         } else if (msg) { // exception control
             return res.json({
@@ -71,11 +73,11 @@ exports.checkNick = function(req, res) {
 };
 
 exports.me = function(req, res) {
-    User.Me(
+    Model.Me(
         req.user._id,
         function(err, msg, me) {
         if (err) { // internal error
-            nodemailer('controller/user.js:me', JSON.stringify(err));
+            nodemailer(root + ':me', JSON.stringify(err));
             return res.sendStatus(500);
         } else if (msg) { // exception control
             return res.json({

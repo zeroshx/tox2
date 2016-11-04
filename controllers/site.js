@@ -1,95 +1,101 @@
-var Site = require('mongoose').model('Site');
+var Model = require('mongoose').model('Site');
 var nodemailer = require('../init/nodemailer.js');
 
+var root = 'controller/site.js';
+
 exports.List = function(req, res) {
-    Site.List(
+    Model.List(
         req.query.page,
         req.query.pageSize,
         req.query.searchFilter,
         req.query.searchKeyword,
-        function(err, msg, sites) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/site.js:List', JSON.stringify(err));
+                nodemailer(root + ':List', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(sites);
+                return res.json(doc);
             }
         });
 };
 
 exports.ListAll = function(req, res) {
-    Site.ListAll(function(err, msg, sites) {
+    Model.ListAll(function(err, msg, doc) {
         if (err) { // internal error
-            nodemailer('controller/site.js:List', JSON.stringify(err));
+            nodemailer(root + ':List', JSON.stringify(err));
             return res.sendStatus(500);
         } else if (msg) { // exception control
             return res.json({
                 failure: msg
             });
         } else {
-            return res.json(sites);
+            return res.json(doc);
         }
     });
 };
 
 exports.Create = function(req, res) {
-    Site.Create(
+    Model.Create(
+        req.body.state,
         req.body.name,
-        req.body.memo,
         req.body.bonusWin,
         req.body.bonusLose,
-        function(err, msg, site) {
+        req.body.answer,
+        req.body.memo,
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/site.js:Create', JSON.stringify(err));
+                nodemailer(root + ':Create', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(site);
+                return res.json(doc);
             }
         });
 };
 
 exports.Update = function(req, res) {
-    Site.Update(
+    Model.Update(
         req.params.id,
+        req.body.state,
         req.body.name,
-        req.body.memo,
         req.body.bonusWin,
         req.body.bonusLose,
-        function(err, msg, site) {
+        req.body.answer,
+        req.body.memo,
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/site.js:Update', JSON.stringify(err));
+                nodemailer(root + ':Update', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(site);
+                return res.json(doc);
             }
         });
 };
 
 exports.Delete = function(req, res) {
-    Site.Delete(
+    Model.Delete(
         req.params.id,
-        function(err, msg, site) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/site.js:Delete', JSON.stringify(err));
+                nodemailer(root + ':Delete', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(site);
+                return res.json(doc);
             }
         });
 };

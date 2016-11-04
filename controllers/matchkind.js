@@ -1,41 +1,43 @@
-var MatchKind = require('mongoose').model('MatchKind');
+var Model = require('mongoose').model('MatchKind');
 var nodemailer = require('../init/nodemailer.js');
 var formidable = require('formidable');
 var fs = require("fs");
 var expressConfig = require('../configs/express.js');
 
+var root = 'controller/matchkind.js';
+
 exports.List = function(req, res) {
-    MatchKind.List(
+    Model.List(
         req.query.page,
         req.query.pageSize,
         req.query.searchFilter,
         req.query.searchKeyword,
-        function(err, msg, mks) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/matchkind.js:List', JSON.stringify(err));
+                nodemailer(root + ':List', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(mks);
+                return res.json(doc);
             }
         });
 };
 
 
 exports.ListAll = function(req, res) {
-    MatchKind.ListAll(function(err, msg, mks) {
+    Model.ListAll(function(err, msg, doc) {
         if (err) { // internal error
-            nodemailer('controller/match.js:ListAll', JSON.stringify(err));
+            nodemailer(root + ':ListAll', JSON.stringify(err));
             return res.sendStatus(500);
         } else if (msg) { // exception control
             return res.json({
                 failure: msg
             });
         } else {
-            return res.json(mks);
+            return res.json(doc);
         }
     });
 };
@@ -59,12 +61,12 @@ exports.Create = function(req, res) {
             var oldPath = file.image.path;
             var newPath = __dirname + "/../public/" + imagePath;
         }
-        MatchKind.Create(
+        Model.Create(
             body.name,
             imagePath,
-            function(err, msg, mk) {
+            function(err, msg, doc) {
                 if (err) { // internal error
-                    nodemailer('controller/matchkind.js:Create', JSON.stringify(err));
+                    nodemailer(root + ':Create', JSON.stringify(err));
                     return res.sendStatus(500);
                 } else if (msg) { // exception control
                     return res.json({
@@ -77,7 +79,7 @@ exports.Create = function(req, res) {
                                 fs.writeFile(newPath, data, function(err) {
                                     if (!err) {
                                         fs.unlink(oldPath, function(err) {
-                                            return res.json(mk);
+                                            return res.json(doc);
                                         });
                                     } else {
                                         return res.json({
@@ -94,7 +96,7 @@ exports.Create = function(req, res) {
                     } else {
                         var targetPath = __dirname + "/../public/" + mk.imagePath;
                         fs.unlink(targetPath, function(err) {
-                            return res.json(mk);
+                            return res.json(doc);
                         });
                     }
                 }
@@ -121,13 +123,13 @@ exports.Update = function(req, res) {
             var oldPath = file.image.path;
             var newPath = __dirname + "/../public/" + imagePath;
         }
-        MatchKind.Update(
+        Model.Update(
             req.params.id,
             body.name,
             imagePath,
-            function(err, msg, mk) {
+            function(err, msg, doc) {
                 if (err) { // internal error
-                    nodemailer('controller/matchkind.js:Update', JSON.stringify(err));
+                    nodemailer(root + ':Update', JSON.stringify(err));
                     return res.sendStatus(500);
                 } else if (msg) { // exception control
                     return res.json({
@@ -142,7 +144,7 @@ exports.Update = function(req, res) {
                                         fs.unlink(oldPath, function(err) {
                                             var targetPath = __dirname + "/../public/" + mk.imagePath;
                                             fs.unlink(targetPath, function(err) {
-                                                return res.json(mk);
+                                                return res.json(doc);
                                             });
                                         });
                                     } else {
@@ -158,7 +160,7 @@ exports.Update = function(req, res) {
                             }
                         });
                     } else {
-                        return res.json(mk);
+                        return res.json(doc);
                     }
                 }
             });
@@ -166,11 +168,11 @@ exports.Update = function(req, res) {
 };
 
 exports.Delete = function(req, res) {
-    MatchKind.Delete(
+    Model.Delete(
         req.params.id,
-        function(err, msg, mk) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/matchkind.js:Delete', JSON.stringify(err));
+                nodemailer(root + ':Delete', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
@@ -179,7 +181,7 @@ exports.Delete = function(req, res) {
             } else {
                 var targetPath = __dirname + "/../public/" + mk.imagePath;
                 fs.unlink(targetPath, function(err) {
-                    return res.json(mk);
+                    return res.json(doc);
                 });
             }
         });

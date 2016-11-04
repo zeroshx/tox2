@@ -1,4 +1,4 @@
-var User = require('mongoose').model('User');
+var Model = require('mongoose').model('User');
 
 exports.single= function(req, res) {
   res.json({

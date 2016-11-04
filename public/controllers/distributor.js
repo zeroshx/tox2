@@ -57,7 +57,7 @@ angular.module('Distributor')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '관리자', '총판명', '사이트', '메모', '이름+메모'
+            '관리자', '총판', '사이트', '메모', '총판+메모'
         ];
 
         $scope.Search = function(mode) {

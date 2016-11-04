@@ -1,40 +1,42 @@
-var MatchLeague = require('mongoose').model('MatchLeague');
+var Model = require('mongoose').model('MatchLeague');
 var nodemailer = require('../init/nodemailer.js');
 var formidable = require('formidable');
 var fs = require("fs");
 var expressConfig = require('../configs/express.js');
 
+var root = 'controller/matchleague.js';
+
 exports.List = function(req, res) {
-    MatchLeague.List(
+    Model.List(
         req.query.page,
         req.query.pageSize,
         req.query.searchFilter,
         req.query.searchKeyword,
-        function(err, msg, mls) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/matchleague.js:List', JSON.stringify(err));
+                nodemailer(root + ':List', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(mls);
+                return res.json(doc);
             }
         });
 };
 
 exports.ListAll = function(req, res) {
-    MatchLeague.ListAll(function(err, msg, mls) {
+    Model.ListAll(function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/matchleague.js:List', JSON.stringify(err));
+                nodemailer(root + ':List', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(mls);
+                return res.json(doc);
             }
         });
 };
@@ -58,13 +60,13 @@ exports.Create = function(req, res) {
             var oldPath = file.image.path;
             var newPath = __dirname + "/../public/" + imagePath;
         }
-        MatchLeague.Create(
+        Model.Create(
             body.name,
             body.country,
             imagePath,
-            function(err, msg, ml) {
+            function(err, msg, doc) {
                 if (err) { // internal error
-                    nodemailer('controller/matchleague.js:Create', JSON.stringify(err));
+                    nodemailer(root + ':Create', JSON.stringify(err));
                     return res.sendStatus(500);
                 } else if (msg) { // exception control
                     return res.json({
@@ -77,7 +79,7 @@ exports.Create = function(req, res) {
                                 fs.writeFile(newPath, data, function(err) {
                                     if (!err) {
                                         fs.unlink(oldPath, function(err) {
-                                            return res.json(ml);
+                                            return res.json(doc);
                                         });
                                     } else {
                                         return res.json({
@@ -94,7 +96,7 @@ exports.Create = function(req, res) {
                     } else {
                         var targetPath = __dirname + "/../public/" + ml.imagePath;
                         fs.unlink(targetPath, function(err) {
-                            return res.json(ml);
+                            return res.json(doc);
                         });
                     }
                 }
@@ -121,14 +123,14 @@ exports.Update = function(req, res) {
             var oldPath = file.image.path;
             var newPath = __dirname + "/../public/" + imagePath;
         }
-        MatchLeague.Update(
+        Model.Update(
             req.params.id,
             body.name,
             body.country,
             imagePath,
-            function(err, msg, ml) {
+            function(err, msg, doc) {
                 if (err) { // internal error
-                    nodemailer('controller/matchkind.js:Update', JSON.stringify(err));
+                    nodemailer(root + ':Update', JSON.stringify(err));
                     return res.sendStatus(500);
                 } else if (msg) { // exception control
                     return res.json({
@@ -143,7 +145,7 @@ exports.Update = function(req, res) {
                                         fs.unlink(oldPath, function(err) {
                                             var targetPath = __dirname + "/../public/" + ml.imagePath;
                                             fs.unlink(targetPath, function(err) {
-                                                return res.json(ml);
+                                                return res.json(doc);
                                             });
                                         });
                                     } else {
@@ -159,7 +161,7 @@ exports.Update = function(req, res) {
                             }
                         });
                     } else {
-                        return res.json(ml);
+                        return res.json(doc);
                     }
                 }
             });
@@ -167,11 +169,11 @@ exports.Update = function(req, res) {
 };
 
 exports.Delete = function(req, res) {
-    MatchLeague.Delete(
+    Model.Delete(
         req.params.id,
-        function(err, msg, ml) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/matchkind.js:Delete', JSON.stringify(err));
+                nodemailer(root + ':Delete', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
@@ -180,7 +182,7 @@ exports.Delete = function(req, res) {
             } else {
                 var targetPath = __dirname + "/../public/" + ml.imagePath;
                 fs.unlink(targetPath, function(err) {
-                    return res.json(ml);
+                    return res.json(doc);
                 });
             }
         });

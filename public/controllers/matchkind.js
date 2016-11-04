@@ -34,7 +34,7 @@ angular.module('Match')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '종목명'
+            '종목'
         ];
 
         $scope.Search = function(mode) {
@@ -183,8 +183,8 @@ angular.module('Match')
                     $scope.query.searchKeyword = '';
                 } else {
                     $scope.docs = res.docs;
-                    $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.totalPage = res.count;
+                    $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
                 }

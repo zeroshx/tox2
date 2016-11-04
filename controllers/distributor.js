@@ -1,53 +1,52 @@
-var Distributor = require('mongoose').model('Distributor');
+var Model = require('mongoose').model('Distributor');
 var nodemailer = require('../init/nodemailer.js');
 
+var root = 'controller/distributor.js';
 
 exports.List = function(req, res) {
-    Distributor.List(
+    Model.List(
         req.query.page,
         req.query.pageSize,
         req.query.searchFilter,
         req.query.searchKeyword,
-        function(err, msg, dists) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/distributor.js:List', JSON.stringify(err));
+                nodemailer(root + ':List', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(dists);
+                return res.json(doc);
             }
         });
 };
 
 exports.Create = function(req, res) {
-
-    Distributor.Create(
+    Model.Create(
         req.body.name,
         req.body.site,
         req.body.manager,
         req.body.memo,
         req.body.bonusWin,
         req.body.bonusLose,
-        function(err, msg, dist) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/distributor.js:Update', JSON.stringify(err));
+                nodemailer(root + ':Create', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(dist);
+                return res.json(doc);
             }
         });
 };
 
 exports.Update = function(req, res) {
-
-    Distributor.Update(
+    Model.Update(
         req.params.id,
         req.body.name,
         req.body.site,
@@ -55,33 +54,33 @@ exports.Update = function(req, res) {
         req.body.memo,
         req.body.bonusWin,
         req.body.bonusLose,
-        function(err, msg, dist) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/distributor.js:Update', JSON.stringify(err));
+                nodemailer(root + ':Update', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(dist);
+                return res.json(doc);
             }
         });
 };
 
 exports.Delete = function(req, res) {
-    Distributor.Delete(
+    Model.Delete(
         req.params.id,
-        function(err, msg, dist) {
+        function(err, msg, doc) {
             if (err) { // internal error
-                nodemailer('controller/distributor.js:Delete', JSON.stringify(err));
+                nodemailer(root + ':Delete', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({
                     failure: msg
                 });
             } else {
-                return res.json(dist);
+                return res.json(doc);
             }
         });
 };

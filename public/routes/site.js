@@ -9,6 +9,22 @@ angular.module('Site')
                     //       return AuthService.isAliveQ();
                     //     }
                     //   }
+                })
+                .when('/site/level', {
+                    templateUrl: '/views/sitelevel.html'
+                    //   resolve: {
+                    //     preAuth: function(AuthService) {
+                    //       return AuthService.isAliveQ();
+                    //     }
+                    //   }
+                })
+                .when('/site/config', {
+                    templateUrl: '/views/siteconfig.html'
+                    //   resolve: {
+                    //     preAuth: function(AuthService) {
+                    //       return AuthService.isAliveQ();
+                    //     }
+                    //   }
                 });
         }
     ]);

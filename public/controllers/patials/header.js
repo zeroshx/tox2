@@ -41,10 +41,10 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
             name: '매치 관리',
             path: '/match'
         }, {
-            name: '종목 관리',
+            name: '종목 설정',
             path: '/match/kind'
         }, {
-            name: '리그 관리',
+            name: '리그 설정',
             path: '/match/league'
         }, {
             name: '실시간 배팅 관리',
@@ -89,15 +89,18 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
             name: '사이트 관리',
             path: '/site'
         }, {
-            name: '사이트 상세설정',
-            path: '/site/detail'
+            name: '사이트 설정',
+            path: '/site/config'
+        }, {
+            name: '레벨 설정',
+            path: '/site/level'
         }]
     });
 
     $rootScope.mainmenu.push({
         name: '총판',
         submenu:  [{
-            name: '총판 관리',
+            name: '총판 설정',
             path: '/distributor'
         }, {
             name: '총판 회원 관리',
@@ -108,11 +111,8 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
     $rootScope.mainmenu.push({
         name: '설정',
         submenu:  [{
-            name: '레벨 설정',
-            path: '/setting/level'
-        }, {
-            name: '배팅 설정',
-            path: '/setting/betting'
+            name: '아이피(IP) 관리',
+            path: '/setting/ip'
         }, {
             name: '블랙리스트',
             path: '/setting/blacklist'

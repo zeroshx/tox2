@@ -16,10 +16,16 @@ aside {
     text-align: center;
 }
 
+table thead tr .font-12px{
+    font-size: 12px;
+}
 table tbody tr .font-12px{
     font-size: 12px;
 }
 
+table thead tr .font-10px{
+    font-size: 10px;
+}
 table tbody tr .font-10px{
     font-size: 10px;
 }

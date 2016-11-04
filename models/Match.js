@@ -8,7 +8,7 @@ var Model = new Schema({
             index: true,
             validate: {
                 validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\]\? ]{0,30}$/.test(v);
+                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
                 },
                 message: '{VALUE}는 적절한 홈팀명이 아닙니다.'
             }
@@ -64,7 +64,7 @@ var Model = new Schema({
             index: true,
             validate: {
                 validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\]\? ]{0,30}$/.test(v);
+                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
                 },
                 message: '{VALUE}는 적절한 원정팀명이 아닙니다.'
             }
@@ -98,17 +98,17 @@ var Model = new Schema({
             type: String,
             validate: {
                 validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\]\? ]{0,50}$/.test(v);
+                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,50}$/.test(v);
                 },
                 message: '{VALUE}는 적절한 버라이어티 주제가 아닙니다.'
             }
         },
-        picks: [{
+        option: [{
             name: {
                 type: String,
                 validate: {
                     validator: function(v) {
-                        return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{0,30}$/.test(v);
+                        return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
                     },
                     message: '{VALUE}는 적절한 픽명이 아닙니다.'
                 }
@@ -116,8 +116,8 @@ var Model = new Schema({
             pick: {
                 type: String,
                 enum: [
-                    '선택1', '선택2', '선택3', '선택4', '선택5', '선택6', '선택7', '선택8', '선택9', '선택10',
-                    '선택11', '선택12', '선택13', '선택14', '선택15', '선택16', '선택17', '선택18', '선택19', '선택20'
+                    'OP1', 'OP2', 'OP3', 'OP4', 'OP5', 'OP6', 'OP7', 'OP8', 'OP9', 'OP10',
+                    'OP11', 'OP12', 'OP13', 'OP14', 'OP15', 'OP16', 'OP17', 'OP18', 'OP19', 'OP20'
                 ]
             },
             rate: {
@@ -168,7 +168,7 @@ var Model = new Schema({
         index: true,
         validate: {
             validator: function(v) {
-                return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{2,16}$/.test(v);
+                return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
             },
             message: '{VALUE}는 적절한 종목명 아닙니다.'
         }
@@ -178,7 +178,7 @@ var Model = new Schema({
         index: true,
         validate: {
             validator: function(v) {
-                return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{2,30}$/.test(v);
+                return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
             },
             message: '{VALUE}는 적절한 리그명이 아닙니다.'
         }
@@ -199,12 +199,10 @@ var Model = new Schema({
         ]
     },
     createdAt: {
-        type: Date,
-        default: Date.now()
+        type: String
     },
     modifiedAt: {
-        type: Date,
-        default: Date.now()
+        type: String
     }
 });
 
@@ -332,7 +330,7 @@ Model.statics.Create = function(
     homeName, homeScore, homeRate,
     tieRate,
     awayName, awayScore, awayRate,
-    varietySubject, varietyPicks,
+    varietySubject, varietyOption,
     offset,
     state, btype, mtype,
     kind, league,
@@ -354,10 +352,10 @@ Model.statics.Create = function(
     } else if (btype === '2-WAY') {
         tieRate = '0.00';
         varietySubject = '';
-        varietyPicks = [];
+        varietyOption = [];
     } else { // 3-way
         varietySubject = '';
-        varietyPicks = [];
+        varietyOption = [];
     }
 
     if (mtype === '일반') {
@@ -379,7 +377,7 @@ Model.statics.Create = function(
     newDoc.away.rate = awayRate;
     newDoc.tie.rate = tieRate;
     newDoc.variety.subject = varietySubject;
-    newDoc.variety.picks = varietyPicks;
+    newDoc.variety.option = varietyOption;
     newDoc.offset = offset;
     newDoc.state = state;
     newDoc.btype = btype;
@@ -388,7 +386,9 @@ Model.statics.Create = function(
     newDoc.league = league;
     newDoc.schedule = schedule;
     newDoc.result = result;
-
+    var moment = new Date();
+    newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
+    newDoc.modifiedAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
     newDoc.save(function(err) {
         if (err) {
             return callback(err);
@@ -402,7 +402,7 @@ Model.statics.Update = function(
     homeName, homeScore, homeRate,
     tieRate,
     awayName, awayScore, awayRate,
-    varietySubject, varietyPicks,
+    varietySubject, varietyOption,
     offset,
     state, btype, mtype,
     kind, league,
@@ -412,6 +412,7 @@ Model.statics.Update = function(
 ) {
 
     var Document = this;
+    var moment = new Date();
 
     if (btype === 'VARIETY') {
         homeName = '';
@@ -424,10 +425,10 @@ Model.statics.Update = function(
     } else if (btype === '2-WAY') {
         tieRate = '0.00';
         varietySubject = '';
-        varietyPicks = [];
+        varietyOption = [];
     } else { // 3-way
         varietySubject = '';
-        varietyPicks = [];
+        varietyOption = [];
     }
 
     if (mtype === '일반') {
@@ -459,7 +460,7 @@ Model.statics.Update = function(
             },
             variety: {
                 subject: varietySubject,
-                picks: varietyPicks
+                option: varietyOption
             },
             offset: offset,
             state: state,
@@ -469,7 +470,7 @@ Model.statics.Update = function(
             league: league,
             schedule: schedule,
             result: result,
-            modified_at: Date.now()
+            modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }
     }, {
         runValidators: true

@@ -4,15 +4,23 @@ var router = express.Router();
 var index = require('./index.js');
 var auth = require('./auth.js');
 var site = require('./site.js');
+var sitelevel = require('./sitelevel.js');
+var siteconfig = require('./siteconfig.js');
 var distributor = require('./distributor.js');
 var match = require('./match.js');
 var matchkind = require('./matchkind.js');
 var matchleague = require('./matchleague.js');
 
 router.use('/', index);
+
 router.use('/auth', auth);
+
 router.use('/site', site);
+router.use('/site/level', sitelevel);
+router.use('/site/config', siteconfig);
+
 router.use('/distributor', distributor);
+
 router.use('/match', match);
 router.use('/match/kind', matchkind);
 router.use('/match/league', matchleague);

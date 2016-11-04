@@ -8,22 +8,21 @@ var Model = new Schema({
         index: true,
         validate: {
             validator: function(v) {
-                return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{2,16}$/.test(v);
+                return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
             },
             message: '{VALUE}는 적절한 종목명 아닙니다.'
         },
         required: [true, '종목명이 없습니다.']
     },
     imagePath: {
-        type: String
+        type: String,
+        maxlength: 500
     },
     createdAt: {
-        type: Date,
-        default: Date.now()
+        type: String
     },
     modifiedAt: {
-        type: Date,
-        default: Date.now()
+        type: String
     }
 });
 
@@ -43,7 +42,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === '종목명') {
+        if (filter === '종목') {
             query.name = {
                 $regex: '.*' + keyword + '.*'
             };
@@ -107,6 +106,9 @@ Model.statics.Create = function(name, imagePath, callback) {
         var newDoc = new Document();
         newDoc.name = name;
         newDoc.imagePath = imagePath;
+        var moment = new Date();
+        newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
+        newDoc.modifiedAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
         newDoc.save(function(err) {
             if (err) {
                 return callback(err);
@@ -119,11 +121,12 @@ Model.statics.Create = function(name, imagePath, callback) {
 Model.statics.Update = function(id, name, imagePath, callback) {
 
     var Document = this;
+    var moment = new Date();
 
     var query = {
         $set: {
             name: name,
-            modifiedAt: Date.now()
+            modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }
     };
     if (imagePath.length > 0) {

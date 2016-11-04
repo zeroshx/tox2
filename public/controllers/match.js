@@ -31,8 +31,8 @@ angular.module('Match')
         /****************************************************************************
             Sub Menu setting
         ****************************************************************************/
-        for(var i in $rootScope.mainmenu) {
-            if($rootScope.mainmenu[i].name === '매치') {
+        for (var i in $rootScope.mainmenu) {
+            if ($rootScope.mainmenu[i].name === '매치') {
                 $rootScope.submenu = $rootScope.mainmenu[i].submenu;
             }
         }
@@ -112,7 +112,7 @@ angular.module('Match')
                         $scope.targetTieRate = $scope.docs[i].tie.rate;
                         $scope.targetAwayRate = $scope.docs[i].away.rate;
                         $scope.targetVarietySubject = $scope.docs[i].variety.subject;
-                        $scope.targetVarietyPicks = $scope.docs[i].variety.picks;
+                        $scope.targetVarietyOption = $scope.docs[i].variety.picks;
                         $scope.targetOffset = $scope.docs[i].offset;
                         $scope.targetLeague = $scope.docs[i].league;
                         $scope.targetKind = $scope.docs[i].kind;
@@ -204,7 +204,7 @@ angular.module('Match')
                 tieRate: $scope.targetTieRate,
                 awayRate: $scope.targetAwayRate,
                 varietySubject: $scope.targetVarietySubject,
-                varietyPicks: $scope.targetVarietyPicks,
+                varietyPicks: $scope.targetVarietyOption,
                 offset: $scope.targetOffset,
                 league: $scope.targetLeague,
                 kind: $scope.targetKind,
@@ -240,7 +240,7 @@ angular.module('Match')
                 tieRate: $scope.targetTieRate,
                 awayRate: $scope.targetAwayRate,
                 varietySubject: $scope.targetVarietySubject,
-                varietyPicks: $scope.targetVarietyPicks,
+                varietyPicks: $scope.targetVarietyOption,
                 offset: $scope.targetOffset,
                 league: $scope.targetLeague,
                 kind: $scope.targetKind,
@@ -330,14 +330,12 @@ angular.module('Match')
         /****************************************************************************
             Etc Functions
         ****************************************************************************/
-        $scope.CreateShortcut = function(element, length) {
-            for (i = 0; i < $scope.docs.length; i++) {
-                if ($scope.docs[i][element].length > length) {
-                    $scope.docs[i]['short_' + element] = $scope.docs[i][element].slice(0, length);
-                    $scope.docs[i]['short_' + element] += '...';
-                } else {
-                    $scope.docs[i]['short_' + element] = $scope.docs[i][element];
-                }
+        $scope.CreateShortcut = function(obj, element, length) {
+            if (obj[element].length > length) {
+                obj['short_' + element] = obj[element].slice(0, length);
+                obj['short_' + element] += '...';
+            } else {
+                obj['short_' + element] = obj[element];
             }
         };
 
@@ -394,7 +392,7 @@ angular.module('Match')
             $scope.targetResult = '';
             $scope.targetState = '';
             $scope.targetVarietySubject = '';
-            $scope.targetVarietyPicks = [];
+            $scope.targetVarietyOption = [];
         };
 
         $scope.SelectKind = function(kind) {
@@ -417,20 +415,20 @@ angular.module('Match')
                 $scope.targetMtype = '일반';
             } else if (btype === 'VARIETY') {
                 $scope.targetMtype = '일반';
-                $scope.targetVarietyPicks = [{
-                    pick: '선택1',
+                $scope.targetVarietyOption = [{
+                    pick: 'OP1',
                     name: '',
                     rate: ''
                 }, {
-                    pick: '선택2',
+                    pick: 'OP2',
                     name: '',
                     rate: ''
                 }, {
-                    pick: '선택3',
+                    pick: 'OP3',
                     name: '',
                     rate: ''
                 }, {
-                    pick: '선택4',
+                    pick: 'OP4',
                     name: '',
                     rate: ''
                 }];
@@ -471,10 +469,10 @@ angular.module('Match')
             $scope.targetMtype = mtype;
         };
 
-        $scope.AddPick = function() {
-            if ($scope.targetVarietyPicks.length < 20) {
-                $scope.targetVarietyPicks.push({
-                    pick: '선택' + ($scope.targetVarietyPicks.length + 1),
+        $scope.AddOption = function() {
+            if ($scope.targetVarietyOption.length < 20) {
+                $scope.targetVarietyOption.push({
+                    pick: 'OP' + ($scope.targetVarietyOption.length + 1),
                     name: '',
                     rate: ''
                 });
@@ -484,9 +482,9 @@ angular.module('Match')
             }
         };
 
-        $scope.RemovePick = function() {
-            if ($scope.targetVarietyPicks.length > 3) {
-                $scope.targetVarietyPicks.splice($scope.targetVarietyPicks.length - 1, 1);
+        $scope.RemoveOption = function() {
+            if ($scope.targetVarietyOption.length > 3) {
+                $scope.targetVarietyOption.splice($scope.targetVarietyOption.length - 1, 1);
                 $scope.targetResult = '';
             } else {
                 $scope.validator.type = 'info';
@@ -499,21 +497,23 @@ angular.module('Match')
         };
 
         $scope.CreateExtraData = function() {
-            if($scope.query.listMode === 'VARIETY') {
-                for(var i in $scope.docs) {
+            if ($scope.query.listMode === 'VARIETY') {
+                for (var i in $scope.docs) {
                     $scope.docs[i].totalBet = 0;
                     $scope.docs[i].totalBetCount = 0;
-                    for(var j in $scope.docs[i].variety.picks) {
+                    for (var j in $scope.docs[i].variety.picks) {
                         $scope.docs[i].totalBet += $scope.docs[i].variety.picks[j].bet;
                         $scope.docs[i].totalBetCount += $scope.docs[i].variety.picks[j].count;
                     }
                     $scope.docs[i].totalBetCurrency = $filter('number')($scope.docs[i].totalBet);
                 }
-            } else {    // Way mode
-                for(var m in $scope.docs) {
+            } else { // Way mode
+                for (var m in $scope.docs) {
                     $scope.docs[m].home.betCurrency = $filter('number')($scope.docs[m].home.bet);
                     $scope.docs[m].tie.betCurrency = $filter('number')($scope.docs[m].tie.bet);
                     $scope.docs[m].away.betCurrency = $filter('number')($scope.docs[m].away.bet);
+                    $scope.CreateShortcut($scope.docs[m].home, 'name', 15);
+                    $scope.CreateShortcut($scope.docs[m].away, 'name', 15);
                 }
             }
         };
@@ -523,7 +523,7 @@ angular.module('Match')
         };
 
 
-        $scope.Reset = function () {
+        $scope.Reset = function() {
             $scope.ResetTarget();
             $scope.List();
             $scope.LeagueList();

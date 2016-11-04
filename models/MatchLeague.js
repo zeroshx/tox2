@@ -8,7 +8,7 @@ var Model = new Schema({
         index: true,
         validate: {
             validator: function(v) {
-                return /^[가-힣a-zA-Z0-9\-\(\)'"`\[\] ]{2,30}$/.test(v);
+                return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
             },
             message: '{VALUE}는 적절한 리그명이 아닙니다.'
         },
@@ -25,15 +25,14 @@ var Model = new Schema({
         }
     },
     imagePath: {
-        type: String
+        type: String,
+        maxlength: 500
     },
     createdAt: {
-        type: Date,
-        default: Date.now()
+        type: String
     },
     modifiedAt: {
-        type: Date,
-        default: Date.now()
+        type: String
     }
 });
 
@@ -53,7 +52,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === '리그명') {
+        if (filter === '리그') {
             query.name = {
                 $regex: '.*' + keyword + '.*'
             };
@@ -119,6 +118,9 @@ Model.statics.Create = function(name, country, imagePath, callback) {
         newDoc.name = name;
         newDoc.country = country;
         newDoc.imagePath = imagePath;
+        var moment = new Date();
+        newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
+        newDoc.modifiedAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
         newDoc.save(function(err) {
             if (err) {
                 return callback(err);
@@ -131,12 +133,13 @@ Model.statics.Create = function(name, country, imagePath, callback) {
 Model.statics.Update = function(id, name, country, imagePath, callback) {
 
     var Document = this;
+    var moment = new Date();
 
     var query = {
         $set: {
             name: name,
             country: country,
-            modifiedAt: Date.now()
+            modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }
     };
     if (imagePath.length > 0) {

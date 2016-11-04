@@ -29,7 +29,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "node ./bin/www",
-    "test": "nodemon ./bin/www"
+    "test": "nodemon ./bin/www --ignore public/ --delay 1.5"
   },
   "author": "zeroshx",
   "license": "ISC"

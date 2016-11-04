@@ -2,6 +2,15 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Model = new Schema({
+    state: {
+        type: String,
+        enum: [
+            '정상',
+            '점검',
+            '정지'
+        ],
+        required: [true, '사이트 상태가 없습니다.']
+    },
     name: {
         type: String,
         unique: true,
@@ -13,34 +22,66 @@ var Model = new Schema({
         },
         required: [true, '사이트 이름이 없습니다.']
     },
-    memo: {
-        type: String,
-        maxlength: 100
-    },
     bonus: {
         win: {
             type: Number,
             min: 0,
-            max: 100
+            max: 100,
+            required: [true, '승리 보너스가 없습니다.']
         },
         lose: {
             type: Number,
             min: 0,
-            max: 100
+            max: 100,
+            required: [true, '패배 보너스가 없습니다.']
         }
     },
     headcount: {
         type: Number,
         min: 0,
-        default: 0
+        required: [true, '액션명이 없습니다.']
+    },
+    answer: [{
+        action: {
+            type: String,
+            validate: {
+                validator: function(v) {
+                    return /^[가-힣a-zA-Z0-9]{2,10}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 액션명 아닙니다.'
+            },
+            required: [true, '액션명이 없습니다.']
+        },
+        subject: {
+            type: String,
+            validate: {
+                validator: function(v) {
+                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,50}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 답변 제목이 아닙니다.'
+            },
+            required: [true, '답변 제목이 없습니다.']
+        },
+        content: {
+            type: String,
+            validate: {
+                validator: function(v) {
+                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,1000}$/.test(v);
+                },
+                message: '{VALUE}는 적절한 답변 내용이 아닙니다.'
+            },
+            required: [true, '답변 내용이 없습니다.']
+        }
+    }],
+    memo: {
+        type: String,
+        maxlength: 100
     },
     createdAt: {
-        type: Date,
-        default: Date.now()
+        type: String
     },
     modifiedAt: {
-        type: Date,
-        default: Date.now()
+        type: String
     }
 });
 
@@ -59,7 +100,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 
     var query = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === '사이트명') {
+        if (filter === '사이트') {
             query.name = {
                 $regex: '.*' + keyword + '.*'
             };
@@ -67,7 +108,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
             query.memo = {
                 $regex: '.*' + keyword + '.*'
             };
-        } else if (filter === '사이트명+메모') {
+        } else if (filter === '사이트+메모') {
             query.$or = [{
                 name: {
                     $regex: '.*' + keyword + '.*'
@@ -122,10 +163,12 @@ Model.statics.ListAll = function(callback) {
 };
 
 Model.statics.Create = function(
+    state,
     name,
-    memo,
     bonusWin,
     bonusLose,
+    answer,
+    memo,
     callback
 ) {
 
@@ -140,44 +183,55 @@ Model.statics.Create = function(
         if (doc) {
             return callback(null, '이미 존재합니다.');
         }
-        var newSite = new Document();
-        newSite.name = name;
-        newSite.memo = memo;
-        newSite.bonus = {
-            win: bonusWin|0,
-            lose: bonusLose|0
+        var newDoc = new Document();
+        newDoc.state = state;
+        newDoc.name = name;
+        newDoc.bonus = {
+            win: bonusWin,
+            lose: bonusLose
         };
-        newSite.save(function(err) {
+        newDoc.answer = answer;
+        newDoc.headcount = 0;
+        newDoc.memo = memo;
+        var moment = new Date();
+        newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
+        newDoc.modifiedAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
+        newDoc.save(function(err) {
             if (err) {
                 return callback(err);
             }
-            return callback(null, null, newSite);
+            return callback(null, null, newDoc);
         });
     });
 };
 
 Model.statics.Update = function(
     id,
+    state,
     name,
-    memo,
     bonusWin,
     bonusLose,
+    answer,
+    memo,
     callback
 ) {
 
     var Document = this;
+    var moment = new Date();
 
     Document.findOneAndUpdate({
         _id: id
     }, {
         $set: {
+            state: state,
             name: name,
-            memo: memo,
             bonus: {
-                win: bonusWin|0,
-                lose: bonusLose|0
+                win: bonusWin,
+                lose: bonusLose
             },
-            modifiedAt: Date.now()
+            answer: answer,
+            memo: memo,
+            modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }
     }, {
         runValidators: true

@@ -34,7 +34,7 @@ angular.module('Site')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '사이트명', '메모', '사이트명+메모'
+            '사이트', '메모', '사이트+메모'
         ];
 
         $scope.Search = function(mode) {
@@ -97,37 +97,48 @@ angular.module('Site')
                     if ($scope.docs[i]._id === id) {
                         siteCheck = true;
                         $scope.targetId = $scope.docs[i]._id;
+                        $scope.targetState = $scope.docs[i].state;
                         $scope.targetName = $scope.docs[i].name;
                         $scope.targetMemo = $scope.docs[i].memo;
                         $scope.targetBonusWin = $scope.docs[i].bonus.win;
                         $scope.targetBonusLose = $scope.docs[i].bonus.lose;
+                        if(!$scope.docs[i].answer) {
+                            $scope.targetAnswer = [];
+                        } else {
+                            $scope.targetAnswer = $scope.docs[i].answer;
+                        }
                     }
                 }
                 if (!siteCheck) {
                     $scope.validator.type = 'error';
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
-            } else { // mode === 'CREATE'
+            } else if (mode === 'CREATE'){
                 $scope.ResetTarget();
+                $scope.targetState = '정지';
+                $scope.targetBonusWin = 0;
+                $scope.targetBonusLose = 0;
             }
         };
 
         $scope.FormClose = function() {
             $scope.formSwitch = false;
             $scope.forMode = '';
+            $scope.validator.message = '';
             $scope.ResetTarget();
         };
-
 
         /****************************************************************************
             Http CRUD setting
         ****************************************************************************/
         $scope.Create = function() {
             CRUDService.Create($scope.baseUrl).run({
+                state: $scope.targetState,
                 name: $scope.targetName,
-                memo: $scope.targetMemo,
                 bonusWin: $scope.targetBonusWin,
-                bonusLose: $scope.targetBonusLose
+                bonusLose: $scope.targetBonusLose,
+                answer: $scope.targetAnswer,
+                memo: $scope.targetMemo
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -154,9 +165,9 @@ angular.module('Site')
                     $scope.query.searchKeyword = '';
                 } else {
                     $scope.docs = res.docs;
+                    $scope.totalPage = res.count;
                     $scope.CreateShortcut('memo', 20);
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
-                    $scope.totalPage = res.count;
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
                 }
@@ -168,10 +179,12 @@ angular.module('Site')
 
         $scope.Update = function() {
             CRUDService.Update($scope.baseUrl, $scope.targetId).run({
+                state: $scope.targetState,
                 name: $scope.targetName,
-                memo: $scope.targetMemo,
                 bonusWin: $scope.targetBonusWin,
-                bonusLose: $scope.targetBonusLose
+                bonusLose: $scope.targetBonusLose,
+                answer: $scope.targetAnswer,
+                memo: $scope.targetMemo
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -277,11 +290,36 @@ angular.module('Site')
             $scope.targetMemo = '';
             $scope.targetBonusWin = '';
             $scope.targetBonusLose = '';
+            $scope.targetState = '';
+            $scope.targetAnswer = [];
         };
 
         $scope.Reset = function () {
             $scope.ResetTarget();
             $scope.List();
+        };
+
+        $scope.SelectState = function (state) {
+            $scope.targetState = state;
+        };
+
+        $scope.AddAnswer = function () {
+            if($scope.targetAnswer.length < 20) {
+                $scope.targetAnswer.push({
+                    action: '',
+                    subject: '',
+                    content: ''
+                });
+            } else {
+                $scope.validator.type = 'info';
+                $scope.validator.message = '안내멘트는 최대 20개까지 가능합니다.';
+            }
+        };
+
+        $scope.RemoveAnswer = function () {
+            if($scope.targetAnswer.length > 0) {
+                $scope.targetAnswer.splice($scope.targetAnswer.length-1, 1);
+            }
         };
 
         /****************************************************************************

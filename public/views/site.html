@@ -18,42 +18,83 @@
         <div data-ng-show="formSwitch" class="row">
             <br>
             <div class="col-sm-12">
-                <div class="panel panel-success">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title">사이트 정보</h3>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="panel-title">상세정보</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="btn-group pull-right" role="group">
+                                    <button type="button" data-ng-class="{'btn btn-success' : targetState === '정상', 'btn btn-default' : targetState !== '정상'}" data-ng-click="SelectState('정상')">정상</button>
+                                    <button type="button" data-ng-class="{'btn btn-warning' : targetState === '점검', 'btn btn-default' : targetState !== '점검'}" data-ng-click="SelectState('점검')">점검</button>
+                                    <button type="button" data-ng-class="{'btn btn-danger' : targetState === '정지', 'btn btn-default' : targetState !== '정지'}" data-ng-click="SelectState('정지')">정지</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="panel-body">
-                        <form class="form" name="targetForm" novalidate>
-                            <div class="row">
-                                <div class="col-sm-offset-3 col-sm-6">
-                                    <div class="form-group">
-                                        <label>사이트명</label>
-                                        <input type="text" class="form-control" data-ng-model="targetName" placeholder="(한글, 영문, 숫자 조합으로 2자 이상 16자 이내)">
+                        <div class="row">
+                            <div class="form-group col-sm-offset-2 col-sm-8">
+                                <label>사이트명</label>
+                                <input type="text" class="form-control" data-ng-model="targetName" placeholder="(한글, 영문, 숫자 조합으로 2자 이상 16자 이내)">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-offset-2 col-sm-4">
+                                <label>승리 보너스</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" min="0" data-ng-model="targetBonusWin" placeholder="(0 ~ 100)">
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <label>패배 보너스</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" min="0" data-ng-model="targetBonusLose" placeholder="(0 ~ 100)">
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-offset-2 col-sm-8">
+                                <label>메모</label>
+                                <textarea class="form-control" rows="3" data-ng-model="targetMemo" placeholder="(100자 이내)"></textarea>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <label>안내멘트</label>
+                                <button type="button" class="btn btn-success btn-xs" data-ng-click="AddAnswer()">추가</button>
+                                <button type="button" class="btn btn-danger btn-xs" data-ng-click="RemoveAnswer()">제거</button>
+                            </div>
+                        </div>
+
+                        <div class="row" data-ng-repeat="as in targetAnswer">
+                            <br>
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <input type="text" class="form-control" min="0" data-ng-model="as.action" placeholder="액션명 (한글, 영문, 숫자 최소 2자 최대 10자 이내)">
                                     </div>
-                                    <div class="row">
-                                        <div class="form-group col-sm-6">
-                                            <label>승리 보너스(%)</label>
-                                            <input type="text" class="form-control" data-ng-model="targetBonusWin" placeholder="(0~100% 이내)">
-                                        </div>
-                                        <div class="form-group col-sm-6">
-                                            <label>패배 보너스(%)</label>
-                                            <input type="text" class="form-control" data-ng-model="targetBonusLose" placeholder="(0~100% 이내)">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>메모</label>
-                                        <textarea class="form-control" rows="3" data-ng-model="targetMemo" placeholder="(100자 이내)"></textarea>
+                                    <div class="panel-body">
+                                        <input type="text" class="form-control" min="0" data-ng-model="as.subject" placeholder="제목 (한글, 영문, 숫자 최소 2자 최대 50자 이내)">
+                                        <br>
+                                        <textarea class="form-control" rows="5" data-ng-model="as.content" placeholder="내용 (1000자 이내)"></textarea>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <center>
-                                    <button type="submit" class="btn btn-primary" data-ng-show="formMode === 'CREATE'" data-ng-click="Create()">추가</button>
-                                    <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE'" data-ng-click="Update()">수정</button>
-                                    <button type="button" class="btn btn-danger" data-ng-click="FormClose()">취소</button>
-                                </center>
-                            </div>
-                        </form>
+                        </div>
+
+                        <br>
+                        <div class="row">
+                            <center>
+                                <button type="button" class="btn btn-primary" data-ng-show="formMode === 'CREATE'" data-ng-click="Create()">추가</button>
+                                <button type="button" class="btn btn-warning" data-ng-show="formMode === 'UPDATE'" data-ng-click="Update()">수정</button>
+                                <button type="button" class="btn btn-danger" data-ng-click="FormClose()">취소</button>
+                            </center>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,6 +150,7 @@
                     <thead>
                         <tr>
                             <th><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
+                            <th>상태</th>
                             <th>사이트</th>
                             <th>승리 / 패배 보너스(%)</th>
                             <th>회원수</th>
@@ -119,6 +161,7 @@
                     <tbody>
                         <tr data-ng-repeat="doc in docs">
                             <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
+                            <td data-ng-class="{'success' : doc.state === '정상', 'warning': doc.state === '점검', 'danger' : doc.state === '정지'}">{{ doc.state }}</td>
                             <td>{{ doc.name }}</td>
                             <td>{{ doc.bonus.win }} / {{ doc.bonus.lose }}</td>
                             <td>{{ doc.headcount }}</td>
