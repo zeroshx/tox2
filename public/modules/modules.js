@@ -6,6 +6,7 @@ angular.module('Distributor',[]);
 angular.module('Site',[]);
 angular.module('User',[]);
 angular.module('Match',['ngFileUpload']);
+angular.module('Config',[]);
 
 var _app = angular.module(ApplicationName, [
   'ngRoute',
@@ -15,5 +16,6 @@ var _app = angular.module(ApplicationName, [
   'Site',
   'Distributor',
   'User',
-  'Match'
+  'Match',
+  'Config'
 ]);

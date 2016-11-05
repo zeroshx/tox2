@@ -88,6 +88,7 @@ angular.module('Site')
         $scope.formMode = '';
 
         $scope.FormOpen = function(mode, id) {
+            $scope.ResetTarget();
             $scope.formMode = mode;
             $scope.formSwitch = true;
 
@@ -114,7 +115,6 @@ angular.module('Site')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else if (mode === 'CREATE'){
-                $scope.ResetTarget();
                 $scope.targetState = '정지';
                 $scope.targetBonusWin = 0;
                 $scope.targetBonusLose = 0;
@@ -125,7 +125,6 @@ angular.module('Site')
             $scope.formSwitch = false;
             $scope.forMode = '';
             $scope.validator.message = '';
-            $scope.ResetTarget();
         };
 
         /****************************************************************************

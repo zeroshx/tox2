@@ -112,10 +112,10 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
         name: '설정',
         submenu:  [{
             name: '아이피(IP) 관리',
-            path: '/setting/ip'
+            path: '/config/ipblock'
         }, {
             name: '블랙리스트',
-            path: '/setting/blacklist'
+            path: '/config/blacklist'
         }]
     });
 

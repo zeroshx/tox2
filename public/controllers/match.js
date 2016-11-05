@@ -95,6 +95,7 @@ angular.module('Match')
         $scope.formMode = '';
 
         $scope.FormOpen = function(mode, id) {
+            $scope.ResetTarget();
             $scope.formMode = mode;
             $scope.formSwitch = true;
 
@@ -128,7 +129,6 @@ angular.module('Match')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else { // mode === 'CREATE'
-                $scope.ResetTarget();
                 $scope.targetBtype = '3-WAY';
                 $scope.targetMtype = '일반';
                 $scope.targetState = '등록';
@@ -147,7 +147,6 @@ angular.module('Match')
         $scope.FormClose = function() {
             $scope.formSwitch = false;
             $scope.forMode = '';
-            $scope.ResetTarget();
             $scope.validator.message = '';
         };
 

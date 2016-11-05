@@ -1,0 +1,150 @@
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="row" data-ng-controller="IPBlockCtrl">
+    <div class="col-sm-11">
+        <!-- 1. Subject Info zone -->
+        <div class="row">
+            <div class="page-header">
+                <h1>아이피(IP) 관리<button type="button" class="btn btn-primary btn-xs" data-ng-click="FormOpen('CREATE')">추가</button></h1>
+            </div>
+        </div>
+
+        <!-- 2. Alert Message zone -->
+        <div class="row">
+            <br>
+            <div data-ng-class="{'alert alert-danger' : validator.type == 'error', 'alert alert-info' : validator.type == 'info', 'alert alert-success' : validator.type == 'correct'}" data-ng-show="validator.message">{{validator.message}}</div>
+        </div>
+
+        <!-- 3. Custom form zone -->
+        <div data-ng-show="formSwitch" class="row">
+            <br>
+            <div class="col-sm-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">상세정보</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form" name="targetForm" novalidate>
+                            <div class="row">
+                                <div class="col-sm-offset-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label>IP 주소</label>
+                                        <input type="text" class="form-control" data-ng-model="targetIp" placeholder="(xxx.xxx.xxx.xxx)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-offset-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label>메모</label>
+                                        <textarea class="form-control" rows="5" data-ng-model="targetMemo" placeholder="(100자 이내)"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <center>
+                                    <button type="submit" class="btn btn-primary" data-ng-show="formMode === 'CREATE'" data-ng-click="Create()">추가</button>
+                                    <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE'" data-ng-click="Update()">수정</button>
+                                    <button type="button" class="btn btn-danger" data-ng-click="FormClose()">취소</button>
+                                </center>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. exception of no data zone -->
+        <div data-ng-hide="docs.length > 0" class="row">
+            <br>
+            <button type="button" class="btn btn-success btn-lg" data-ng-click="Search('RESET')">처음으로</button>
+        </div>
+
+        <br>
+        <div class="row" data-ng-show="docs.length > 0">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" data-ng-model="query.pageSize">
+                                    <span class="input-group-btn"><button class="btn btn-default" type="button" data-ng-click="ChangePageSize()">줄</button></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-offset-4 col-sm-6">
+                                <div class="input-group pull-right">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span data-ng-show="query.searchFilter">{{query.searchFilter}} </span>
+                                            <span data-ng-hide="query.searchFilter">선택 </span>
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li data-ng-repeat="sch in searchFilters"><a href="" data-ng-click="query.searchFilter = sch">{{sch}}</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" class="form-control" data-ng-model="query.searchKeyword">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">검색하기</button>
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-ng-click="Search('RESET')">처음으로</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. main list zone -->
+        <div class="row">
+            <div class="col-sm-12" data-ng-show="docs.length > 0">
+                <table class="table table-hover table-center">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
+                            <th>아이피(IP)</th>
+                            <th>메모</th>
+                            <th>등록일</th>
+                            <th>옵션</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="doc in docs">
+                            <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
+                            <td>{{ doc.ip }}</td>
+                            <td>{{ doc.short_memo }}</td>
+                            <td>{{ doc.createdAt }}</td>
+                            <td>
+                                <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
+                                <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">해제</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-danger btn-md" data-ng-click="DeleteAll()">선택삭제</button>
+            </div>
+        </div>
+
+        <!-- list pagination zone -->
+        <div class="row">
+            <div class="col-sm-12">
+                <center>
+                    <ul class="pagination">
+                        <li>
+                            <a href="" aria-label="Previous" data-ng-click="PreviousPage()">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="MovePage(page.number)">{{page.number}}</a></li>
+                        <li>
+                            <a href="" aria-label="Next" data-ng-click="NextPage()">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>

@@ -112,6 +112,7 @@ angular.module('Distributor')
         $scope.forMode = '';
 
         $scope.FormOpen = function(mode, id) {
+            $scope.ResetTarget();
             $scope.SiteList();
             $scope.formMode = mode;
             $scope.formSwitch = true;
@@ -135,14 +136,14 @@ angular.module('Distributor')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else { // mode === 'CREATE'
-                $scope.ResetTarget();
+
             }
         };
 
         $scope.FormClose = function() {
             $scope.formSwitch = false;
             $scope.forMode = '';
-            $scope.ResetTarget();
+            $scope.validator.message = '';
         };
 
 

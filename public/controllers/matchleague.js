@@ -91,6 +91,7 @@ angular.module('Match')
         $scope.formMode = '';
 
         $scope.FormOpen = function(mode, id) {
+            $scope.ResetTarget();
             $scope.formMode = mode;
             $scope.formSwitch = true;
 
@@ -109,7 +110,6 @@ angular.module('Match')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else { // mode === 'CREATE'
-                $scope.ResetTarget();
             }
         };
 
@@ -117,7 +117,7 @@ angular.module('Match')
             $scope.formSwitch = false;
             $scope.forMode = '';
             $scope.file = null;
-            $scope.ResetTarget();
+            $scope.validator.message = '';
         };
 
 
