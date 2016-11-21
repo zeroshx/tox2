@@ -1,7 +1,143 @@
+var validator = require('./validator.js');
 var Model = require('mongoose').model('Match');
 var nodemailer = require('../init/nodemailer.js');
 
 var root = 'controller/match.js';
+
+function validation (req) {
+
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.btype,
+            validator: 'btype'
+        }, {
+            required: true,
+            value: req.body.mtype,
+            validator: 'mtype'
+        }, {
+            required: true,
+            value: req.body.state,
+            validator: 'matchstate'
+        }, {
+            required: true,
+            value: req.body.schedule,
+            validator: 'schedule'
+        }, {
+            required: true,
+            value: req.body.kind,
+            validator: 'kind'
+        }, {
+            required: true,
+            value: req.body.league,
+            validator: 'league'
+        }
+    ]);
+
+    if (msg) return msg;
+
+    var valueList = [];
+    if(req.body.btype === '2-WAY') {
+
+        valueList = [
+            {
+                required: true,
+                value: req.body.homeName,
+                validator: 'team'
+            },{
+                required: true,
+                value: req.body.homeRate,
+                validator: 'rate'
+            }, {
+                required: true,
+                value: req.body.awayName,
+                validator: 'team'
+            }, {
+                required: true,
+                value: req.body.awayRate,
+                validator: 'rate'
+            }
+        ];
+
+        if(req.body.mtype === '핸디캡' || req.body.mtype === '언더오버') {
+            valueList.push({
+                required: true,
+                value: req.body.offset,
+                validator: 'offset'
+            });
+        } else {
+            req.body.offset = null;
+        }
+
+        req.body.result = null;
+        req.body.homeScore = null;
+        req.body.awayScore = null;
+        req.body.tieRate = null;
+        req.body.varietySubject = null;
+        req.body.varietyOption = null;
+
+        return validator.run(valueList);
+
+    } else if (req.body.btype === '3-WAY') {
+
+        valueList = [
+            {
+                required: true,
+                value: req.body.homeName,
+                validator: 'team'
+            },{
+                required: true,
+                value: req.body.homeRate,
+                validator: 'rate'
+            }, {
+                required: true,
+                value: req.body.awayName,
+                validator: 'team'
+            }, {
+                required: true,
+                value: req.body.awayRate,
+                validator: 'rate'
+            }, {
+                required: true,
+                value: req.body.tieRate,
+                validator: 'rate'
+            }
+        ];
+
+        req.body.homeScore = null;
+        req.body.awayScore = null;
+        req.body.result = null;
+        req.body.offset = null;
+        req.body.varietySubject = null;
+        req.body.varietyOption = null;
+
+        return validator.run(valueList);
+
+    } else { // req.body.btype === 'VARIETY'
+
+        valueList = [{
+            required: true,
+            value: req.body.varietySubject,
+            validator: 'subject'
+        }, {
+            required: true,
+            value: req.body.varietyOption,
+            validator: 'option'
+        }];
+
+        req.body.result = null;
+        req.body.homeName = null;
+        req.body.homeScore = null;
+        req.body.homeRate = null;
+        req.body.tieRate = null;
+        req.body.awayName = null;
+        req.body.awayScore = null;
+        req.body.awayRate = null;
+        req.body.offset = null;
+
+        return validator.run(valueList);
+    }
+}
 
 exports.List = function(req, res) {
     Model.List(
@@ -30,6 +166,12 @@ exports.List = function(req, res) {
 };
 
 exports.Create = function(req, res) {
+
+    var msg = validation(req);
+    if(msg) return  res.json({
+        failure: msg
+    });
+
     Model.Create(
         req.body.homeName, req.body.homeScore, req.body.homeRate,
         req.body.tieRate,
@@ -39,7 +181,6 @@ exports.Create = function(req, res) {
         req.body.state, req.body.btype, req.body.mtype,
         req.body.kind, req.body.league,
         req.body.schedule,
-        req.body.result,
         function(err, msg, doc) {
             if (err) { // internal error
                 nodemailer(root + ':Create', JSON.stringify(err));
@@ -55,6 +196,12 @@ exports.Create = function(req, res) {
 };
 
 exports.Update = function(req, res) {
+
+    var msg = validation(req);
+    if(msg) return  res.json({
+        failure: msg
+    });
+
     Model.Update(
         req.params.id,
         req.body.homeName, req.body.homeScore, req.body.homeRate,
@@ -65,7 +212,6 @@ exports.Update = function(req, res) {
         req.body.state, req.body.btype, req.body.mtype,
         req.body.kind, req.body.league,
         req.body.schedule,
-        req.body.result,
         function(err, msg, doc) {
             if (err) { // internal error
                 nodemailer(root + ':Ureate', JSON.stringify(err));

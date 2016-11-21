@@ -1,3 +1,4 @@
+var validator = require('./validator.js');
 var Model = require('mongoose').model('Blacklist');
 var nodemailer = require('../init/nodemailer.js');
 
@@ -24,6 +25,27 @@ exports.List = function(req, res) {
 };
 
 exports.Create = function(req, res) {
+
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.nick,
+            validator: 'nick'
+        }, {
+            required: true,
+            value: req.body.site,
+            validator: 'site'
+        }, {
+            required: false,
+            value: req.body.memo,
+            validator: 'memo'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Create(
         req.body.nick,
         req.body.site,
@@ -43,9 +65,25 @@ exports.Create = function(req, res) {
 };
 
 exports.Update = function(req, res) {
+
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.site,
+            validator: 'site'
+        }, {
+            required: false,
+            value: req.body.memo,
+            validator: 'memo'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Update(
         req.params.id,
-        req.body.nick,
         req.body.site,
         req.body.memo,
         function(err, msg, doc) {

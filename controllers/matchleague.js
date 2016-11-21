@@ -60,6 +60,23 @@ exports.Create = function(req, res) {
             var oldPath = file.image.path;
             var newPath = __dirname + "/../public/" + imagePath;
         }
+
+        var msg = validator.run([
+            {
+                required: true,
+                value: body.name,
+                validator: 'league'
+            }, {
+                required: true,
+                value: body.country,
+                validator: 'country'
+            }
+        ]);
+
+        if (msg) return res.json({
+            failure: msg
+        });
+
         Model.Create(
             body.name,
             body.country,
@@ -123,9 +140,21 @@ exports.Update = function(req, res) {
             var oldPath = file.image.path;
             var newPath = __dirname + "/../public/" + imagePath;
         }
+
+        var msg = validator.run([
+            {
+                required: true,
+                value: body.country,
+                validator: 'country'
+            }
+        ]);
+
+        if (msg) return res.json({
+            failure: msg
+        });
+
         Model.Update(
             req.params.id,
-            body.name,
             body.country,
             imagePath,
             function(err, msg, doc) {

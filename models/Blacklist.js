@@ -4,30 +4,15 @@ var Schema = mongoose.Schema;
 var Model = new Schema({
     nick: {
         type: String,
-        unique: true,
         index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 닉네임이 아닙니다.'
-        },
-        required: [true, '닉네임이 없습니다.']
+        unique: true
     },
     site: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 사이트 이름이 아닙니다.'
-        },
-        required: [true, '사이트 이름이 없습니다.']
+        index: true
     },
     memo: {
-        type: String,
-        maxlength: 100
+        type: String
     },
     createdAt: {
         type: String
@@ -100,12 +85,10 @@ Model.statics.Create = function(
     memo,
     callback
 ) {
-
     var Document = this;
 
     Document.findOne({
-        nick: nick,
-        site: site
+        nick: nick
     }, function(err, doc) {
         if (err) {
             return callback(err);
@@ -119,7 +102,6 @@ Model.statics.Create = function(
         newDoc.memo = memo;
         var moment = new Date();
         newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
-        newDoc.modifiedAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
         newDoc.save(function(err) {
             if (err) {
                 return callback(err);
@@ -131,7 +113,6 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
     id,
-    nick,
     site,
     memo,
     callback
@@ -144,7 +125,6 @@ Model.statics.Update = function(
         _id: id
     }, {
         $set: {
-            nick: nick,
             site: site,
             memo: memo,
             modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()

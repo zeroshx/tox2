@@ -5,198 +5,100 @@ var Model = new Schema({
     home: {
         name: {
             type: String,
-            index: true,
-            validate: {
-                validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
-                },
-                message: '{VALUE}는 적절한 홈팀명이 아닙니다.'
-            }
+            index: true
         },
         score: {
-            type: Number,
-            min: 0
+            type: Number
         },
         rate: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^\d{1,2}(|(\.(?=\d))\d{0,2})$/.test(v);
-                },
-                message: '{VALUE}는 적절한 배당값이 아닙니다.'
-            }
+            type: String
         },
         bet: {
-            type: Number,
-            min: 0,
-            default: 0
+            type: Number
         },
         count: {
-            type: Number,
-            min: 0,
-            default: 0
+            type: Number
         }
     },
     tie: {
         rate: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^\d{1,2}(|(\.(?=\d))\d{0,2})$/.test(v);
-                },
-                message: '{VALUE}는 적절한 배당값이 아닙니다.'
-            }
+            type: String
         },
         bet: {
-            type: Number,
-            min: 0,
-            default: 0
+            type: Number
         },
         count: {
-            type: Number,
-            min: 0,
-            default: 0
+            type: Number
         }
     },
     away: {
         name: {
             type: String,
-            index: true,
-            validate: {
-                validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
-                },
-                message: '{VALUE}는 적절한 원정팀명이 아닙니다.'
-            }
+            index: true
         },
         score: {
-            type: Number,
-            min: 0
+            type: Number
         },
         rate: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^\d{1,2}(|(\.(?=\d))\d{0,2})$/.test(v);
-                },
-                message: '{VALUE}는 적절한 배당값이 아닙니다.'
-            }
+            type: String
         },
         bet: {
-            type: Number,
-            min: 0,
-            default: 0
+            type: Number
         },
         count: {
-            type: Number,
-            min: 0,
-            default: 0
+            type: Number
         }
     },
     variety: {
         subject: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,50}$/.test(v);
-                },
-                message: '{VALUE}는 적절한 버라이어티 주제가 아닙니다.'
-            }
+            type: String
         },
         option: [{
             name: {
-                type: String,
-                validate: {
-                    validator: function(v) {
-                        return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
-                    },
-                    message: '{VALUE}는 적절한 픽명이 아닙니다.'
-                }
+                type: String
             },
             pick: {
-                type: String,
-                enum: [
-                    'OP1', 'OP2', 'OP3', 'OP4', 'OP5', 'OP6', 'OP7', 'OP8', 'OP9', 'OP10',
-                    'OP11', 'OP12', 'OP13', 'OP14', 'OP15', 'OP16', 'OP17', 'OP18', 'OP19', 'OP20'
-                ]
+                type: String
             },
             rate: {
-                type: Number,
-                min: 0
+                type: String
             },
             bet: {
-                type: Number,
-                min: 0,
-                default: 0
+                type: Number
             },
             count: {
-                type: Number,
-                min: 0,
-                default: 0
+                type: Number
             }
         }]
     },
     offset: {
-        type: String,
-        validate: {
-            validator: function(v) {
-                return /^([-]?\d{1,2})(|(\.(?=\d))\d{0,2})$/g.test(v);
-            },
-            message: '{VALUE}는 적절한 기준점이 아닙니다.'
-        }
+        type: String
     },
     state: {
         type: String,
-        index: true,
-        enum: ['등록', '배팅', '마감', '종료'],
-        required: [true, '매치 상태가 없습니다.']
+        index: true
     },
     btype: { // betting type
         type: String,
-        index: true,
-        enum: ['2-WAY', '3-WAY', 'VARIETY'],
-        required: [true, '배팅 타입이 없습니다.']
+        index: true
     },
     mtype: { // match type
         type: String,
-        index: true,
-        enum: ['일반', '핸디캡', '언더오버'],
-        required: [true, '매치 타입이 없습니다']
+        index: true
     },
     kind: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 종목명 아닙니다.'
-        }
+        index: true
     },
     league: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 리그명이 아닙니다.'
-        }
+        index: true
     },
     schedule: {
-        type: String,
-        required: [true, '매치 일정이 없습니다.']
+        type: String
     },
     result: {
-        type: String,
-        enum: [
-            '대기',
-            // used in 3-way
-            '홈승', '무승부', '원정승',
-            // used in n-way
-            '선택1', '선택2', '선택3', '선택4', '선택5', '선택6', '선택7', '선택8', '선택9', '선택10',
-            '선택11', '선택12', '선택13', '선택14', '선택15', '선택16', '선택17', '선택18', '선택19', '선택20'
-        ]
+        type: String
     },
     createdAt: {
         type: String
@@ -335,47 +237,19 @@ Model.statics.Create = function(
     state, btype, mtype,
     kind, league,
     schedule,
-    result,
     callback
 ) {
 
     var Document = this;
 
-    if (btype === 'VARIETY') {
-        homeName = '';
-        homeScore = 0;
-        homeRate = '0.00';
-        awayName = '';
-        awayScore = 0;
-        awayRate = '0.00';
-        tieRate = '0.00';
-    } else if (btype === '2-WAY') {
-        tieRate = '0.00';
-        varietySubject = '';
-        varietyOption = [];
-    } else { // 3-way
-        varietySubject = '';
-        varietyOption = [];
-    }
-
-    if (mtype === '일반') {
-        offset = '0.0';
-    }
-
-    if (state !== '종료') {
-        result = '대기';
-        homeScore = 0;
-        awayScore = 0;
-    }
-
     var newDoc = new Document();
     newDoc.home.name = homeName;
     newDoc.home.score = homeScore;
     newDoc.home.rate = homeRate;
+    newDoc.tie.rate = tieRate;
     newDoc.away.name = awayName;
     newDoc.away.score = awayScore;
     newDoc.away.rate = awayRate;
-    newDoc.tie.rate = tieRate;
     newDoc.variety.subject = varietySubject;
     newDoc.variety.option = varietyOption;
     newDoc.offset = offset;
@@ -385,7 +259,26 @@ Model.statics.Create = function(
     newDoc.kind = kind;
     newDoc.league = league;
     newDoc.schedule = schedule;
-    newDoc.result = result;
+
+    if(btype === '2-WAY') {
+        newDoc.home.bet = 0;
+        newDoc.home.count = 0;
+        newDoc.away.bet = 0;
+        newDoc.away.count = 0;
+    } else if(btype === '3-WAY') {
+        newDoc.home.bet = 0;
+        newDoc.home.count = 0;
+        newDoc.away.bet = 0;
+        newDoc.away.count = 0;
+        newDoc.tie.bet = 0;
+        newDoc.tie.count = 0;
+    } else {
+        for(var i = 0; i<newDoc.variety.option.length; i++) {
+            newDoc.variety.option[i].bet = 0;
+            newDoc.variety.option[i].count = 0;
+        }
+    }
+
     var moment = new Date();
     newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
     newDoc.modifiedAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
@@ -407,39 +300,11 @@ Model.statics.Update = function(
     state, btype, mtype,
     kind, league,
     schedule,
-    result,
     callback
 ) {
 
     var Document = this;
     var moment = new Date();
-
-    if (btype === 'VARIETY') {
-        homeName = '';
-        homeScore = 0;
-        homeRate = '0.00';
-        awayName = '';
-        awayScore = 0;
-        awayRate = '0.00';
-        tieRate = '0.00';
-    } else if (btype === '2-WAY') {
-        tieRate = '0.00';
-        varietySubject = '';
-        varietyOption = [];
-    } else { // 3-way
-        varietySubject = '';
-        varietyOption = [];
-    }
-
-    if (mtype === '일반') {
-        offset = '0.0';
-    }
-
-    if (state !== '종료') {
-        result = '대기';
-        homeScore = 0;
-        awayScore = 0;
-    }
 
     Document.findOneAndUpdate({
         _id: id
@@ -469,7 +334,6 @@ Model.statics.Update = function(
             kind: kind,
             league: league,
             schedule: schedule,
-            result: result,
             modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }
     }, {

@@ -12,6 +12,7 @@ var matchkind = require('./matchkind.js');
 var matchleague = require('./matchleague.js');
 var blacklist = require('./blacklist.js');
 var ipblock = require('./ipblock.js');
+var user = require('./user.js');
 
 router.use('/', index);
 
@@ -29,5 +30,7 @@ router.use('/match/league', matchleague);
 
 router.use('/config/ipblock', ipblock);
 router.use('/config/blacklist', blacklist);
+
+router.use('/user', user);
 
 module.exports = router;

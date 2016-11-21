@@ -53,26 +53,29 @@ angular.module('Site')
         $scope.pages = [];
 
         $scope.MovePage = function(page) {
-            $scope.query.page = page;
+            $scope.query.page = Number(page);
             $scope.List();
         };
 
         $scope.NextPage = function() {
-            if ($scope.query.page < $scope.totalPage) {
-                $scope.query.page++;
+            var page = Number($scope.query.page);
+            var totalPage = Number($scope.totalPage);
+            if (page < totalPage) {
+                $scope.query.page = page + 1;
                 $scope.List();
             }
         };
 
         $scope.PreviousPage = function() {
-            if (($scope.query.page - 1) > 0) {
-                $scope.query.page--;
+            var page = Number($scope.query.page);
+            if ((page - 1) > 0) {
+                $scope.query.page = page - 1;
                 $scope.List();
             }
         };
 
         $scope.LastPage = function() {
-            $scope.query.page = $scope.totalPage;
+            $scope.query.page = Number($scope.totalPage);
             $scope.List();
         };
 

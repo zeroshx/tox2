@@ -27,7 +27,7 @@
                             <div class="row">
                                 <div class="col-sm-offset-3 col-sm-6">
                                     <div class="form-group">
-                                        <label>IP 주소</label>
+                                        <label>아이피 주소</label>
                                         <input type="text" class="form-control" data-ng-model="targetIp" placeholder="(xxx.xxx.xxx.xxx)">
                                     </div>
                                 </div>
@@ -36,14 +36,14 @@
                                 <div class="col-sm-offset-3 col-sm-6">
                                     <div class="form-group">
                                         <label>메모</label>
-                                        <textarea class="form-control" rows="5" data-ng-model="targetMemo" placeholder="(100자 이내)"></textarea>
+                                        <textarea class="form-control" rows="5" data-ng-model="targetMemo" placeholder="(200자 이내)"></textarea>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <center>
                                     <button type="submit" class="btn btn-primary" data-ng-show="formMode === 'CREATE'" data-ng-click="Create()">추가</button>
-                                    <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE'" data-ng-click="Update()">수정</button>
+                                    <!-- <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE'" data-ng-click="Update()">수정</button> -->
                                     <button type="button" class="btn btn-danger" data-ng-click="FormClose()">취소</button>
                                 </center>
                             </div>
@@ -116,7 +116,7 @@
                             <td>{{ doc.short_memo }}</td>
                             <td>{{ doc.createdAt }}</td>
                             <td>
-                                <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
+                                <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">자세히</button>
                                 <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">해제</button>
                             </td>
                         </tr>

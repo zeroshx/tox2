@@ -9,8 +9,8 @@ angular.module('Match')
         $scope.baseUrl = '/match/league';
 
         $scope.query = {
-            page: parseInt($routeParams.page ? $routeParams.page : 1),
-            pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
+            page: Number($routeParams.page ? $routeParams.page : 1),
+            pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : ''
         };
@@ -56,26 +56,29 @@ angular.module('Match')
         $scope.pages = [];
 
         $scope.MovePage = function(page) {
-            $scope.query.page = page;
+            $scope.query.page = Number(page);
             $scope.List();
         };
 
         $scope.NextPage = function() {
-            if ($scope.query.page < $scope.totalPage) {
-                $scope.query.page++;
+            var page = Number($scope.query.page);
+            var totalPage = Number($scope.totalPage);
+            if (page < totalPage) {
+                $scope.query.page = page + 1;
                 $scope.List();
             }
         };
 
         $scope.PreviousPage = function() {
-            if (($scope.query.page - 1) > 0) {
-                $scope.query.page--;
+            var page = Number($scope.query.page);
+            if ((page - 1) > 0) {
+                $scope.query.page = page - 1;
                 $scope.List();
             }
         };
 
         $scope.LastPage = function() {
-            $scope.query.page = $scope.totalPage;
+            $scope.query.page = Number($scope.totalPage);
             $scope.List();
         };
 
@@ -158,7 +161,6 @@ angular.module('Match')
                 method: 'PUT',
                 data: {
                     image: $scope.file,
-                    name: $scope.targetName,
                     country:  $scope.targetCountry
                 }
             }).then(function(res) { //success
@@ -242,17 +244,6 @@ angular.module('Match')
         /****************************************************************************
             Etc Functions
         ****************************************************************************/
-        $scope.CreateShortcut = function(element, length) {
-            for (i = 0; i < $scope.docs.length; i++) {
-                if ($scope.docs[i][element].length > length) {
-                    $scope.docs[i]['short_' + element] = $scope.docs[i][element].slice(0, length);
-                    $scope.docs[i]['short_' + element] += '...';
-                } else {
-                    $scope.docs[i]['short_' + element] = $scope.docs[i][element];
-                }
-            }
-        };
-
         $scope.ChangePageSize = function() {
             $scope.query.pageSize = parseInt($scope.query.pageSize);
             if ($scope.query.pageSize > 0) {
@@ -283,12 +274,13 @@ angular.module('Match')
         };
 
         $scope.ResetTarget = function() {
-            $scope.targetId = '';
-            $scope.targetName = '';
-            $scope.targetCountry = '';
+            $scope.targetId = null;
+            $scope.targetName = null;
+            $scope.targetCountry = null;
         };
 
         $scope.Reset = function () {
+            $scope.formSwitch = null;
             $scope.ResetTarget();
             $scope.List();
         };

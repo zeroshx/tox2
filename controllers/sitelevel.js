@@ -23,6 +23,39 @@ exports.List = function(req, res) {
         });
 };
 
+exports.ListAll = function(req, res) {
+    Model.ListAll(function(err, msg, doc) {
+            if (err) { // internal error
+                nodemailer(root + ':ListAll', JSON.stringify(err));
+                return res.sendStatus(500);
+            } else if (msg) { // exception control
+                return res.json({
+                    failure: msg
+                });
+            } else {
+                return res.json(doc);
+            }
+        });
+};
+
+
+exports.ListForSite = function(req, res) {
+    Model.ListForSite(
+        req.params.site,
+        function(err, msg, doc) {
+            if (err) { // internal error
+                nodemailer(root + ':ListForSite', JSON.stringify(err));
+                return res.sendStatus(500);
+            } else if (msg) { // exception control
+                return res.json({
+                    failure: msg
+                });
+            } else {
+                return res.json(doc);
+            }
+        });
+};
+
 exports.Create = function(req, res) {
 
     Model.Create(

@@ -7,8 +7,8 @@ angular.module('Distributor')
         $scope.baseUrl = '/distributor';
 
         $scope.query = {
-            page: parseInt($routeParams.page ? $routeParams.page : 1),
-            pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
+            page: Number($routeParams.page ? $routeParams.page : 1),
+            pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : ''
         };
@@ -23,8 +23,8 @@ angular.module('Distributor')
         /****************************************************************************
             Sub Menu setting
         ****************************************************************************/
-        for(var i in $rootScope.mainmenu) {
-            if($rootScope.mainmenu[i].name === '총판') {
+        for (var i in $rootScope.mainmenu) {
+            if ($rootScope.mainmenu[i].name === '총판') {
                 $rootScope.submenu = $rootScope.mainmenu[i].submenu;
             }
         }
@@ -76,26 +76,29 @@ angular.module('Distributor')
         $scope.pages = [];
 
         $scope.MovePage = function(page) {
-            $scope.query.page = page;
+            $scope.query.page = Number(page);
             $scope.List();
         };
 
         $scope.NextPage = function() {
-            if ($scope.query.page < $scope.totalPage) {
-                $scope.query.page++;
+            var page = Number($scope.query.page);
+            var totalPage = Number($scope.totalPage);
+            if (page < totalPage) {
+                $scope.query.page = page + 1;
                 $scope.List();
             }
         };
 
         $scope.PreviousPage = function() {
-            if (($scope.query.page - 1) > 0) {
-                $scope.query.page--;
+            var page = Number($scope.query.page);
+            if ((page - 1) > 0) {
+                $scope.query.page = page - 1;
                 $scope.List();
             }
         };
 
         $scope.LastPage = function() {
-            $scope.query.page = $scope.totalPage;
+            $scope.query.page = Number($scope.totalPage);
             $scope.List();
         };
 
@@ -153,11 +156,11 @@ angular.module('Distributor')
         $scope.Create = function() {
             CRUDService.Create($scope.baseUrl).run({
                 name: $scope.targetName,
-                memo: $scope.targetMemo,
-                manager: $scope.targetManager,
                 site: $scope.targetSite,
+                manager: $scope.targetManager,
                 bonusWin: $scope.targetBonusWin,
-                bonusLose: $scope.targetBonusLose
+                bonusLose: $scope.targetBonusLose,
+                memo: $scope.targetMemo,
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -185,7 +188,7 @@ angular.module('Distributor')
                 } else {
                     $scope.docs = res.docs;
                     $scope.totalPage = res.count;
-                    $scope.CreateShortcut('memo', 20);
+                    $scope.RenderList();
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
@@ -198,12 +201,11 @@ angular.module('Distributor')
 
         $scope.Update = function() {
             CRUDService.Update($scope.baseUrl, $scope.targetId).run({
-                name: $scope.targetName,
-                memo: $scope.targetMemo,
-                manager: $scope.targetManager,
                 site: $scope.targetSite,
+                manager: $scope.targetManager,
                 bonusWin: $scope.targetBonusWin,
-                bonusLose: $scope.targetBonusLose
+                bonusLose: $scope.targetBonusLose,
+                memo: $scope.targetMemo,
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -263,14 +265,21 @@ angular.module('Distributor')
         /****************************************************************************
             Etc Functions
         ****************************************************************************/
-        $scope.CreateShortcut = function(element, length) {
+        $scope.RenderList = function() {
+            // step 1. create memo shortcut
             for (i = 0; i < $scope.docs.length; i++) {
-                if ($scope.docs[i][element].length > length) {
-                    $scope.docs[i]['short_' + element] = $scope.docs[i][element].slice(0, length);
-                    $scope.docs[i]['short_' + element] += '...';
-                } else {
-                    $scope.docs[i]['short_' + element] = $scope.docs[i][element];
-                }
+                $scope.docs[i].short_memo = $scope.CreateShortcut($scope.docs[i].memo, 20);
+            }
+        };
+
+        $scope.CreateShortcut = function(str, length) {
+            if(!str || !angular.isString(str)) {
+                return null;
+            }
+            if (str.length > length) {
+                return str.slice(0, length) + '...';
+            } else {
+                return str;
             }
         };
 
@@ -304,16 +313,17 @@ angular.module('Distributor')
         };
 
         $scope.ResetTarget = function() {
-            $scope.targetId = '';
-            $scope.targetName = '';
-            $scope.targetMemo = '';
-            $scope.targetManager = '';
-            $scope.targetSite = '';
-            $scope.targetBonusWin = '';
-            $scope.targetBonusLose = '';
+            $scope.targetId = null;
+            $scope.targetName = null;
+            $scope.targetMemo = null;
+            $scope.targetManager = null;
+            $scope.targetSite = null;
+            $scope.targetBonusWin = null;
+            $scope.targetBonusLose = null;
         };
 
-        $scope.Reset = function () {
+        $scope.Reset = function() {
+            $scope.formSwitch = null;
             $scope.List();
             $scope.SiteList();
             $scope.ResetTarget();

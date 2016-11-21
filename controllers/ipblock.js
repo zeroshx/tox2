@@ -1,3 +1,4 @@
+var validator = require('./validator.js');
 var Model = require('mongoose').model('IPBlock');
 var nodemailer = require('../init/nodemailer.js');
 
@@ -24,6 +25,23 @@ exports.List = function(req, res) {
 };
 
 exports.Create = function(req, res) {
+
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.ip,
+            validator: 'ip'
+        }, {
+            required: false,
+            value: req.body.memo,
+            validator: 'memo'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Create(
         req.body.ip,
         req.body.memo,
@@ -42,9 +60,21 @@ exports.Create = function(req, res) {
 };
 
 exports.Update = function(req, res) {
+
+    var msg = validator.run([
+        {
+            required: false,
+            value: req.body.memo,
+            validator: 'memo'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Update(
         req.params.id,
-        req.body.ip,
         req.body.memo,
         function(err, msg, doc) {
             if (err) { // internal error

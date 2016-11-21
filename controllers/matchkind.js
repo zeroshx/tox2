@@ -1,3 +1,4 @@
+var validator = require('./validator.js');
 var Model = require('mongoose').model('MatchKind');
 var nodemailer = require('../init/nodemailer.js');
 var formidable = require('formidable');
@@ -48,7 +49,7 @@ exports.Create = function(req, res) {
         var imagePath = '';
         var imgExist = false;
         if (file.image !== undefined) {
-            var fileSize = parseInt(file.image.size);
+            var fileSize = Number(file.image.size);
             if (fileSize > (200 * 1024)) { // 200kb
                 return res.json({
                     failure: '파일 사이즈가 너무 큽니다.'
@@ -61,6 +62,19 @@ exports.Create = function(req, res) {
             var oldPath = file.image.path;
             var newPath = __dirname + "/../public/" + imagePath;
         }
+
+        var msg = validator.run([
+            {
+                required: true,
+                value: body.name,
+                validator: 'kind'
+            }
+        ]);
+
+        if (msg) return res.json({
+            failure: msg
+        });
+
         Model.Create(
             body.name,
             imagePath,
@@ -94,7 +108,7 @@ exports.Create = function(req, res) {
                             }
                         });
                     } else {
-                        var targetPath = __dirname + "/../public/" + mk.imagePath;
+                        var targetPath = __dirname + "/../public/" + doc.imagePath;
                         fs.unlink(targetPath, function(err) {
                             return res.json(doc);
                         });
@@ -110,7 +124,7 @@ exports.Update = function(req, res) {
         var imagePath = '';
         var imgExist = false;
         if (file.image !== undefined) {
-            var fileSize = parseInt(file.image.size);
+            var fileSize = Number(file.image.size);
             if (fileSize > (200 * 1024)) {
                 return res.json({
                     failure: '파일 사이즈가 너무 큽니다.'
@@ -125,7 +139,6 @@ exports.Update = function(req, res) {
         }
         Model.Update(
             req.params.id,
-            body.name,
             imagePath,
             function(err, msg, doc) {
                 if (err) { // internal error
@@ -142,7 +155,7 @@ exports.Update = function(req, res) {
                                 fs.writeFile(newPath, data, function(err) {
                                     if (!err) {
                                         fs.unlink(oldPath, function(err) {
-                                            var targetPath = __dirname + "/../public/" + mk.imagePath;
+                                            var targetPath = __dirname + "/../public/" + doc.imagePath;
                                             fs.unlink(targetPath, function(err) {
                                                 return res.json(doc);
                                             });
@@ -179,7 +192,7 @@ exports.Delete = function(req, res) {
                     failure: msg
                 });
             } else {
-                var targetPath = __dirname + "/../public/" + mk.imagePath;
+                var targetPath = __dirname + "/../public/" + doc.imagePath;
                 fs.unlink(targetPath, function(err) {
                     return res.json(doc);
                 });

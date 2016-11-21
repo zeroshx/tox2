@@ -7,8 +7,8 @@ angular.module('Config')
         $scope.baseUrl = '/config/ipblock';
 
         $scope.query = {
-            page: parseInt($routeParams.page ? $routeParams.page : 1),
-            pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
+            page: Number($routeParams.page ? $routeParams.page : 1),
+            pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : ''
         };
@@ -53,26 +53,29 @@ angular.module('Config')
         $scope.pages = [];
 
         $scope.MovePage = function(page) {
-            $scope.query.page = page;
+            $scope.query.page = Number(page);
             $scope.List();
         };
 
         $scope.NextPage = function() {
-            if ($scope.query.page < $scope.totalPage) {
-                $scope.query.page++;
+            var page = Number($scope.query.page);
+            var totalPage = Number($scope.totalPage);
+            if (page < totalPage) {
+                $scope.query.page = page + 1;
                 $scope.List();
             }
         };
 
         $scope.PreviousPage = function() {
-            if (($scope.query.page - 1) > 0) {
-                $scope.query.page--;
+            var page = Number($scope.query.page);
+            if ((page - 1) > 0) {
+                $scope.query.page = page - 1;
                 $scope.List();
             }
         };
 
         $scope.LastPage = function() {
-            $scope.query.page = $scope.totalPage;
+            $scope.query.page = Number($scope.totalPage);
             $scope.List();
         };
 
@@ -153,7 +156,7 @@ angular.module('Config')
                 } else {
                     $scope.docs = res.docs;
                     $scope.totalPage = res.count;
-                    $scope.CreateShortcut('memo', 20);
+                    $scope.RenderList();
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
@@ -227,14 +230,21 @@ angular.module('Config')
         /****************************************************************************
             Etc Functions
         ****************************************************************************/
-        $scope.CreateShortcut = function(element, length) {
+        $scope.RenderList = function() {
+            // step 1. create memo shortcut
             for (i = 0; i < $scope.docs.length; i++) {
-                if ($scope.docs[i][element] !== null && $scope.docs[i][element].length > length) {
-                    $scope.docs[i]['short_' + element] = $scope.docs[i][element].slice(0, length);
-                    $scope.docs[i]['short_' + element] += '...';
-                } else {
-                    $scope.docs[i]['short_' + element] = $scope.docs[i][element];
-                }
+                $scope.docs[i].short_memo = $scope.CreateShortcut($scope.docs[i].memo, 20);
+            }
+        };
+
+        $scope.CreateShortcut = function(str, length) {
+            if(!str || !angular.isString(str)) {
+                return null;
+            }
+            if (str.length > length) {
+                return str.slice(0, length) + '...';
+            } else {
+                return str;
             }
         };
 
@@ -268,12 +278,13 @@ angular.module('Config')
         };
 
         $scope.ResetTarget = function() {
-            $scope.targetId = '';
-            $scope.targetIp = '';
-            $scope.targetMemo = '';
+            $scope.targetId = null;
+            $scope.targetIp = null;
+            $scope.targetMemo = null;
         };
 
         $scope.Reset = function () {
+            $scope.formSwitch = null;
             $scope.List();
             $scope.ResetTarget();
         };

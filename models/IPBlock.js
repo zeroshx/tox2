@@ -5,18 +5,10 @@ var Model = new Schema({
     ip: {
         type: String,
         unique: true,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 아이피 주소가 아닙니다.'
-        },
-        required: [true, '아이피 주소가 없습니다.']
+        index: true
     },
     memo: {
-        type: String,
-        maxlength: 100
+        type: String
     },
     createdAt: {
         type: String
@@ -113,7 +105,6 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
     id,
-    ip,
     memo,
     callback
 ) {
@@ -125,7 +116,6 @@ Model.statics.Update = function(
         _id: id
     }, {
         $set: {
-            ip: ip,
             memo: memo,
             modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }

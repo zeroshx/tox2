@@ -3,22 +3,28 @@ angular.module('User')
     function($routeProvider) {
       $routeProvider
         .when('/user', {
-          templateUrl: '/views/user.html',
-          controller: 'UserCtrl',
-          resolve: {
-            preAuth: function(AuthService) {
-              return AuthService.isAliveQ();
-            }
-          }
+          templateUrl: '/views/user.html'
+        //   resolve: {
+        //     preAuth: function(AuthService) {
+        //       return AuthService.isAliveQ();
+        //     }
+        //   }
         })
-        .when('/user/:userName', {
-          templateUrl: '/views/user.html',
-          controller: 'UserCtrl',
-          resolve: {
-            preAuth: function(AuthService) {
-              return AuthService.isAliveQ();
-            }
-          }
+        .when('/user/history', {
+          templateUrl: '/views/userhistory.html'
+        //   resolve: {
+        //     preAuth: function(AuthService) {
+        //       return AuthService.isAliveQ();
+        //     }
+        //   }
+        })
+        .when('/user/stat', {
+          templateUrl: '/views/userstat.html'
+        //   resolve: {
+        //     preAuth: function(AuthService) {
+        //       return AuthService.isAliveQ();
+        //     }
+        //   }
         });
     }
   ]);

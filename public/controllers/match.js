@@ -9,8 +9,8 @@ angular.module('Match')
         $scope.viewMode = 'WAY';
 
         $scope.query = {
-            page: parseInt($routeParams.page ? $routeParams.page : 1),
-            pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
+            page: Number($routeParams.page ? $routeParams.page : 1),
+            pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : '',
             listMode: $routeParams.listMode ? $routeParams.listMode : 'WAY',
@@ -60,26 +60,29 @@ angular.module('Match')
         $scope.pages = [];
 
         $scope.MovePage = function(page) {
-            $scope.query.page = page;
+            $scope.query.page = Number(page);
             $scope.List();
         };
 
         $scope.NextPage = function() {
-            if ($scope.query.page < $scope.totalPage) {
-                $scope.query.page++;
+            var page = Number($scope.query.page);
+            var totalPage = Number($scope.totalPage);
+            if (page < totalPage) {
+                $scope.query.page = page + 1;
                 $scope.List();
             }
         };
 
         $scope.PreviousPage = function() {
-            if (($scope.query.page - 1) > 0) {
-                $scope.query.page--;
+            var page = Number($scope.query.page);
+            if ((page - 1) > 0) {
+                $scope.query.page = page - 1;
                 $scope.List();
             }
         };
 
         $scope.LastPage = function() {
-            $scope.query.page = $scope.totalPage;
+            $scope.query.page = Number($scope.totalPage);
             $scope.List();
         };
 
@@ -113,7 +116,7 @@ angular.module('Match')
                         $scope.targetTieRate = $scope.docs[i].tie.rate;
                         $scope.targetAwayRate = $scope.docs[i].away.rate;
                         $scope.targetVarietySubject = $scope.docs[i].variety.subject;
-                        $scope.targetVarietyOption = $scope.docs[i].variety.picks;
+                        $scope.targetVarietyOption = $scope.docs[i].variety.option;
                         $scope.targetOffset = $scope.docs[i].offset;
                         $scope.targetLeague = $scope.docs[i].league;
                         $scope.targetKind = $scope.docs[i].kind;
@@ -129,10 +132,10 @@ angular.module('Match')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else { // mode === 'CREATE'
+                $scope.targetVarietyOption = [];
                 $scope.targetBtype = '3-WAY';
                 $scope.targetMtype = '일반';
                 $scope.targetState = '등록';
-                $scope.targetResult = '대기';
 
                 var nowTime = new Date();
                 $scope.targetSchedule = new Date(
@@ -203,15 +206,14 @@ angular.module('Match')
                 tieRate: $scope.targetTieRate,
                 awayRate: $scope.targetAwayRate,
                 varietySubject: $scope.targetVarietySubject,
-                varietyPicks: $scope.targetVarietyOption,
+                varietyOption: $scope.targetVarietyOption,
                 offset: $scope.targetOffset,
                 league: $scope.targetLeague,
                 kind: $scope.targetKind,
                 state: $scope.targetState,
                 btype: $scope.targetBtype,
                 mtype: $scope.targetMtype,
-                schedule: $filter('date')($scope.targetSchedule, 'yyyy-MM-dd HH:mm'),
-                result: $scope.targetResult
+                schedule: $filter('date')($scope.targetSchedule, 'yyyy-MM-dd HH:mm')
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -239,15 +241,14 @@ angular.module('Match')
                 tieRate: $scope.targetTieRate,
                 awayRate: $scope.targetAwayRate,
                 varietySubject: $scope.targetVarietySubject,
-                varietyPicks: $scope.targetVarietyOption,
+                varietyOption: $scope.targetVarietyOption,
                 offset: $scope.targetOffset,
                 league: $scope.targetLeague,
                 kind: $scope.targetKind,
                 state: $scope.targetState,
                 btype: $scope.targetBtype,
                 mtype: $scope.targetMtype,
-                schedule: $filter('date')($scope.targetSchedule, 'yyyy-MM-dd HH:mm'),
-                result: $scope.targetResult
+                schedule: $filter('date')($scope.targetSchedule, 'yyyy-MM-dd HH:mm')
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -275,7 +276,7 @@ angular.module('Match')
                 } else {
                     $scope.docs = res.docs;
                     $scope.totalPage = res.count;
-                    $scope.CreateExtraData();
+                    $scope.RenderList();
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.viewMode = $scope.query.listMode;
                     $scope.validator.message = '';
@@ -374,24 +375,24 @@ angular.module('Match')
         };
 
         $scope.ResetTarget = function() {
-            $scope.targetId = '';
-            $scope.targetHomeName = '';
-            $scope.targetAwayName = '';
-            $scope.targetHomeScore = '';
-            $scope.targetAwayScore = '';
-            $scope.targetOffset = '';
-            $scope.targetHomeRate = '';
-            $scope.targetAwayRate = '';
-            $scope.targetTieRate = '';
-            $scope.targetLeague = '';
-            $scope.targetKind = '';
-            $scope.targetSchedule = '';
-            $scope.targetBtype = '';
-            $scope.targetMtype = '';
-            $scope.targetResult = '';
-            $scope.targetState = '';
-            $scope.targetVarietySubject = '';
-            $scope.targetVarietyOption = [];
+            $scope.targetId = null;
+            $scope.targetHomeName = null;
+            $scope.targetAwayName = null;
+            $scope.targetHomeScore = null;
+            $scope.targetAwayScore = null;
+            $scope.targetOffset = null;
+            $scope.targetHomeRate = null;
+            $scope.targetAwayRate = null;
+            $scope.targetTieRate = null;
+            $scope.targetLeague = null;
+            $scope.targetKind = null;
+            $scope.targetSchedule = null;
+            $scope.targetBtype = null;
+            $scope.targetMtype = null;
+            $scope.targetResult = null;
+            $scope.targetState = null;
+            $scope.targetVarietySubject = null;
+            $scope.targetVarietyOption = null;
         };
 
         $scope.SelectKind = function(kind) {
@@ -403,6 +404,10 @@ angular.module('Match')
         };
 
         $scope.SelectState = function(state) {
+            if($scope.formMode === 'CREATE' && state === '마감') {
+                $scope.validator.type = 'info';
+                $scope.validator.message = '마감 상태로 매치를 생성할 경우 배팅할 수 없습니다.';
+            }
             $scope.targetState = state;
         };
 
@@ -415,19 +420,19 @@ angular.module('Match')
             } else if (btype === 'VARIETY') {
                 $scope.targetMtype = '일반';
                 $scope.targetVarietyOption = [{
-                    pick: 'OP1',
+                    pick: '선택1',
                     name: '',
                     rate: ''
                 }, {
-                    pick: 'OP2',
+                    pick: '선택2',
                     name: '',
                     rate: ''
                 }, {
-                    pick: 'OP3',
+                    pick: '선택3',
                     name: '',
                     rate: ''
                 }, {
-                    pick: 'OP4',
+                    pick: '선택4',
                     name: '',
                     rate: ''
                 }];
@@ -471,7 +476,7 @@ angular.module('Match')
         $scope.AddOption = function() {
             if ($scope.targetVarietyOption.length < 20) {
                 $scope.targetVarietyOption.push({
-                    pick: 'OP' + ($scope.targetVarietyOption.length + 1),
+                    pick: '선택' + ($scope.targetVarietyOption.length + 1),
                     name: '',
                     rate: ''
                 });
@@ -482,12 +487,12 @@ angular.module('Match')
         };
 
         $scope.RemoveOption = function() {
-            if ($scope.targetVarietyOption.length > 3) {
+            if ($scope.targetVarietyOption.length > 4) {
                 $scope.targetVarietyOption.splice($scope.targetVarietyOption.length - 1, 1);
                 $scope.targetResult = '';
             } else {
                 $scope.validator.type = 'info';
-                $scope.validator.message = '2개 이하의 픽 경기는 2-WAY, 3-WAY 타입으로 생성해주세요.';
+                $scope.validator.message = '3개 이하의 픽 경기는 2-WAY, 3-WAY 타입으로 생성해주세요.';
             }
         };
 
@@ -495,14 +500,14 @@ angular.module('Match')
             $scope.targetResult = result;
         };
 
-        $scope.CreateExtraData = function() {
+        $scope.RenderList = function() {
             if ($scope.query.listMode === 'VARIETY') {
                 for (var i in $scope.docs) {
                     $scope.docs[i].totalBet = 0;
                     $scope.docs[i].totalBetCount = 0;
-                    for (var j in $scope.docs[i].variety.picks) {
-                        $scope.docs[i].totalBet += $scope.docs[i].variety.picks[j].bet;
-                        $scope.docs[i].totalBetCount += $scope.docs[i].variety.picks[j].count;
+                    for (var j in $scope.docs[i].variety.option) {
+                        $scope.docs[i].totalBet += $scope.docs[i].variety.option[j].bet;
+                        $scope.docs[i].totalBetCount += $scope.docs[i].variety.option[j].count;
                     }
                     $scope.docs[i].totalBetCurrency = $filter('number')($scope.docs[i].totalBet);
                 }
@@ -521,8 +526,8 @@ angular.module('Match')
             console.log($scope[$scope.debugName]);
         };
 
-
         $scope.Reset = function() {
+            $scope.formSwitch = null;
             $scope.ResetTarget();
             $scope.List();
             $scope.LeagueList();

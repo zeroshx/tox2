@@ -5,28 +5,14 @@ var Model = new Schema({
     name: {
         type: String,
         unique: true,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 리그명이 아닙니다.'
-        },
-        required: [true, '리그명이 없습니다.']
+        index: true
     },
     country: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{1,30}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 국가명이 아닙니다.'
-        }
+        index: true
     },
     imagePath: {
-        type: String,
-        maxlength: 500
+        type: String
     },
     createdAt: {
         type: String
@@ -130,14 +116,13 @@ Model.statics.Create = function(name, country, imagePath, callback) {
     });
 };
 
-Model.statics.Update = function(id, name, country, imagePath, callback) {
+Model.statics.Update = function(id, country, imagePath, callback) {
 
     var Document = this;
     var moment = new Date();
 
     var query = {
         $set: {
-            name: name,
             country: country,
             modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }

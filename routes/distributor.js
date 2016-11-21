@@ -13,9 +13,13 @@ router.get('/',
   ctrl.List
 );
 
-// router.get('/:id',
-//   ctrl.list
-// );
+router.get('/all',
+  ctrl.ListAll
+);
+
+router.get('/forsite/:site',
+  ctrl.ListForSite
+);
 
 router.put('/:id',
   ctrl.Update

@@ -4,60 +4,30 @@ var Schema = mongoose.Schema;
 var Model = new Schema({
     name: {
         type: String,
-        unique: true,
         index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 총판명이 아닙니다.'
-        },
-        required: [true, '총판 이름이 없습니다.']
+        unique: true
     },
     site: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 사이트 이름이 아닙니다.'
-        },
-        required: [true, '사이트 이름이 없습니다.']
+        index: true
     },
     manager: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 관리자 이름이 아닙니다.'
-        },
-        required: [true, '관리자 이름이 없습니다.']
+        index: true
     },
     bonus: {
         win: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '승리 보너스가 없습니다.']
+            type: Number
         },
         lose: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '패배 보너스가 없습니다.']
+            type: Number
         }
     },
-    memo: {
-        type: String,
-        maxlength: 100
-    },
     headcount: {
-        type: Number,
-        min: 0,
-        required: [true, '회원 수가 없습니다.']
+        type: Number
+    },
+    memo: {
+        type: String
     },
     createdAt: {
         type: String
@@ -142,9 +112,9 @@ Model.statics.Create = function(
     name,
     site,
     manager,
-    memo,
     bonusWin,
     bonusLose,
+    memo,
     callback
 ) {
 
@@ -160,6 +130,7 @@ Model.statics.Create = function(
             return callback(null, '이미 존재합니다.');
         }
         var newDoc = new Document();
+
         newDoc.name = name;
         newDoc.memo = memo;
         newDoc.site = site;
@@ -168,6 +139,7 @@ Model.statics.Create = function(
             win: bonusWin,
             lose: bonusLose
         };
+
         newDoc.headcount = 0;
         var moment = new Date();
         newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
@@ -183,12 +155,11 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
     id,
-    name,
     site,
     manager,
-    memo,
     bonusWin,
     bonusLose,
+    memo,
     callback
 ) {
 
@@ -199,14 +170,13 @@ Model.statics.Update = function(
         _id: id
     }, {
         $set: {
-            name: name,
             site: site,
             manager: manager,
-            memo: memo,
             bonus: {
                 win: bonusWin,
                 lose: bonusLose
             },
+            memo: memo,
             modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }
     }, {
@@ -233,6 +203,42 @@ Model.statics.Delete = function(id, callback) {
             return callback(err);
         }
         return callback(null, null, doc);
+    });
+};
+
+Model.statics.ListAll = function(callback) {
+
+    var Document = this;
+
+    Document.aggregate({
+            $group: {
+                _id: '$name'
+            }
+        })
+        .sort('_id')
+        .exec(function(err, docs) {
+            if (err) {
+                return callback(err);
+            }
+            return callback(null, null, {
+                docs: docs
+            });
+        });
+};
+
+Model.statics.ListForSite = function(site, callback) {
+
+    var Document = this;
+
+    Document.find({
+        site: site
+    }, function(err, docs) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, null, {
+            docs: docs
+        });
     });
 };
 /******************************************************************

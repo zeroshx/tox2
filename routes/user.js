@@ -7,27 +7,22 @@ var ctrl = require('../controllers/user.js');
 
 // for sites list
 router.get('/',
-  ctrl.list
-);
-
-// for a site info
-router.get('/:siteId',
-  ctrl.single
+  ctrl.List
 );
 
 // for creating new site
 router.post('/',
-  ctrl.create
+  ctrl.Create
 );
 
 // create new site
-router.put('/:siteId',
-  ctrl.update
+router.put('/:id',
+  ctrl.Update
 );
 
 // create new site
-router.delete('/:siteId',
-  ctrl.delete
+router.delete('/:id',
+  ctrl.Delete
 );
 
 module.exports = router;

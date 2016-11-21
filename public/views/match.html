@@ -39,10 +39,10 @@
                     <div class="col-sm-4">
                         <center>
                             <div class="btn-group" role="group">
-                                <button type="button" data-ng-class="{'btn btn-success' : targetState === '등록', 'btn btn-default' : targetState !== '등록'}" data-ng-click="SelectState('등록')">등록</button>
-                                <button type="button" data-ng-class="{'btn btn-warning' : targetState === '배팅', 'btn btn-default' : targetState !== '배팅'}" data-ng-click="SelectState('배팅')">배팅</button>
-                                <button type="button" data-ng-class="{'btn btn-danger' : targetState === '마감', 'btn btn-default' : targetState !== '마감'}" data-ng-click="SelectState('마감')">마감</button>
-                                <button type="button" data-ng-class="{'btn btn-primary' : targetState === '종료', 'btn btn-default' : targetState !== '종료'}" data-ng-click="SelectState('종료')">종료</button>
+                                <button type="button" data-ng-class="{'btn btn-success' : targetState === '등록', 'btn btn-default' : targetState !== '등록'}" data-ng-disabled="targetState === '종료'" data-ng-click="SelectState('등록')">등록</button>
+                                <button type="button" data-ng-class="{'btn btn-warning' : targetState === '배팅', 'btn btn-default' : targetState !== '배팅'}" data-ng-disabled="targetState === '종료'" data-ng-click="SelectState('배팅')">배팅</button>
+                                <button type="button" data-ng-class="{'btn btn-danger' : targetState === '마감', 'btn btn-default' : targetState !== '마감'}" data-ng-disabled="targetState === '종료'" data-ng-click="SelectState('마감')">마감</button>
+                                <button type="button" data-ng-class="{'btn btn-primary' : targetState === '종료', 'btn btn-default' : targetState !== '종료'}" data-ng-disabled="targetState !== '종료'" data-ng-click="SelectState('종료')" >종료</button>
                             </div>
                         </center>
                     </div>
@@ -97,12 +97,12 @@
                                         <br>
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <label>홈팀</label>
+                                                <label>친정팀</label>
                                                 <input type="text" class="form-control" data-ng-model="targetHomeName" placeholder="(2자 이상 30자 이내)">
                                             </div>
                                             <div class="col-sm-4">
                                                 <label>기준점</label>
-                                                <input type="text" class="form-control" data-ng-model="targetOffset" data-ng-disabled="targetMtype === '일반'" placeholder="(-)0.0 (홈팀 기준)">
+                                                <input type="text" class="form-control" data-ng-model="targetOffset" data-ng-disabled="targetMtype === '일반'" placeholder="(-)0.0 (친정팀 기준)">
                                             </div>
                                             <div class="col-sm-4">
                                                 <label>원정팀</label>
@@ -113,7 +113,7 @@
                                         <br>
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <label>홈팀 배당</label>
+                                                <label>친정팀 배당</label>
                                                 <input type="text" class="form-control" data-ng-model="targetHomeRate" placeholder="00.00">
                                             </div>
                                             <div class="col-sm-4">
@@ -213,22 +213,22 @@
                                 <form class="form form-inline row" data-ng-show="targetBtype!=='VARIETY'" novalidate>
                                     <div class="col-sm-4">
                                         <div class="input-group">
-                                            <span class="input-group-addon">홈팀 점수</span>
-                                            <input type="text" class="form-control" data-ng-model="targetHomeScore">
+                                            <span class="input-group-addon">친정팀 점수</span>
+                                            <input type="text" class="form-control" data-ng-model="targetHomeScore" data-ng-disabled="targetBtype==='2-WAY'">
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <center>
                                             <div class="btn-group" role="group">
-                                                <button type="button" data-ng-class="{'btn btn-success' : targetResult === '홈승', 'btn btn-default' : targetResult !== '홈승'}" data-ng-click="SelectResult('홈승')">홈승</button>
-                                                <button type="button" data-ng-class="{'btn btn-warning' : targetResult === '무승부', 'btn btn-default' : targetResult !== '무승부'}" data-ng-click="SelectResult('무승부')">무승부</button>
+                                                <button type="button" data-ng-class="{'btn btn-success' : targetResult === '친정승', 'btn btn-default' : targetResult !== '친정승'}" data-ng-click="SelectResult('친정승')">친정승</button>
+                                                <button type="button" data-ng-class="{'btn btn-warning' : targetResult === '무승부', 'btn btn-default' : targetResult !== '무승부'}" data-ng-show="targetBtype==='3-WAY'" data-ng-click="SelectResult('무승부')">무승부</button>
                                                 <button type="button" data-ng-class="{'btn btn-danger' : targetResult === '원정승', 'btn btn-default' : targetResult !== '원정승'}" data-ng-click="SelectResult('원정승')">원정승</button>
                                             </div>
                                         </center>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="input-group pull-right">
-                                            <input type="text" class="form-control" data-ng-model="targetAwayScore">
+                                            <input type="text" class="form-control" data-ng-model="targetAwayScore" data-ng-disabled="targetBtype==='2-WAY'">
                                             <span class="input-group-addon">원정팀 점수</span>
                                         </div>
                                     </div>
@@ -251,8 +251,8 @@
                 <div class="row">
                     <center>
                         <button type="submit" class="btn btn-primary" data-ng-show="formMode === 'CREATE'" data-ng-click="Create()">추가</button>
-                        <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE'" data-ng-click="Update()">수정</button>
-                        <button type="button" class="btn btn-danger" data-ng-click="FormClose()">취소</button>
+                        <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE' && targetState !== '종료'" data-ng-click="Update()">수정</button>
+                        <button type="button" class="btn btn-danger" data-ng-click="FormClose()"><span data-ng-if="targetState !== '종료'">취소</span><span data-ng-if="targetState === '종료'">확인</span></button>
                     </center>
                 </div>
             </div>
@@ -338,7 +338,7 @@
                                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">결과 <span class="caret"></span></button>
                                             <ul class="dropdown-menu">
                                                 <li><a href="" data-ng-click="query.result = '전체'">전체</a></li>
-                                                <li><a href="" data-ng-click="query.result = '홈승'">홈승</a></li>
+                                                <li><a href="" data-ng-click="query.result = '친정승'">친정승</a></li>
                                                 <li><a href="" data-ng-click="query.result = '원정승'">원정승</a></li>
                                                 <li><a href="" data-ng-click="query.result = '무승부'">무승부</a></li>
                                             </ul>
@@ -463,9 +463,9 @@
                                     <td class="td_font_bold font-12px">{{ doc.away.betCurrency }}</td>
                                     <td>{{ doc.result }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-xs" data-ng-click="" data-ng-disabled="doc.state === '종료'">종료</button>
-                                        <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
-                                        <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
+                                        <button type="button" data-ng-class="{'btn btn-success btn-xs' : doc.state !== '종료', 'btn btn-primary btn-xs' : doc.state === '종료'}" data-ng-click=""><span data-ng-if="doc.state !== '종료'">정산</span><span data-ng-if="doc.state === '종료'">복구</span></button>
+                                        <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)"><span data-ng-if="doc.state !== '종료'">수정</span><span data-ng-if="doc.state === '종료'">자세히</span></button>
+                                        <!-- <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button> -->
                                     </td>
                                 </tr>
                             </tbody>
@@ -494,20 +494,20 @@
                                     <td class="font-12px">{{ doc.kind }}</td>
                                     <td class="font-12px">{{ doc.league }}</td>
                                     <td class="font-12px">{{ doc.variety.subject }}</td>
-                                    <td class="font-12px">{{ doc.variety.picks.length }}</td>
+                                    <td class="font-12px">{{ doc.variety.option.length }}</td>
                                     <td class="font-12px">{{ doc.totalBetCount }}</td>
                                     <td class="font-12px">{{ doc.totalBetCurrency }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-xs" data-ng-click="">종료</button>
-                                        <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
-                                        <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
+                                        <button type="button" data-ng-class="{'btn btn-success btn-xs' : doc.state !== '종료', 'btn btn-primary btn-xs' : doc.state === '종료'}" data-ng-click=""><span data-ng-if="doc.state !== '종료'">정산</span><span data-ng-if="doc.state === '종료'">복구</span></button>
+                                        <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)"><span data-ng-if="doc.state !== '종료'">수정</span><span data-ng-if="doc.state === '종료'">자세히</span></button>
+                                        <!-- <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button> -->
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <button type="button" class="btn btn-danger btn-md" data-ng-click="DeleteAll()">선택삭제</button>
+                <!-- <button type="button" class="btn btn-danger btn-md" data-ng-click="DeleteAll()">선택삭제</button> -->
             </div>
         </div>
 

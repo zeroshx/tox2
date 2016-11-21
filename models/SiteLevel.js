@@ -210,7 +210,7 @@ Model.statics.Update = function(
 
     var Document = this;
     var moment = new Date();
-    
+
     Document.findOneAndUpdate({
         _id: id
     }, {
@@ -273,6 +273,42 @@ Model.statics.CheckPermission = function(name, site, callback) {
         }
         return callback(null, doc);
     });
+};
+
+Model.statics.ListForSite = function(site, callback) {
+
+    var Document = this;
+
+    Document.find({
+        site: site
+    }, function(err, docs) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, null, {
+            docs: docs
+        });
+    });
+};
+
+Model.statics.ListAll = function(callback) {
+
+    var Document = this;
+
+    Document.aggregate({
+            $group: {
+                _id: '$name'
+            }
+        })
+        .sort('_id')
+        .exec(function(err, docs) {
+            if (err) {
+                return callback(err);
+            }
+            return callback(null, null, {
+                docs: docs
+            });
+        });
 };
 /******************************************************************
 Model's Statics End.

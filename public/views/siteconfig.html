@@ -29,10 +29,10 @@
                                     <div class="form-group col-sm-12">
                                         <label>사이트</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" data-ng-model="targetSite" placeholder="(직접 입력 가능)">
+                                            <input type="text" class="form-control" data-ng-model="targetSite" data-ng-disabled="formMode === 'UPDATE'" placeholder="(직접 입력 가능)">
                                             <div class="input-group-btn">
                                                 <div class="dropdown">
-                                                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">선택 <span class="caret"></span></button>
+                                                    <button class="btn btn-default dropdown-toggle" type="button" data-ng-disabled="formMode === 'UPDATE'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">선택 <span class="caret"></span></button>
                                                     <ul class="dropdown-menu">
                                                         <li data-ng-repeat="site in siteList"><a href="" data-ng-click="SelectSite(site.name)">{{site.name}}</a></li>
                                                     </ul>
