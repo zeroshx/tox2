@@ -2,134 +2,75 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Model = new Schema({
-    auth: {
+    uid: {
         type: String,
         unique: true,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[a-z0-9]{2,16}$/i.test(v);
-            },
-            message: '{VALUE}는 적절한 아이디가 아닙니다.'
-        },
-        required: [true, '아이디가 없습니다.']
+        index: true
     },
     nick: {
         type: String,
         unique: true,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/g.test(v);
-            },
-            message: '{VALUE}는 적절한 닉네임이 아닙니다.'
-        },
-        required: [true, '닉네임이 없습니다.']
+        index: true
     },
     password: {
-        type: String,
-        validate: {
-            validator: function(v) {
-                return /^[ㄱ-핳0-9a-zA-Z`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\]]{8,30}$/i.test(v);
-            },
-            message: '{VALUE}는 적절한 비밀번호가 아닙니다.'
-        },
-        required: [true, '비밀번호가 없습니다.']
+        type: String
     },
     phone: {
-        type: String,
-        maxlength: 20
+        type: String
     },
     cash: {
-        type: Number,
-        min: 0
+        type: Number
     },
     money: {
-        type: Number,
-        min: 0
+        type: Number
     },
     point: {
-        type: Number,
-        min: 0
+        type: Number
+    },
+    debt: {
+        type: Number
     },
     site: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 사이트 이름이 아닙니다.'
-        },
-        required: [true, '사이트 이름이 없습니다.']
+        index: true
     },
     distributor: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                if(v==='') return true;
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 총판명이 아닙니다.'
-        }
+        index: true
     },
     level: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{1,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 레벨명이 아닙니다.'
-        },
-        required: [true, '레벨이 없습니다.']
+        index: true
     },
     state: {
         type: String,
-        index: true,
-        enum: ['정지', '정상', '테스터'],
-        required: [true, '회원 상태가 없습니다.']
+        index: true
     },
     memo: [{
         content: {
-            type: String,
-            maxlength: 200,
-            required: [true, '메모가 없습니다.']
+            type: String
         },
         date: {
-            type: String,
-            required: [true, '작성일이 없습니다.']
+            type: String
         }
     }],
     account: {
         bank: {
-            type: String,
-            maxlength: 50
+            type: String
         },
         number: {
-            type: String,
-            maxlength: 50
+            type: String
         },
         pin: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    if(v==='') return true;
-                    return /^[0-9]{4,8}$/.test(v);
-                },
-                message: '{VALUE}는 적절한 인증코드 아닙니다.'
-            }
+            type: String
         }
     },
     stat: {
         deposit: {
-            type: Number,
-            min: 0
+            type: Number
         },
         withdrawal: {
-            type: Number,
-            min: 0
+            type: Number
         }
     },
     login: {
@@ -155,14 +96,7 @@ var Model = new Schema({
         }
     },
     recommander: {
-        type: String,
-        validate: {
-            validator: function(v) {
-                if (v==='') return true;
-                return /^[가-힣a-zA-Z0-9]{2,16}$/g.test(v);
-            },
-            message: '{VALUE}는 적절한 닉네임이 아닙니다.'
-        }
+        type: String
     },
     modifiedAt: {
         type: String
@@ -228,7 +162,7 @@ Model.statics.List = function(
     if (typeof(keyword) === 'string' && keyword.length > 0) {
         if (filter === '아이디') {
             subquery = {
-                auth: {
+                uid: {
                     $regex: '.*' + keyword + '.*'
                 }
             };
@@ -277,13 +211,14 @@ Model.statics.List = function(
 
 // signup
 Model.statics.Create = function(
-    auth,
+    uid,
     nick,
     password,
     phone,
     cash,
     money,
     point,
+    debt,
     level,
     state,
     site,
@@ -292,6 +227,7 @@ Model.statics.Create = function(
     accountBank,
     accountNumber,
     accountPin,
+    recommander,
     domain,
     ip,
     callback
@@ -301,7 +237,7 @@ Model.statics.Create = function(
 
     Document.findOne({
         $or: [{
-            auth: auth
+            uid: uid
         }, {
             nick: nick
         }]
@@ -310,7 +246,7 @@ Model.statics.Create = function(
             return callback(err);
         }
         if (doc) {
-            if (doc.auth == auth) {
+            if (doc.uid == uid) {
                 return callback(null, '이미 존재하는 아이디 입니다.');
             } else if (doc.nick == nick) {
                 return callback(null, '이미 존재하는 닉네임 입니다.');
@@ -320,14 +256,16 @@ Model.statics.Create = function(
         } else {
             var moment = new Date();
             var datetime = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
+
             var newDoc = new Document();
-            newDoc.auth = auth;
+            newDoc.uid = uid;
             newDoc.nick = nick;
             newDoc.password = Document.GenerateHash(password);
             newDoc.phone = phone;
             newDoc.cash = cash|0;
             newDoc.money = money|0;
             newDoc.point = point|0;
+            newDoc.debt = debt|0;
             newDoc.level = level;
             newDoc.state = state;
             newDoc.site = site;
@@ -338,13 +276,21 @@ Model.statics.Create = function(
                 number: accountNumber,
                 pin: accountPin
             };
+            newDoc.recommander = recommander;
             newDoc.stat = {
                 deposit: 0,
                 withdrawal: 0
             };
-            newDoc.signup.domain = domain;
-            newDoc.signup.ip = ip;
-            newDoc.signup.date = datetime;
+            newDoc.signup = {
+                domain: domain,
+                ip: ip,
+                date: datetime
+            };
+            newDoc.login = {
+                domain: domain,
+                ip: ip,
+                date: datetime
+            };
             newDoc.save(function(err) {
                 if (err) {
                     return callback(err);
@@ -358,13 +304,12 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
     id,
-    auth,
-    nick,
     password,
     phone,
     cash,
     money,
     point,
+    debt,
     level,
     state,
     site,
@@ -384,13 +329,12 @@ Model.statics.Update = function(
         _id: id
     }, {
         $set: {
-            auth: auth,
-            nick: nick,
             password: Document.GenerateHash(password),
             phone: phone,
-            cash: cash,
-            money: money,
-            point: point,
+            cash: cash|0,
+            money: money|0,
+            point: point|0,
+            debt: debt|0,
             level: level,
             state: state,
             site: site,

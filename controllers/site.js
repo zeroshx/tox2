@@ -1,3 +1,4 @@
+var validator = require('./validator.js');
 var Model = require('mongoose').model('Site');
 var nodemailer = require('../init/nodemailer.js');
 
@@ -39,6 +40,39 @@ exports.ListAll = function(req, res) {
 };
 
 exports.Create = function(req, res) {
+
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.state,
+            validator: 'siteState'
+        }, {
+            required: true,
+            value: req.body.name,
+            validator: 'site'
+        }, {
+            required: false,
+            value: req.body.memo,
+            validator: 'memo'
+        }, {
+            required: true,
+            value: req.body.bonusWin,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.bonusLose,
+            validator: 'bonus'
+        }, {
+            required: false,
+            value: req.body.answer,
+            validator: 'answer'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Create(
         req.body.state,
         req.body.name,
@@ -61,10 +95,38 @@ exports.Create = function(req, res) {
 };
 
 exports.Update = function(req, res) {
+
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.state,
+            validator: 'siteState'
+        }, {
+            required: false,
+            value: req.body.memo,
+            validator: 'memo'
+        }, {
+            required: true,
+            value: req.body.bonusWin,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.bonusLose,
+            validator: 'bonus'
+        }, {
+            required: false,
+            value: req.body.answer,
+            validator: 'answer'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Update(
         req.params.id,
         req.body.state,
-        req.body.name,
         req.body.bonusWin,
         req.body.bonusLose,
         req.body.answer,

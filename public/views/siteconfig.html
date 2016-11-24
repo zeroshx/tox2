@@ -4,7 +4,7 @@
         <!-- 1. Subject Info zone -->
         <div class="row">
             <div class="page-header">
-                <h1>사이트 설정<button type="button" class="btn btn-primary btn-xs" data-ng-click="FormOpen('CREATE')">추가</button></h1>
+                <h1>배팅 설정<button type="button" class="btn btn-primary btn-xs" data-ng-click="FormOpen('CREATE')">추가</button></h1>
             </div>
         </div>
 
@@ -46,7 +46,7 @@
                                 <div class="form-group col-sm-12">
                                     <label>배팅 취소 제한 시간</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" min="0" data-ng-model="targetBetCancelLimit" placeholder="(하루 기준)">
+                                        <input type="text" class="form-control" data-ng-model="targetBetCancelLimit" placeholder="(하루 기준)">
                                         <span class="input-group-addon">분</span>
                                     </div>
                                 </div>
@@ -55,7 +55,7 @@
                                 <div class="form-group col-sm-12">
                                     <label>배팅 취소 제한 횟수</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" min="0" data-ng-model="targetBetCancelCount" placeholder="(하루 기준)">
+                                        <input type="text" class="form-control" data-ng-model="targetBetCancelCount" placeholder="(하루 기준)">
                                         <span class="input-group-addon">번</span>
                                     </div>
                                 </div>

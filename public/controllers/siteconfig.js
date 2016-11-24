@@ -7,8 +7,8 @@ angular.module('Site')
         $scope.baseUrl = '/site/config';
 
         $scope.query = {
-            page: parseInt($routeParams.page ? $routeParams.page : 1),
-            pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
+            page: Number($routeParams.page ? $routeParams.page : 1),
+            pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : ''
         };
@@ -116,6 +116,9 @@ angular.module('Site')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else if (mode === 'CREATE'){
+                $scope.targetBetCancelLimit = 30;
+                $scope.targetBetCancelCount = 10;
+                $scope.targetKindConfig = [];
             }
         };
 
@@ -290,6 +293,7 @@ angular.module('Site')
                 }
             }
         };
+
         $scope.AddKindConfig = function() {
             $scope.targetKindConfig.push({
                 name: '',
@@ -315,12 +319,13 @@ angular.module('Site')
         $scope.ResetTarget = function() {
             $scope.targetId = null;
             $scope.targetSite = null;
-            $scope.targetBetCancelLimit = 30;
-            $scope.targetBetCancelCount = 10;
-            $scope.targetKindConfig = [];
+            $scope.targetBetCancelLimit = null;
+            $scope.targetBetCancelCount = null;
+            $scope.targetKindConfig = null;
         };
 
         $scope.Reset = function () {
+            $scope.formSwitch = null;
             $scope.ResetTarget();
             $scope.List();
             $scope.SiteList();

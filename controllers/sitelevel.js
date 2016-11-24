@@ -1,3 +1,4 @@
+var validator = require('./validator.js');
 var Model = require('mongoose').model('SiteLevel');
 var nodemailer = require('../init/nodemailer.js');
 
@@ -58,6 +59,62 @@ exports.ListForSite = function(req, res) {
 
 exports.Create = function(req, res) {
 
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.name,
+            validator: 'level'
+        }, {
+            required: true,
+            value: req.body.bonusWin,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.bonusLose,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.bonusCharge,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.bonusRecommender,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.singleMaxBet,
+            validator: 'maxBet'
+        }, {
+            required: true,
+            value: req.body.singleMinBet,
+            validator: 'minBet'
+        }, {
+            required: true,
+            value: req.body.singleMaxRate,
+            validator: 'rate'
+        }, {
+            required: true,
+            value: req.body.multiMaxBet,
+            validator: 'maxBet'
+        }, {
+            required: true,
+            value: req.body.multiMinBet,
+            validator: 'minBet'
+        }, {
+            required: true,
+            value: req.body.multiMaxRate,
+            validator: 'rate'
+        }, {
+            required: true,
+            value: req.body.site,
+            validator: 'site'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Create(
         req.body.name,
         req.body.bonusWin,
@@ -65,8 +122,10 @@ exports.Create = function(req, res) {
         req.body.bonusCharge,
         req.body.bonusRecommender,
         req.body.singleMaxBet,
+        req.body.singleMinBet,
         req.body.singleMaxRate,
         req.body.multiMaxBet,
+        req.body.multiMinBet,
         req.body.multiMaxRate,
         req.body.site,
         function(err, msg, doc) {
@@ -85,18 +144,66 @@ exports.Create = function(req, res) {
 
 exports.Update = function(req, res) {
 
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.bonusWin,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.bonusLose,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.bonusCharge,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.bonusRecommender,
+            validator: 'bonus'
+        }, {
+            required: true,
+            value: req.body.singleMaxBet,
+            validator: 'maxBet'
+        }, {
+            required: true,
+            value: req.body.singleMinBet,
+            validator: 'minBet'
+        }, {
+            required: true,
+            value: req.body.singleMaxRate,
+            validator: 'rate'
+        }, {
+            required: true,
+            value: req.body.multiMaxBet,
+            validator: 'maxBet'
+        }, {
+            required: true,
+            value: req.body.multiMinBet,
+            validator: 'minBet'
+        }, {
+            required: true,
+            value: req.body.multiMaxRate,
+            validator: 'rate'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Update(
         req.params.id,
-        req.body.name,
         req.body.bonusWin,
         req.body.bonusLose,
         req.body.bonusCharge,
         req.body.bonusRecommender,
         req.body.singleMaxBet,
+        req.body.singleMinBet,
         req.body.singleMaxRate,
         req.body.multiMaxBet,
+        req.body.multiMinBet,
         req.body.multiMaxRate,
-        req.body.site,
         function(err, msg, doc) {
             if (err) { // internal error
                 nodemailer(root + ':Update', JSON.stringify(err));

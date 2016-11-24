@@ -35,14 +35,14 @@
                                     <div class="form-group col-sm-6">
                                         <label>승리 보너스</label>
                                         <div class="input-group">
-                                          <input type="number" class="form-control" min="0" data-ng-model="targetBonusWin" placeholder="(0 ~ 100)">
+                                          <input type="text" class="form-control" data-ng-model="targetBonusWin" placeholder="(0 ~ 100)">
                                           <span class="input-group-addon">%</span>
                                         </div>
                                     </div>
                                     <div class="form-group col-sm-6">
                                         <label>패배 보너스</label>
                                         <div class="input-group">
-                                          <input type="number" class="form-control" min="0" data-ng-model="targetBonusLose" placeholder="(0 ~ 100)">
+                                          <input type="text" class="form-control" data-ng-model="targetBonusLose" placeholder="(0 ~ 100)">
                                           <span class="input-group-addon">%</span>
                                         </div>
                                     </div>
@@ -51,14 +51,14 @@
                                     <div class="form-group col-sm-6">
                                         <label>충전 보너스</label>
                                         <div class="input-group">
-                                          <input type="number" class="form-control" min="0" data-ng-model="targetBonusCharge" placeholder="(0 ~ 100)">
+                                          <input type="text" class="form-control" data-ng-model="targetBonusCharge" placeholder="(0 ~ 100)">
                                           <span class="input-group-addon">%</span>
                                         </div>
                                     </div>
                                     <div class="form-group col-sm-6">
                                         <label>추천인 보너스</label>
                                         <div class="input-group">
-                                          <input type="number" class="form-control" min="0" data-ng-model="targetBonusRecommender" placeholder="(0 ~ 100)">
+                                          <input type="text" class="form-control" data-ng-model="targetBonusRecommender" placeholder="(0 ~ 100)">
                                           <span class="input-group-addon">%</span>
                                         </div>
                                     </div>
@@ -83,32 +83,48 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-sm-6">
-                                        <label>단일 매치 최대 배팅액</label>
+                                        <label>단일 매치 최소 배팅액</label>
                                         <div class="input-group">
-                                          <input type="number" class="form-control" min="0" data-ng-model="targetSingleMaxBet" placeholder="">
+                                          <input type="text" class="form-control" data-ng-model="targetSingleMinBet" placeholder="">
                                           <span class="input-group-addon">원</span>
                                         </div>
                                     </div>
                                     <div class="form-group col-sm-6">
-                                        <label>단일 매치 최대 배당</label>
+                                        <label>조합 매치 최소 배팅액</label>
                                         <div class="input-group">
-                                          <input type="text" class="form-control" min="0" data-ng-model="targetSingleMaxRate" placeholder="(0000.00)">
+                                          <input type="text" class="form-control" data-ng-model="targetMultiMinBet" placeholder="">
                                           <span class="input-group-addon">원</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-sm-6">
+                                        <label>단일 매치 최대 배팅액</label>
+                                        <div class="input-group">
+                                          <input type="text" class="form-control" data-ng-model="targetSingleMaxBet" placeholder="">
+                                          <span class="input-group-addon">원</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
                                         <label>조합 매치 최대 배팅액</label>
                                         <div class="input-group">
-                                          <input type="number" class="form-control" min="0" data-ng-model="targetMultiMaxBet" placeholder="">
+                                          <input type="text" class="form-control" data-ng-model="targetMultiMaxBet" placeholder="">
+                                          <span class="input-group-addon">원</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <label>단일 매치 최대 배당</label>
+                                        <div class="input-group">
+                                          <input type="text" class="form-control" data-ng-model="targetSingleMaxRate" placeholder="(00.00)">
                                           <span class="input-group-addon">원</span>
                                         </div>
                                     </div>
                                     <div class="form-group col-sm-6">
                                         <label>조합 매치 최대 배당</label>
                                         <div class="input-group">
-                                          <input type="text" class="form-control" min="0" data-ng-model="targetMultiMaxRate" placeholder="(0000.00)">
+                                          <input type="text" class="form-control" data-ng-model="targetMultiMaxRate" placeholder="(00.00)">
                                           <span class="input-group-addon">원</span>
                                         </div>
                                     </div>
@@ -185,9 +201,11 @@
                             <th>패배 보너스(%)</th>
                             <th>충전 보너스(%)</th>
                             <th>추천인 보너스(%)</th>
+                            <th>단일 최소 배팅액</th>
                             <th>단일 최대 배팅액</th>
-                            <th>조합 최대 배팅액</th>
                             <th>단일 최대 배당</th>
+                            <th>조합 최소 배팅액</th>
+                            <th>조합 최대 배팅액</th>
                             <th>조합 최대 배당</th>
                             <th>옵션</th>
                         </tr>
@@ -201,9 +219,11 @@
                             <td>{{ doc.bonus.lose }}</td>
                             <td>{{ doc.bonus.charge }}</td>
                             <td>{{ doc.bonus.recommender }}</td>
+                            <td>{{ doc.single.minBetCurrency }}원</td>
                             <td>{{ doc.single.maxBetCurrency }}원</td>
-                            <td>{{ doc.multi.maxBetCurrency }}원</td>
                             <td>{{ doc.single.maxRate }}</td>
+                            <td>{{ doc.multi.minBetCurrency }}원</td>
+                            <td>{{ doc.multi.maxBetCurrency }}원</td>
                             <td>{{ doc.multi.maxRate }}</td>
                             <td>
                                 <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>

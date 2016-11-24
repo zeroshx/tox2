@@ -4,84 +4,46 @@ var Schema = mongoose.Schema;
 var Model = new Schema({
     name: {
         type: String,
-        index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{1,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 레벨명이 아닙니다.'
-        },
-        required: [true, '레벨명이 없습니다.']
+        index: true
     },
     bonus: {
         win: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '승리 보너스가 없습니다.']
+            type: Number
         },
         lose: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '패배 보너스가 없습니다.']
+            type: Number
         },
         charge: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '충전 보너스가 없습니다.']
+            type: Number
         },
         recommender: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '추천인 보너스가 없습니다.']
+            type: Number
         }
     },
     single: {
         maxBet: {
-            type: Number,
-            min: 0,
-            required: [true, '단일 최대 배팅금액이 없습니다.']
+            type: Number
+        },
+        minBet: {
+            type: Number
         },
         maxRate: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^\d{1,4}(|(\.(?=\d))\d{0,2})$/.test(v);
-                },
-                message: '{VALUE}는 적절한 배당값이 아닙니다.'
-            },
-            required: [true, '단일 최대 배당이 없습니다.']
+            type: String
         }
     },
     multi: {
         maxBet: {
-            type: Number,
-            min: 0,
-            required: [true, '조합 최대 배팅금액이 없습니다.']
+            type: Number
+        },
+        minBet: {
+            type: Number
         },
         maxRate: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^\d{1,4}(|(\.(?=\d))\d{0,2})$/.test(v);
-                },
-                message: '{VALUE}는 적절한 배당값이 아닙니다.'
-            },
-            required: [true, '조합 최대 배당이 없습니다.']
+            type: String
         }
     },
     site: {
-        type: String,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 사이트명이 아닙니다.'
-        },
-        required: [true, '사이트 이름이 없습니다.']
+        type: String
     },
     createdAt: {
         type: String
@@ -151,8 +113,8 @@ Model.statics.Create = function(
     bonusLose,
     bonusCharge,
     bonusRecommender,
-    singleMaxBet, singleMaxRate,
-    multiMaxBet, multiMaxRate,
+    singleMaxBet, singleMinBet, singleMaxRate,
+    multiMaxBet, multiMinBet, multiMaxRate,
     site,
     callback
 ) {
@@ -175,10 +137,12 @@ Model.statics.Create = function(
             };
             newDoc.single = {
                 maxBet: singleMaxBet,
+                minBet: singleMinBet,
                 maxRate: singleMaxRate
             };
             newDoc.multi = {
                 maxBet: multiMaxBet,
+                minBet: multiMinBet,
                 maxRate: multiMaxRate
             };
             newDoc.site = site;
@@ -197,14 +161,12 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
     id,
-    name,
     bonusWin,
     bonusLose,
     bonusCharge,
     bonusRecommender,
-    singleMaxBet, singleMaxRate,
-    multiMaxBet, multiMaxRate,
-    site,
+    singleMaxBet, singleMinBet, singleMaxRate,
+    multiMaxBet, multiMinBet, multiMaxRate,
     callback
 ) {
 
@@ -215,7 +177,6 @@ Model.statics.Update = function(
         _id: id
     }, {
         $set: {
-            name: name,
             bonus: {
                 win: bonusWin,
                 lose: bonusLose,
@@ -224,13 +185,14 @@ Model.statics.Update = function(
             },
             single: {
                 maxBet: singleMaxBet,
+                minBet: singleMinBet,
                 maxRate: singleMaxRate
             },
             multi: {
                 maxBet: multiMaxBet,
+                minBet: multiMinBet,
                 maxRate: multiMaxRate
             },
-            site: site,
             modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }
     }, {

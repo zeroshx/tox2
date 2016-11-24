@@ -7,8 +7,8 @@ angular.module('Site')
         $scope.baseUrl = '/site';
 
         $scope.query = {
-            page: parseInt($routeParams.page ? $routeParams.page : 1),
-            pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
+            page: Number($routeParams.page ? $routeParams.page : 1),
+            pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : ''
         };
@@ -119,8 +119,7 @@ angular.module('Site')
                 }
             } else if (mode === 'CREATE'){
                 $scope.targetState = '정지';
-                $scope.targetBonusWin = 0;
-                $scope.targetBonusLose = 0;
+                $scope.targetAnswer = [];
             }
         };
 
@@ -168,7 +167,7 @@ angular.module('Site')
                 } else {
                     $scope.docs = res.docs;
                     $scope.totalPage = res.count;
-                    $scope.CreateShortcut('memo', 20);
+                    $scope.RenderList();
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
@@ -182,7 +181,6 @@ angular.module('Site')
         $scope.Update = function() {
             CRUDService.Update($scope.baseUrl, $scope.targetId).run({
                 state: $scope.targetState,
-                name: $scope.targetName,
                 bonusWin: $scope.targetBonusWin,
                 bonusLose: $scope.targetBonusLose,
                 answer: $scope.targetAnswer,
@@ -246,14 +244,21 @@ angular.module('Site')
         /****************************************************************************
             Etc Functions
         ****************************************************************************/
-        $scope.CreateShortcut = function(element, length) {
+        $scope.RenderList = function() {
+            // step 1. create memo shortcut
             for (i = 0; i < $scope.docs.length; i++) {
-                if ($scope.docs[i][element].length > length) {
-                    $scope.docs[i]['short_'+element] = $scope.docs[i][element].slice(0, length);
-                    $scope.docs[i]['short_'+element] += '...';
-                } else {
-                    $scope.docs[i]['short_'+element] = $scope.docs[i][element];
-                }
+                $scope.docs[i].short_memo = $scope.CreateShortcut($scope.docs[i].memo, 20);
+            }
+        };
+
+        $scope.CreateShortcut = function(str, length) {
+            if(!str || !angular.isString(str)) {
+                return null;
+            }
+            if (str.length > length) {
+                return str.slice(0, length) + '...';
+            } else {
+                return str;
             }
         };
 
@@ -287,16 +292,17 @@ angular.module('Site')
         };
 
         $scope.ResetTarget = function() {
-            $scope.targetId = '';
-            $scope.targetName = '';
-            $scope.targetMemo = '';
-            $scope.targetBonusWin = '';
-            $scope.targetBonusLose = '';
-            $scope.targetState = '';
-            $scope.targetAnswer = [];
+            $scope.targetId = null;
+            $scope.targetName = null;
+            $scope.targetMemo = null;
+            $scope.targetBonusWin = null;
+            $scope.targetBonusLose = null;
+            $scope.targetState = null;
+            $scope.targetAnswer = null;
         };
 
         $scope.Reset = function () {
+            $scope.formSwitch = null;
             $scope.ResetTarget();
             $scope.List();
         };

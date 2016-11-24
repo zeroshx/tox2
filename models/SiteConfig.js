@@ -5,58 +5,32 @@ var Model = new Schema({
     site: {
         type: String,
         index: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 사이트명이 아닙니다.'
-        },
-        required: [true, '사이트 이름이 없습니다.']
+        unique: true
     },
     betCancelLimit: {
-        type: Number,
-        min: 0,
-        required: [true, '배칭 취소 제한 시간이 없습니다.']
+        type: Number
     },
     betCancelCount: {
-        type: Number,
-        min: 0,
-        required: [true, '배칭 취소 제한 횟수가 없습니다.']
+        type: Number
     },
     kindConfig: [{
         name: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,30}$/.test(v);
-                },
-                message: '{VALUE}는 적절한 종목명 아닙니다.'
-            },
-            required: [true, '종목명이 없습니다.']
+            type: String
         },
         som: { // single or multi
-            type: String,
-            enum: [
-                '단일', '조합'
-            ],
-            required: [true, '단일/조합 구분이 없습니다.']
+            type: String
         },
         maxMulti: {
-            type: Number,
-            min: 1,
-            required: [true, '조합 최대 묶음 수가 없습니다.']
+            type: Number
         },
         nah: { // normal and handicap
-            type: Boolean,
-            required: [true, '일반+핸디캡 플래그가 없습니다.']
+            type: Boolean
         },
         nau: { // normal and underover
-            type: Boolean,
-            required: [true, '일반+언더오버 플래그가 없습니다.']
+            type: Boolean
         },
         hau: { // handicap and underover
-            type: Boolean,
-            required: [true, '핸디캡+언더오버 플래그가 없습니다.']
+            type: Boolean
         }
     }],
     createdAt: {
@@ -154,7 +128,6 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
     id,
-    site,
     betCancelLimit,
     betCancelCount,
     kindConfig,
@@ -168,7 +141,6 @@ Model.statics.Update = function(
         _id: id
     }, {
         $set: {
-            site: site,
             betCancelLimit: betCancelLimit,
             betCancelCount: betCancelCount,
             kindConfig: kindConfig,

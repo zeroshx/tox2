@@ -18,7 +18,7 @@ function validation (req) {
         }, {
             required: true,
             value: req.body.state,
-            validator: 'matchstate'
+            validator: 'matchState'
         }, {
             required: true,
             value: req.body.schedule,

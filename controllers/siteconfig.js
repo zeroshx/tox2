@@ -1,3 +1,4 @@
+var validator = require('./validator.js');
 var Model = require('mongoose').model('SiteConfig');
 var nodemailer = require('../init/nodemailer.js');
 
@@ -25,6 +26,30 @@ exports.List = function(req, res) {
 
 exports.Create = function(req, res) {
 
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.site,
+            validator: 'site'
+        }, {
+            required: true,
+            value: req.body.betCancelLimit,
+            validator: 'cancelLimit'
+        }, {
+            required: true,
+            value: req.body.betCancelCount,
+            validator: 'cancelCount'
+        }, {
+            required: false,
+            value: req.body.kindConfig,
+            validator: 'kindConfig'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Create(
         req.body.site,
         req.body.betCancelLimit,
@@ -46,9 +71,28 @@ exports.Create = function(req, res) {
 
 exports.Update = function(req, res) {
 
+    var msg = validator.run([
+        {
+            required: true,
+            value: req.body.betCancelLimit,
+            validator: 'cancelLimit'
+        }, {
+            required: true,
+            value: req.body.betCancelCount,
+            validator: 'cancelCount'
+        }, {
+            required: false,
+            value: req.body.kindConfig,
+            validator: 'kindConfig'
+        }
+    ]);
+
+    if (msg) return res.json({
+        failure: msg
+    });
+
     Model.Update(
         req.params.id,
-        req.body.site,
         req.body.betCancelLimit,
         req.body.betCancelCount,
         req.body.kindConfig,

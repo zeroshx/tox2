@@ -89,7 +89,7 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
             name: '사이트 관리',
             path: '/site'
         }, {
-            name: '사이트 설정',
+            name: '배팅 설정',
             path: '/site/config'
         }, {
             name: '레벨 설정',

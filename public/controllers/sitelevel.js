@@ -7,8 +7,8 @@ angular.module('Site')
         $scope.baseUrl = '/site/level';
 
         $scope.query = {
-            page: parseInt($routeParams.page ? $routeParams.page : 1),
-            pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
+            page: Number($routeParams.page ? $routeParams.page : 1),
+            pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : ''
         };
@@ -23,8 +23,8 @@ angular.module('Site')
         /****************************************************************************
             Sub Menu setting
         ****************************************************************************/
-        for(var i in $rootScope.mainmenu) {
-            if($rootScope.mainmenu[i].name === '사이트') {
+        for (var i in $rootScope.mainmenu) {
+            if ($rootScope.mainmenu[i].name === '사이트') {
                 $rootScope.submenu = $rootScope.mainmenu[i].submenu;
             }
         }
@@ -39,6 +39,7 @@ angular.module('Site')
 
         $scope.Search = function(mode) {
             if (mode === 'RESET') {
+                $scope.FormClose();
                 $scope.ResetQuery();
                 $scope.Reset();
             } else {
@@ -107,8 +108,10 @@ angular.module('Site')
                         $scope.targetBonusCharge = $scope.docs[i].bonus.charge;
                         $scope.targetBonusRecommender = $scope.docs[i].bonus.recommender;
                         $scope.targetSingleMaxBet = $scope.docs[i].single.maxBet;
+                        $scope.targetSingleMinBet = $scope.docs[i].single.minBet;
                         $scope.targetSingleMaxRate = $scope.docs[i].single.maxRate;
                         $scope.targetMultiMaxBet = $scope.docs[i].multi.maxBet;
+                        $scope.targetMultiMinBet = $scope.docs[i].multi.minBet;
                         $scope.targetMultiMaxRate = $scope.docs[i].multi.maxRate;
                         $scope.targetSite = $scope.docs[i].site;
                     }
@@ -117,8 +120,7 @@ angular.module('Site')
                     $scope.validator.type = 'error';
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
-            } else if (mode === 'CREATE'){
-            }
+            } else if (mode === 'CREATE') {}
         };
 
         $scope.FormClose = function() {
@@ -160,8 +162,10 @@ angular.module('Site')
                 bonusCharge: $scope.targetBonusCharge,
                 bonusRecommender: $scope.targetBonusRecommender,
                 singleMaxBet: $scope.targetSingleMaxBet,
+                singleMinBet: $scope.targetSingleMinBet,
                 singleMaxRate: $scope.targetSingleMaxRate,
                 multiMaxBet: $scope.targetMultiMaxBet,
+                multiMinBet: $scope.targetMultiMinBet,
                 multiMaxRate: $scope.targetMultiMaxRate,
                 site: $scope.targetSite
             }, function(res) {
@@ -191,7 +195,7 @@ angular.module('Site')
                 } else {
                     $scope.docs = res.docs;
                     $scope.totalPage = res.count;
-                    $scope.CreateExtraData();
+                    $scope.RenderList();
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
@@ -204,16 +208,16 @@ angular.module('Site')
 
         $scope.Update = function() {
             CRUDService.Update($scope.baseUrl, $scope.targetId).run({
-                name: $scope.targetName,
                 bonusWin: $scope.targetBonusWin,
                 bonusLose: $scope.targetBonusLose,
                 bonusCharge: $scope.targetBonusCharge,
                 bonusRecommender: $scope.targetBonusRecommender,
                 singleMaxBet: $scope.targetSingleMaxBet,
+                singleMinBet: $scope.targetSingleMinBet,
                 singleMaxRate: $scope.targetSingleMaxRate,
                 multiMaxBet: $scope.targetMultiMaxBet,
-                multiMaxRate: $scope.targetMultiMaxRate,
-                site: $scope.targetSite
+                multiMinBet: $scope.targetMultiMinBet,
+                multiMaxRate: $scope.targetMultiMaxRate
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -244,7 +248,7 @@ angular.module('Site')
                         $scope.List();
                     } else {
                         $scope.deleteSuccess++;
-                        if($scope.deleteSuccess === $scope.deleteTotal){
+                        if ($scope.deleteSuccess === $scope.deleteTotal) {
                             $scope.validator.message = '';
                             $scope.selectAllSwitch = false;
                             alert("삭제되었습니다.");
@@ -273,20 +277,19 @@ angular.module('Site')
         /****************************************************************************
             Etc Functions
         ****************************************************************************/
-        $scope.CreateShortcut = function(element, length) {
-            for (i = 0; i < $scope.docs.length; i++) {
-                if ($scope.docs[i][element].length > length) {
-                    $scope.docs[i]['short_'+element] = $scope.docs[i][element].slice(0, length);
-                    $scope.docs[i]['short_'+element] += '...';
-                } else {
-                    $scope.docs[i]['short_'+element] = $scope.docs[i][element];
-                }
+
+        $scope.RenderList = function() {
+            for (var i in $scope.docs) {
+                $scope.docs[i].single.minBetCurrency = $filter('number')($scope.docs[i].single.minBet);
+                $scope.docs[i].single.maxBetCurrency = $filter('number')($scope.docs[i].single.maxBet);
+                $scope.docs[i].multi.minBetCurrency = $filter('number')($scope.docs[i].multi.minBet);
+                $scope.docs[i].multi.maxBetCurrency = $filter('number')($scope.docs[i].multi.maxBet);
             }
         };
 
         $scope.ChangePageSize = function() {
             $scope.query.pageSize = parseInt($scope.query.pageSize);
-            if($scope.query.pageSize > 0) {
+            if ($scope.query.pageSize > 0) {
                 $scope.query.page = 1;
                 $scope.List();
             } else {
@@ -295,7 +298,7 @@ angular.module('Site')
         };
 
         $scope.SelectAll = function() {
-            if($scope.selectAllSwitch) {
+            if ($scope.selectAllSwitch) {
                 for (var i in $scope.docs) {
                     $scope.docs[i].checked = true;
                 }
@@ -303,13 +306,6 @@ angular.module('Site')
                 for (var j in $scope.docs) {
                     $scope.docs[j].checked = false;
                 }
-            }
-        };
-
-        $scope.CreateExtraData = function() {
-            for (var i in $scope.docs) {
-                $scope.docs[i].single.maxBetCurrency = $filter('number')($scope.docs[i].single.maxBet);
-                $scope.docs[i].multi.maxBetCurrency = $filter('number')($scope.docs[i].multi.maxBet);
             }
         };
 
@@ -328,13 +324,16 @@ angular.module('Site')
             $scope.targetBonusCharge = null;
             $scope.targetBonusRecommender = null;
             $scope.targetSingleMaxBet = null;
+            $scope.targetSingleMinBet = null;
             $scope.targetSingleMaxRate = null;
             $scope.targetMultiMaxBet = null;
+            $scope.targetMultiMinBet = null;
             $scope.targetMultiMaxRate = null;
             $scope.targetSite = null;
         };
 
-        $scope.Reset = function () {
+        $scope.Reset = function() {
+            $scope.formSwitch = null;
             $scope.ResetTarget();
             $scope.List();
             $scope.SiteList();

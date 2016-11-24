@@ -3,79 +3,37 @@ var Schema = mongoose.Schema;
 
 var Model = new Schema({
     state: {
-        type: String,
-        enum: [
-            '정상',
-            '점검',
-            '정지'
-        ],
-        required: [true, '사이트 상태가 없습니다.']
+        type: String
     },
     name: {
         type: String,
-        unique: true,
-        validate: {
-            validator: function(v) {
-                return /^[가-힣a-zA-Z0-9]{2,16}$/.test(v);
-            },
-            message: '{VALUE}는 적절한 사이트명이 아닙니다.'
-        },
-        required: [true, '사이트 이름이 없습니다.']
+        index: true,
+        unique: true
     },
     bonus: {
         win: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '승리 보너스가 없습니다.']
+            type: Number
         },
         lose: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: [true, '패배 보너스가 없습니다.']
+            type: Number
         }
     },
     headcount: {
-        type: Number,
-        min: 0,
-        required: [true, '액션명이 없습니다.']
+        type: Number
     },
     answer: [{
         action: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9]{2,10}$/.test(v);
-                },
-                message: '{VALUE}는 적절한 액션명 아닙니다.'
-            },
-            required: [true, '액션명이 없습니다.']
+            type: String
         },
         subject: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,50}$/.test(v);
-                },
-                message: '{VALUE}는 적절한 답변 제목이 아닙니다.'
-            },
-            required: [true, '답변 제목이 없습니다.']
+            type: String
         },
         content: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^[가-힣a-zA-Z0-9`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\] ]{2,1000}$/.test(v);
-                },
-                message: '{VALUE}는 적절한 답변 내용이 아닙니다.'
-            },
-            required: [true, '답변 내용이 없습니다.']
+            type: String
         }
     }],
     memo: {
-        type: String,
-        maxlength: 100
+        type: String
     },
     createdAt: {
         type: String
@@ -181,7 +139,7 @@ Model.statics.Create = function(
             return callback(err);
         }
         if (doc) {
-            return callback(null, '이미 존재합니다.');
+            return callback(null, '이미 존재합니다.(' + name + ')');
         }
         var newDoc = new Document();
         newDoc.state = state;
@@ -208,7 +166,6 @@ Model.statics.Create = function(
 Model.statics.Update = function(
     id,
     state,
-    name,
     bonusWin,
     bonusLose,
     answer,
@@ -224,7 +181,6 @@ Model.statics.Update = function(
     }, {
         $set: {
             state: state,
-            name: name,
             bonus: {
                 win: bonusWin,
                 lose: bonusLose

@@ -12,14 +12,123 @@ exports.run = function (list) {
     }
 };
 
+exports.uid = function(value, required) {
+    if(!value && required) {
+        return '아이디는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^[a-zA-Z0-9]{2,16}$/.test(value))) {
+        return '아이디는 영문, 숫자를 이용하여 2자 이상 16자 이내만 가능합니다.';
+    }
+    return null;
+};
+
+exports.password = function(value, required) {
+    if(!value && required) {
+        return '비밀번호는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^[ㄱ-핳0-9a-zA-Z`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\]]{8,30}$/i.test(value))) {
+        return '비밀번호는 8자 이상 30자 이내만 가능합니다.';
+    }
+    return null;
+};
+
+exports.cash = function(value, required) {
+    if(!value && required) {
+        return '캐쉬는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(Number(value) < 0) {
+        return '캐쉬는 0원 미만이 될 수 없습니다.';
+    }
+    return null;
+};
+
+exports.money = function(value, required) {
+    if(!value && required) {
+        return '게임 머니는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(Number(value) < 0) {
+        return '게임 머니는 0원 미만이 될 수 없습니다.';
+    }
+    return null;
+};
+
+exports.point = function(value, required) {
+    if(!value && required) {
+        return '포인트는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(Number(value) < 0) {
+        return '포인트는 0점 미만이 될 수 없습니다.';
+    }
+    return null;
+};
+
+exports.debt = function(value, required) {
+    if(!value && required) {
+        return '빚은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(Number(value) < 0) {
+        return '빚은 0원 미만이 될 수 없습니다.';
+    }
+    return null;
+};
+
+exports.phone = function(value, required) {
+    if(!value && required) {
+        return '연락처는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^[\-+0-9]{1,20}$/i.test(value))) {
+        return '연락처는 숫자, 붙임표(-)를 사용하여 최대 20자까지 가능합니다.';
+    }
+    return null;
+};
+
+
 exports.nick = function(value, required) {
     if(!value && required) {
         return '닉네임은 필수 입력 항목입니다.';
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[가-힣a-zA-Z0-9]{2,16}$/g.test(value))) {
+    if(!(/^[가-힣a-zA-Z0-9]{2,16}$/.test(value))) {
         return '닉네임은 한글, 영문, 숫자를 이용하여 2자 이상 16자 이내만 가능합니다.';
+    }
+    return null;
+};
+
+exports.recommander = function(value, required) {
+    if(!value && required) {
+        return '추천인은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^[가-힣a-zA-Z0-9]{2,16}$/.test(value))) {
+        return '추천인은 한글, 영문, 숫자를 이용하여 2자 이상 16자 이내만 가능합니다.';
+    }
+    return null;
+};
+
+exports.level = function(value, required) {
+    if(!value && required) {
+        return '레벨명은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^[가-힣a-zA-Z0-9]{1,16}$/.test(value))) {
+        return '레벨명은 한글, 영문, 숫자를 이용하여 1자 이상 16자 이내만 가능합니다.';
     }
     return null;
 };
@@ -66,11 +175,32 @@ exports.bonus = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[0-9]+$/.test(value))) {
-        return '보너스 입력값은 숫자만 가능합니다.';
-    }
-    if(value < 0 || value > 100) {
+    if(Number(value) < 0 || Number(value) > 100) {
         return '보너스는 최소 0%, 최대 100%까지 가능합니다.';
+    }
+    return null;
+};
+
+exports.maxBet = function(value, required) {
+    if(!value && required) {
+        return '최대 배팅 금액은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(Number(value) < 1) {
+        return '최대 배팅 금액은 1원보다 적을 수 없습니다.';
+    }
+    return null;
+};
+
+exports.minBet = function(value, required) {
+    if(!value && required) {
+        return '최소 배팅 금액은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(Number(value) < 1) {
+        return '최소 배팅 금액은 1원보다 적을 수 없습니다.';
     }
     return null;
 };
@@ -81,14 +211,36 @@ exports.score = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[0-9]+$/.test(value))) {
-        return '점수 입력값은 숫자만 가능합니다.';
-    }
-    if(value < 0) {
-        return '보너스는 0보다 작을 수 없습니다.';
+    if(Number(value) < 0) {
+        return '점수는 0보다 작을 수 없습니다.';
     }
     return null;
 };
+
+exports.cancelLimit = function(value, required) {
+    if(!value && required) {
+        return '배팅 취소 시간은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(Number(value) < 1) {
+        return '배팅 취소 시간은 1분보다 작을 수 없습니다.';
+    }
+    return null;
+};
+
+exports.cancelCount = function(value, required) {
+    if(!value && required) {
+        return '배팅 취소 횟수는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(Number(value) < 1) {
+        return '배팅 취소 횟수는 1보다 작을 수 없습니다.';
+    }
+    return null;
+};
+
 exports.ip = function(value, required) {
     if(!value && required) {
         return '아이피는 필수 입력 항목입니다.';
@@ -167,7 +319,7 @@ exports.mtype = function(value, required) {
     return '적절하지 않는 매치타입입니다.';
 };
 
-exports.matchstate = function(value, required) {
+exports.matchState = function(value, required) {
     if(!value && required) {
         return '매치 상태는 필수 입력 항목입니다.';
     } else if (!value && !required) {
@@ -181,6 +333,37 @@ exports.matchstate = function(value, required) {
     }
     return '적절하지 않는 매치 상태입니다.';
 };
+
+exports.siteState = function(value, required) {
+    if(!value && required) {
+        return '사이트 상태는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    var _enum = ['정상', '점검', '정지'];
+    for(var i = 0; i < _enum.length; i++) {
+        if(_enum[i] === value) {
+            return null;
+        }
+    }
+    return '적절하지 않은 사이트 상태입니다.';
+};
+
+exports.userState = function(value, required) {
+    if(!value && required) {
+        return '회원 상태는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    var _enum = ['정지', '일반', '테스터', '운영자', '관리자'];
+    for(var i = 0; i < _enum.length; i++) {
+        if(_enum[i] === value) {
+            return null;
+        }
+    }
+    return '적절하지 않은 회원 상태입니다.';
+};
+
 
 exports.result = function(value, required) {
     if(!value && required) {
@@ -209,8 +392,8 @@ exports.kind = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[가-힣a-zA-Z0-9 !@#$%^&*-_=+'"(){}\[\]]{2,30}$/.test(value))) {
-        return '종목명은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!@#$%^&*-_=+)를 이용하여 최소 2자, 최대 30자까지 가능합니다.';
+    if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,30}$/.test(value))) {
+        return '종목명은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 30자까지 가능합니다.';
     }
     return null;
 };
@@ -221,8 +404,8 @@ exports.league = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[가-힣a-zA-Z0-9 !@#$%^&*-_=+'"(){}\[\]]{2,30}$/.test(value))) {
-        return '리그명은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!@#$%^&*-_=+)를 이용하여 최소 2자, 최대 30자까지 가능합니다.';
+    if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,30}$/.test(value))) {
+        return '리그명은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 30자까지 가능합니다.';
     }
     return null;
 };
@@ -245,15 +428,117 @@ exports.subject = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[가-힣a-zA-Z0-9 !@#$%^&*-_=+'"(){}\[\]]{2,50}$/.test(value))) {
-        return '버라이어티 주제는 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!@#$%^&*-_=+)를 이용하여 최소 2자, 최대 50자까지 가능합니다.';
+    if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,50}$/.test(value))) {
+        return '버라이어티 주제는 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 50자까지 가능합니다.';
+    }
+    return null;
+};
+
+exports.kindConfig = function(value, required) {
+    if(!value && required) {
+        return '선택지는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    for(var i = 0; i<value.length; i++) {
+        if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,30}$/.test(value[i].name))) {
+            return '종목명은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 30자까지 가능합니다.';
+        }
+        if(value[i].som !== '단일' && value[i].som !== '조합') {
+            return '종목 배팅 타입은 단일 또는 조합만 가능합니다.';
+        }
+        if(Number(value[i].maxMulti) < 1) {
+            return '최대 조합 매치 수는 1보다 작을 수 없습니다.';
+        }
+        if(value[i].nah !== true && value[i].nah !== false) {
+            return '일반+핸디캡 조합 가능 유무가 잘못되었습니다.';
+        }
+        if(value[i].nau !== true && value[i].nau !== false) {
+            return '일반+언더오버 조합 가능 유무가 잘못되었습니다.';
+        }
+        if(value[i].hau !== true && value[i].hau !== false) {
+            return '핸디캡+언더오버 조합 가능 유무가 잘못되었습니다.';
+        }
+    }
+    return null;
+};
+
+exports.answer = function(value, required) {
+    if(!value && required) {
+        return '액션명은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    for(var i = 0; i<value.length; i++) {
+        if(!(/^[가-힣a-zA-Z0-9]{2,10}$/.test(value[i].action))) {
+            return '액션명은 한글, 영문, 숫자를 포함하여 2자 이상 10자 이내로 가능합니다.';
+        }
+        if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,50}$/.test(value[i].subject))) {
+            return '제목은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 50자까지 가능합니다.';
+        }
+        if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,500}$/.test(value[i].content))) {
+            return '답변 내용은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 500자까지 가능합니다.';
+        }
+    }
+    return null;
+};
+
+exports.userMemo = function(value, required) {
+    if(!value && required) {
+        return '메모는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    for(var i = 0; i<value.length; i++) {
+        if(!(/^.{1,200}$/.test(value[i].content))) {
+            return '메모는 최대 200자 이내입니다.';
+        }
+        if(!(/^.{1,30}$/.test(value[i].content))) {
+            return '메모 일시는 최대 30자 이내입니다.';
+        }
+    }
+    return null;
+};
+
+exports.accountBank = function(value, required) {
+    if(!value && required) {
+        return '은행명은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^[ㄱ-힣a-zA-Z0-9]{1,50}$/.test(value.bank))) {
+        return '은행명은 50자 이내입니다.';
+    }
+    return null;
+};
+
+exports.accountNumber = function(value, required) {
+    if(!value && required) {
+        return '계좌번호는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^[\-0-9]{1,50}$/.test(value.number))) {
+        return '계좌번호는 30자 이내입니다.';
+    }
+    return null;
+};
+
+exports.accountPin = function(value, required) {
+    if(!value && required) {
+        return '계좌 인증코드는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^[0-9]{4,8}$/.test(value.pin))) {
+        return '계좌 인증코드는 숫자로 이루어진 4~8자입니다.';
     }
     return null;
 };
 
 exports.option = function(value, required) {
     if(!value && required) {
-        return '선택지는 필수 입력 항목입니다.';
+        return '종목 설정은 필수 입력 항목입니다.';
     } else if (!value && !required) {
         return null;
     }

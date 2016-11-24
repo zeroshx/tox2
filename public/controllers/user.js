@@ -7,8 +7,8 @@ angular.module('User')
         $scope.baseUrl = '/user';
 
         $scope.query = {
-            page: parseInt($routeParams.page ? $routeParams.page : 1),
-            pageSize: parseInt($routeParams.pageSize ? $routeParams.pageSize : 20),
+            page: Number($routeParams.page ? $routeParams.page : 1),
+            pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : '',
             site: $routeParams.site ? $routeParams.site : '전체',
@@ -104,13 +104,14 @@ angular.module('User')
                     if ($scope.docs[i]._id === id) {
                         docCheck = true;
                         $scope.targetId = $scope.docs[i]._id;
-                        $scope.targetAuth = $scope.docs[i].auth;
+                        $scope.targetUid = $scope.docs[i].uid;
                         $scope.targetNick = $scope.docs[i].nick;
                         $scope.targetPassword = $scope.docs[i].password;
                         $scope.targetPhone = $scope.docs[i].phone;
                         $scope.targetCash = $scope.docs[i].cash;
                         $scope.targetMoney = $scope.docs[i].money;
                         $scope.targetPoint = $scope.docs[i].point;
+                        $scope.targetDebt = $scope.docs[i].debt;
                         $scope.targetAccountBank = $scope.docs[i].account.bank;
                         $scope.targetAccountNumber = $scope.docs[i].account.number;
                         $scope.targetAccountPin = $scope.docs[i].account.pin;
@@ -131,8 +132,7 @@ angular.module('User')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else { // mode === 'CREATE'
-
-
+                $scope.targetMemo = [];
             }
         };
 
@@ -247,13 +247,14 @@ angular.module('User')
         ****************************************************************************/
         $scope.Create = function() {
             CRUDService.Create($scope.baseUrl).run({
-                auth: $scope.targetAuth,
+                uid: $scope.targetUid,
                 nick: $scope.targetNick,
                 password: $scope.targetPassword,
                 phone: $scope.targetPhone,
                 cash: $scope.targetCash,
                 money: $scope.targetMoney,
                 point: $scope.targetPoint,
+                debt: $scope.targetDebt,
                 accountBank: $scope.targetAccountBank,
                 accountNumber: $scope.targetAccountNumber,
                 accountPin: $scope.targetAccountPin,
@@ -282,8 +283,6 @@ angular.module('User')
 
         $scope.Update = function() {
             CRUDService.Update($scope.baseUrl, $scope.targetId).run({
-                auth: $scope.targetAuth,
-                nick: $scope.targetNick,
                 password: $scope.targetPassword,
                 phone: $scope.targetPhone,
                 cash: $scope.targetCash,
@@ -325,7 +324,7 @@ angular.module('User')
                 } else {
                     $scope.docs = res.docs;
                     $scope.totalPage = res.count;
-                    $scope.CreateExtraData();
+                    $scope.RenderList();
                     $scope.pages = PublicService.Pagination($scope.query.page, $scope.totalPage, $scope.baseUrl, $scope.query);
                     $scope.validator.message = '';
                     $scope.selectAllSwitch = false;
@@ -378,6 +377,15 @@ angular.module('User')
         /****************************************************************************
             Etc Functions
         ****************************************************************************/
+
+        $scope.RenderList = function() {
+            for (var m in $scope.docs) {
+                $scope.docs[m].stat.depositCurrency = $filter('number')($scope.docs[m].stat.deposit);
+                $scope.docs[m].stat.withdrawalCurrency = $filter('number')($scope.docs[m].stat.withdrawal);
+                $scope.docs[m].stat.totalCurrency = $filter('number')($scope.docs[m].stat.deposit - $scope.docs[m].stat.withdrawal);
+            }
+        };
+
         $scope.ChangePageSize = function() {
             $scope.query.pageSize = parseInt($scope.query.pageSize);
             if ($scope.query.pageSize > 0) {
@@ -412,14 +420,6 @@ angular.module('User')
             $scope.targetMemo.splice(idx, 1);
         };
 
-        $scope.CreateExtraData = function() {
-            for (var m in $scope.docs) {
-                $scope.docs[m].stat.depositCurrency = $filter('number')($scope.docs[m].stat.deposit);
-                $scope.docs[m].stat.withdrawalCurrency = $filter('number')($scope.docs[m].stat.withdrawal);
-                $scope.docs[m].stat.totalCurrency = $filter('number')($scope.docs[m].stat.deposit - $scope.docs[m].stat.withdrawal);
-            }
-        };
-
         $scope.ResetQuery = function() {
             $scope.query.page = 1;
             $scope.query.pageSize = 20;
@@ -432,35 +432,33 @@ angular.module('User')
         };
 
         $scope.ResetTarget = function() {
-            $scope.targetId = '';
-            $scope.targetAuth = '';
-            $scope.targetNick = '';
-            $scope.targetPassword = '';
-            $scope.targetPhone = '';
+            $scope.targetId = null;
+            $scope.targetUid = null;
+            $scope.targetNick = null;
+            $scope.targetPassword = null;
+            $scope.targetPhone = null;
             $scope.targetCash = null;
             $scope.targetMoney = null;
             $scope.targetPoint = null;
-            $scope.targetAccountBank = '';
-            $scope.targetAccountNumber = '';
-            $scope.targetAccountPin = '';
-            $scope.targetSite = '';
-            $scope.targetDistributor = '';
-            $scope.targetState = '';
-            $scope.targetLevel = '';
-            $scope.targetRecommander = '';
-            $scope.targetMemo = [];
+            $scope.targetDebt = null;
+            $scope.targetAccountBank = null;
+            $scope.targetAccountNumber = null;
+            $scope.targetAccountPin = null;
+            $scope.targetSite = null;
+            $scope.targetDistributor = null;
+            $scope.targetState = null;
+            $scope.targetLevel = null;
+            $scope.targetRecommander = null;
+            $scope.targetMemo = null;
         };
 
         $scope.Reset = function() {
+            $scope.formSwitch = null;
             $scope.ResetTarget();
             $scope.List();
             $scope.SiteList();
             $scope.LevelFilterList();
             $scope.DistributorFilterList();
-        };
-
-        $scope.DisplayValue = function() {
-            console.log($scope);
         };
 
         /****************************************************************************
