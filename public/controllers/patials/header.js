@@ -100,7 +100,7 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
     $rootScope.mainmenu.push({
         name: '총판',
         submenu:  [{
-            name: '총판 설정',
+            name: '총판 관리',
             path: '/distributor'
         }, {
             name: '총판 회원 관리',

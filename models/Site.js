@@ -84,7 +84,11 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
             return callback(err);
         }
         if (count !== 0) {
-            Document.find(query).skip((page - 1) * pageSize).limit(pageSize).exec(function(err, docs) {
+            Document.find(query)
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .sort('name')
+            .exec(function(err, docs) {
                 if (err) {
                     return callback(err);
                 }

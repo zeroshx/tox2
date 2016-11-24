@@ -72,6 +72,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
             Document.find(query)
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)
+                .sort('-createdAt')
                 .exec(function(err, docs) {
                     if (err) {
                         return callback(err);

@@ -1,8 +1,8 @@
 var validator = require('./validator.js');
-var Model = require('mongoose').model('Site');
+var Model = require('mongoose').model('Message');
 var nodemailer = require('../init/nodemailer.js');
 
-var root = 'controller/site.js';
+var root = 'controller/message.js';
 
 exports.List = function(req, res) {
     Model.List(
@@ -10,6 +10,7 @@ exports.List = function(req, res) {
         req.query.pageSize,
         req.query.searchFilter,
         req.query.searchKeyword,
+        req.query.check,
         function(err, msg, doc) {
             if (err) { // internal error
                 nodemailer(root + ':List', JSON.stringify(err));
@@ -24,49 +25,31 @@ exports.List = function(req, res) {
         });
 };
 
-exports.ListAll = function(req, res) {
-    Model.ListAll(function(err, msg, doc) {
-        if (err) { // internal error
-            nodemailer(root + ':List', JSON.stringify(err));
-            return res.sendStatus(500);
-        } else if (msg) { // exception control
-            return res.json({
-                failure: msg
-            });
-        } else {
-            return res.json(doc);
-        }
-    });
-};
-
 exports.Create = function(req, res) {
 
     var msg = validator.run([
         {
             required: true,
-            value: req.body.state,
-            validator: 'siteState'
+            value: req.body.sender,
+            validator: 'nick'
         }, {
             required: true,
-            value: req.body.name,
-            validator: 'site'
+            value: req.body.receiver,
+            validator: 'nick'
         }, {
             required: false,
-            value: req.body.memo,
-            validator: 'memo'
-        }, {
-            required: true,
-            value: req.body.bonusWin,
-            validator: 'bonus'
-        }, {
-            required: true,
-            value: req.body.bonusLose,
-            validator: 'bonus'
+            value: req.body.title,
+            validator: 'title'
         }, {
             required: false,
-            value: req.body.answer,
-            validator: 'siteAnswer'
+            value: req.body.content,
+            validator: 'content'
         }
+        // {
+        //     required: false,
+        //     value: req.body.check,
+        //     validator: 'memo'
+        // }
     ]);
 
     if (msg) return res.json({
@@ -74,12 +57,10 @@ exports.Create = function(req, res) {
     });
 
     Model.Create(
-        req.body.state,
-        req.body.name,
-        req.body.bonusWin,
-        req.body.bonusLose,
-        req.body.answer,
-        req.body.memo,
+        req.body.sender,
+        req.body.receiver,
+        req.body.title,
+        req.body.content,
         function(err, msg, doc) {
             if (err) { // internal error
                 nodemailer(root + ':Create', JSON.stringify(err));
@@ -98,26 +79,19 @@ exports.Update = function(req, res) {
 
     var msg = validator.run([
         {
-            required: true,
-            value: req.body.state,
-            validator: 'siteState'
+            required: false,
+            value: req.body.title,
+            validator: 'title'
         }, {
             required: false,
-            value: req.body.memo,
-            validator: 'memo'
-        }, {
-            required: true,
-            value: req.body.bonusWin,
-            validator: 'bonus'
-        }, {
-            required: true,
-            value: req.body.bonusLose,
-            validator: 'bonus'
-        }, {
-            required: false,
-            value: req.body.answer,
-            validator: 'siteAnswer'
+            value: req.body.content,
+            validator: 'content'
         }
+        // {
+        //     required: false,
+        //     value: req.body.check,
+        //     validator: 'memo'
+        // }
     ]);
 
     if (msg) return res.json({
@@ -126,14 +100,29 @@ exports.Update = function(req, res) {
 
     Model.Update(
         req.params.id,
-        req.body.state,
-        req.body.bonusWin,
-        req.body.bonusLose,
-        req.body.answer,
-        req.body.memo,
+        req.body.title,
+        req.body.content,
         function(err, msg, doc) {
             if (err) { // internal error
                 nodemailer(root + ':Update', JSON.stringify(err));
+                return res.sendStatus(500);
+            } else if (msg) { // exception control
+                return res.json({
+                    failure: msg
+                });
+            } else {
+                return res.json(doc);
+            }
+        });
+};
+
+exports.Check = function(req, res) {
+
+    Model.Check(
+        req.params.id,
+        function(err, msg, doc) {
+            if (err) { // internal error
+                nodemailer(root + ':Check', JSON.stringify(err));
                 return res.sendStatus(500);
             } else if (msg) { // exception control
                 return res.json({

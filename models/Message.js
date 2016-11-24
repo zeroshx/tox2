@@ -2,31 +2,24 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Model = new Schema({
-    name: {
-        type: String,
-        index: true,
-        unique: true
-    },
-    site: {
+    sender: {
         type: String,
         index: true
     },
-    manager: {
+    receiver: {
         type: String,
         index: true
     },
-    bonus: {
-        win: {
-            type: Number
-        },
-        lose: {
-            type: Number
-        }
+    title: {
+        type: String
     },
-    headcount: {
-        type: Number
+    content: {
+        type: String
     },
-    memo: {
+    check: {
+        type: String
+    },
+    checkedAt: {
         type: String
     },
     createdAt: {
@@ -40,47 +33,62 @@ var Model = new Schema({
 /******************************************************************
 Model's Statics Begin.
 ******************************************************************/
-Model.statics.List = function(page, pageSize, filter, keyword, callback) {
+Model.statics.List = function(page, pageSize, filter, keyword, check, callback) {
 
     var Document = this;
 
     page = parseInt(page);
     pageSize = parseInt(pageSize);
 
-    if(isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+
+    if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
         return callback(null, '비정상적인 접근입니다.');
     }
 
     var query = {};
+    if (check === '전체') {
+        query.$and = [];
+    } else {
+        query.$and = [{
+            check: check
+        }];
+    }
+
+    var subquery = {};
     if (typeof(keyword) === 'string' && keyword.length > 0) {
-        if (filter === '관리자') {
-            query.manager = {
-                $regex: '.*' + keyword + '.*'
-            };
-        } else if (filter === '사이트') {
-            query.site = {
-                $regex: '.*' + keyword + '.*'
-            };
-        } else if (filter === '총판') {
-            query.name = {
-                $regex: '.*' + keyword + '.*'
-            };
-        } else if (filter === '메모') {
-            query.memo = {
-                $regex: '.*' + keyword + '.*'
-            };
-        } else if (filter === '총판+메모') {
-            query.$or = [{
-                name: {
+        if (filter === '보낸이') {
+            subquery = {
+                sender: {
                     $regex: '.*' + keyword + '.*'
                 }
-            }, {
-                memo: {
+            };
+        } else if (filter === '받는이') {
+            subquery = {
+                receiver: {
                     $regex: '.*' + keyword + '.*'
                 }
-            }];
+            };
+        } else if (filter === '제목') {
+            subquery = {
+                title: {
+                    $regex: '.*' + keyword + '.*'
+                }
+            };
+        } else if (filter === '내용') {
+            subquery = {
+                content: {
+                    $regex: '.*' + keyword + '.*'
+                }
+            };
         }
     }
+
+    if (query.$and.length > 0) {
+        query.$and.push(subquery);
+    } else {
+        query = subquery;
+    }
+
     Document.count(query, function(err, count) {
         if (err) {
             return callback(err);
@@ -89,7 +97,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
             Document.find(query)
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)
-                .sort('name')
+                .sort('-createdAt')
                 .exec(function(err, docs) {
                     if (err) {
                         return callback(err);
@@ -110,57 +118,36 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
 };
 
 Model.statics.Create = function(
-    name,
-    site,
-    manager,
-    bonusWin,
-    bonusLose,
-    memo,
+    sender,
+    receiver,
+    title,
+    content,
     callback
 ) {
-
     var Document = this;
 
-    Document.findOne({
-        name: name
-    }, function(err, doc) {
+    var newDoc = new Document();
+    newDoc.sender = sender;
+    newDoc.receiver = receiver;
+    newDoc.title = title;
+    newDoc.content = content;
+    newDoc.check = '안읽음';
+
+    var moment = new Date();
+    newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
+
+    newDoc.save(function(err) {
         if (err) {
             return callback(err);
         }
-        if (doc) {
-            return callback(null, '이미 존재합니다.');
-        }
-        var newDoc = new Document();
-
-        newDoc.name = name;
-        newDoc.memo = memo;
-        newDoc.site = site;
-        newDoc.manager = manager;
-        newDoc.bonus = {
-            win: bonusWin,
-            lose: bonusLose
-        };
-
-        newDoc.headcount = 0;
-        var moment = new Date();
-        newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
-        newDoc.modifiedAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
-        newDoc.save(function(err) {
-            if (err) {
-                return callback(err);
-            }
-            return callback(null, null, newDoc);
-        });
+        return callback(null, null, newDoc);
     });
 };
 
 Model.statics.Update = function(
     id,
-    site,
-    manager,
-    bonusWin,
-    bonusLose,
-    memo,
+    title,
+    content,
     callback
 ) {
 
@@ -171,14 +158,37 @@ Model.statics.Update = function(
         _id: id
     }, {
         $set: {
-            site: site,
-            manager: manager,
-            bonus: {
-                win: bonusWin,
-                lose: bonusLose
-            },
-            memo: memo,
+            title: title,
+            content: content,
             modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
+        }
+    }, {
+        runValidators: true
+    }, function(err, doc) {
+        if (err) {
+            return callback(err);
+        }
+        if (doc === null) {
+            return callback(null, '수정에 실패하였습니다.');
+        }
+        return callback(null, null, doc);
+    });
+};
+
+Model.statics.Check = function(
+    id,
+    callback
+) {
+
+    var Document = this;
+    var moment = new Date();
+
+    Document.findOneAndUpdate({
+        _id: id
+    }, {
+        $set: {
+            check: '읽음',
+            checkedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
         }
     }, {
         runValidators: true
@@ -206,46 +216,10 @@ Model.statics.Delete = function(id, callback) {
         return callback(null, null, doc);
     });
 };
-
-Model.statics.ListAll = function(callback) {
-
-    var Document = this;
-
-    Document.aggregate({
-            $group: {
-                _id: '$name'
-            }
-        })
-        .sort('_id')
-        .exec(function(err, docs) {
-            if (err) {
-                return callback(err);
-            }
-            return callback(null, null, {
-                docs: docs
-            });
-        });
-};
-
-Model.statics.ListForSite = function(site, callback) {
-
-    var Document = this;
-
-    Document.find({
-        site: site
-    }, function(err, docs) {
-        if (err) {
-            return callback(err);
-        }
-        return callback(null, null, {
-            docs: docs
-        });
-    });
-};
 /******************************************************************
 Model's Statics End.
 ******************************************************************/
 
 module.exports = function() {
-    mongoose.model('Distributor', Model);
+    mongoose.model('Message', Model);
 };

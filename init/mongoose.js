@@ -19,9 +19,11 @@ module.exports = function() {
     var MatchKind = require('../models/MatchKind.js');
     var MatchLeague = require('../models/MatchLeague.js');
 
-
     var IPBlock = require('../models/IPBlock.js');
     var Blacklist = require('../models/Blacklist.js');
+
+    var Question = require('../models/Question.js');
+    var Message = require('../models/Message.js');
 
     // access to db
     var connection = mongoose.connection;
@@ -54,6 +56,8 @@ module.exports = function() {
     MatchLeague();
     Blacklist();
     IPBlock();
-
+    Question();
+    Message();
+    
     return mdb;
 };

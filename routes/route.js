@@ -13,6 +13,8 @@ var matchleague = require('./matchleague.js');
 var blacklist = require('./blacklist.js');
 var ipblock = require('./ipblock.js');
 var user = require('./user.js');
+var question = require('./question.js');
+var message = require('./message.js');
 
 router.use('/', index);
 
@@ -32,5 +34,8 @@ router.use('/config/ipblock', ipblock);
 router.use('/config/blacklist', blacklist);
 
 router.use('/user', user);
+
+router.use('/client/question', question);
+router.use('/client/message', message);
 
 module.exports = router;

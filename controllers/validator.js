@@ -30,7 +30,7 @@ exports.password = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[ㄱ-핳0-9a-zA-Z`~!@#$%^&*()-_=+|{}:;'"<>,./?\\\[\]]{8,30}$/i.test(value))) {
+    if(!(/^.{8,30}$/i.test(value))) {
         return '비밀번호는 8자 이상 30자 이내만 가능합니다.';
     }
     return null;
@@ -364,6 +364,20 @@ exports.userState = function(value, required) {
     return '적절하지 않은 회원 상태입니다.';
 };
 
+exports.questionState = function(value, required) {
+    if(!value && required) {
+        return '질문 상태는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    var _enum = ['등록', '처리중', '완료'];
+    for(var i = 0; i < _enum.length; i++) {
+        if(_enum[i] === value) {
+            return null;
+        }
+    }
+    return '적절하지 않은 질문 상태입니다.';
+};
 
 exports.result = function(value, required) {
     if(!value && required) {
@@ -392,8 +406,8 @@ exports.kind = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,30}$/.test(value))) {
-        return '종목명은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 30자까지 가능합니다.';
+    if(!(/^.{2,30}$/.test(value))) {
+        return '종목명은 최소 2자, 최대 30자까지 가능합니다.';
     }
     return null;
 };
@@ -404,15 +418,15 @@ exports.league = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,30}$/.test(value))) {
-        return '리그명은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 30자까지 가능합니다.';
+    if(!(/^.{2,30}$/.test(value))) {
+        return '리그명은 최소 2자, 최대 30자까지 가능합니다.';
     }
     return null;
 };
 
 exports.offset = function(value, required) {
     if(!value && required) {
-        return '리그명은 필수 입력 항목입니다.';
+        return '기준점은 필수 입력 항목입니다.';
     } else if (!value && !required) {
         return null;
     }
@@ -428,7 +442,7 @@ exports.subject = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,50}$/.test(value))) {
+    if(!(/^.{2,50}$/.test(value))) {
         return '버라이어티 주제는 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 50자까지 가능합니다.';
     }
     return null;
@@ -441,7 +455,7 @@ exports.kindConfig = function(value, required) {
         return null;
     }
     for(var i = 0; i<value.length; i++) {
-        if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,30}$/.test(value[i].name))) {
+        if(!(/^.{2,30}$/.test(value[i].name))) {
             return '종목명은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 30자까지 가능합니다.';
         }
         if(value[i].som !== '단일' && value[i].som !== '조합') {
@@ -463,22 +477,58 @@ exports.kindConfig = function(value, required) {
     return null;
 };
 
-exports.answer = function(value, required) {
+exports.siteAnswer = function(value, required) {
     if(!value && required) {
         return '액션명은 필수 입력 항목입니다.';
     } else if (!value && !required) {
         return null;
     }
     for(var i = 0; i<value.length; i++) {
-        if(!(/^[가-힣a-zA-Z0-9]{2,10}$/.test(value[i].action))) {
+        if(!(/^.{2,10}$/.test(value[i].action))) {
             return '액션명은 한글, 영문, 숫자를 포함하여 2자 이상 10자 이내로 가능합니다.';
         }
-        if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,50}$/.test(value[i].subject))) {
-            return '제목은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 50자까지 가능합니다.';
+        if(!(/^.{2,50}$/.test(value[i].subject))) {
+            return '제목은 최소 2자, 최대 50자까지 가능합니다.';
         }
-        if(!(/^[가-힣a-zA-Z0-9 !?@#$%^&*-_=+'"(){}\[\]]{2,500}$/.test(value[i].content))) {
-            return '답변 내용은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!?@#$%^&*-_=+)를 이용하여 최소 2자, 최대 500자까지 가능합니다.';
+        if(!(/^.{1,500}$/.test(value[i].content))) {
+            return '답변 내용은 최대 500자까지 가능합니다.';
         }
+    }
+    return null;
+};
+
+exports.title = function(value, required) {
+    if(!value && required) {
+        return '질문 제목은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^.{2,50}$/.test(value))) {
+        return '질문 제목은 최소 2자, 최대 50자까지 가능합니다.';
+    }
+    return null;
+};
+
+exports.content = function(value, required) {
+    if(!value && required) {
+        return '질문 내용은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^.{1,500}$/.test(value))) {
+        return '질문 내용은 최대 500자까지 가능합니다.';
+    }
+    return null;
+};
+
+exports.answer = function(value, required) {
+    if(!value && required) {
+        return '답변은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^.{1,500}$/.test(value))) {
+        return '답변은 최대 500자까지 가능합니다.';
     }
     return null;
 };
@@ -546,7 +596,7 @@ exports.option = function(value, required) {
         return '선택지는 최소 4개여야 합니다.';
     }
     for(var i = 0; i<value.length; i++) {
-        if(!(/^[가-힣a-zA-Z0-9 !@#$%^&*-_=+'"(){}\[\]]{2,30}$/.test(value[i].name))) {
+        if(!(/^.{2,30}$/.test(value[i].name))) {
             return '선택지명은 한글, 숫자, 영문, 괄호, 따옴표, 띄어쓰기, 특수문자(!@#$%^&*-_=+)를 이용하여 최소 2자, 최대 30자까지 가능합니다.';
         }
         if(!(/^\d{1,2}(|(\.(?=\d))\d{0,2})$/.test(value[i].rate))) {

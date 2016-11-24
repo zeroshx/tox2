@@ -28,7 +28,7 @@
                                 <div class="row">
                                     <div class="form-group col-sm-12">
                                         <label>레벨명</label>
-                                        <input type="text" class="form-control" data-ng-model="targetName" data-ng-disabled="formMode === 'UPDATE'" placeholder="(한글, 영문, 숫자 조합으로 1자 이상 16자 이내)">
+                                        <input type="text" class="form-control" data-ng-model="targetName" data-ng-readonly="formMode === 'UPDATE'" placeholder="(한글, 영문, 숫자 조합으로 1자 이상 16자 이내)">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -69,7 +69,7 @@
                                     <div class="form-group col-sm-12">
                                         <label>사이트</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" data-ng-model="targetSite" data-ng-disabled="formMode === 'UPDATE'" placeholder="(직접 입력 가능)">
+                                            <input type="text" class="form-control" data-ng-model="targetSite" data-ng-readonly="formMode === 'UPDATE'" placeholder="(직접 입력 가능)">
                                             <div class="input-group-btn">
                                                 <div class="dropdown">
                                                     <button class="btn btn-default dropdown-toggle" type="button" data-ng-disabled="formMode === 'UPDATE'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">선택 <span class="caret"></span></button>
