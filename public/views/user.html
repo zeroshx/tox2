@@ -64,7 +64,7 @@
                                         <button class="btn btn-default dropdown-toggle" type="button" data-ng-disabled="!targetSite" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><span data-ng-if="targetDistributor">{{targetDistributor}}</span><span data-ng-if="!targetDistributor">선택</span> <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
                                             <li><a href="" data-ng-click="targetDistributor=''">없음</a></li>
-                                            <li data-ng-repeat="dist in distributorList | orderBy: 'name'"><a href="" data-ng-click="SelectDistributor(dist.name)">{{dist.name}}</a></li>
+                                            <li data-ng-repeat="dist in distributorFilterList"><a href="" data-ng-click="SelectDistributor(dist._id)">{{dist._id}}</a></li>
                                         </ul>
                                     </div>
                                 </div>

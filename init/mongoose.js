@@ -25,6 +25,9 @@ module.exports = function() {
     var Question = require('../models/Question.js');
     var Message = require('../models/Message.js');
 
+    var Deposit = require('../models/Deposit.js');
+    var Withdrawal = require('../models/Withdrawal.js');
+
     // access to db
     var connection = mongoose.connection;
 
@@ -58,6 +61,8 @@ module.exports = function() {
     IPBlock();
     Question();
     Message();
-    
+    Deposit();
+    Withdrawal();
+
     return mdb;
 };

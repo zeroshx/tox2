@@ -1,16 +1,19 @@
-angular.module('Distributor')
-    .controller('DistributorCtrl', function($rootScope, $scope, $routeParams, CRUDService, PublicService) {
+angular.module('Finance')
+    .controller('WithdrawalCtrl', function($rootScope, $scope, $routeParams, $filter, CRUDService, PublicService) {
 
         /****************************************************************************
             Basic Vars setting
         ****************************************************************************/
-        $scope.baseUrl = '/distributor';
+        $scope.baseUrl = '/finance/withdrawal';
 
         $scope.query = {
             page: Number($routeParams.page ? $routeParams.page : 1),
             pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
-            searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : ''
+            searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : '',
+            site: $routeParams.site ? $routeParams.site : '전체',
+            distributor: $routeParams.distributor ? $routeParams.distributor : '전체',
+            state: $routeParams.state ? $routeParams.state : '전체'
         };
 
         $scope.validator = {
@@ -24,7 +27,7 @@ angular.module('Distributor')
             Sub Menu setting
         ****************************************************************************/
         for (var i in $rootScope.mainmenu) {
-            if ($rootScope.mainmenu[i].name === '총판') {
+            if ($rootScope.mainmenu[i].name === '재정') {
                 $rootScope.submenu = $rootScope.mainmenu[i].submenu;
             }
         }
@@ -54,10 +57,33 @@ angular.module('Distributor')
 
 
         /****************************************************************************
+            Input Distributor Select setting
+        ****************************************************************************/
+        $scope.distributorList = [];
+        $scope.SelectDistributor = function(name) {
+            $scope.targetDistributor = name;
+        };
+
+        $scope.DistributorList = function() {
+            CRUDService.Read('/distributor/all').run(function(res) {
+                if (res.failure) {
+                    $scope.validator.type = 'error';
+                    $scope.validator.message = res.failure;
+                } else {
+                    $scope.distributorList = res.docs;
+                }
+            }, function(err) {
+                $scope.validator.type = 'error';
+                $scope.validator.message = '비정상적인 접근입니다.';
+            });
+        };
+
+
+        /****************************************************************************
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '선택', '관리자', '총판', '사이트', '메모', '총판+메모'
+            '선택', '예금주', '닉네임', '사이트', '총판'
         ];
 
         $scope.Search = function(mode) {
@@ -117,21 +143,22 @@ angular.module('Distributor')
         $scope.FormOpen = function(mode, id) {
             $scope.ResetTarget();
             $scope.SiteList();
+            $scope.DistributorList();
             $scope.formMode = mode;
             $scope.formSwitch = true;
 
-            if (mode === 'UPDATE') {
+            if ($scope.formMode === 'UPDATE') {
                 var docCheck = false;
                 for (var i in $scope.docs) {
                     if ($scope.docs[i]._id === id) {
                         docCheck = true;
                         $scope.targetId = $scope.docs[i]._id;
-                        $scope.targetName = $scope.docs[i].name;
-                        $scope.targetMemo = $scope.docs[i].memo;
-                        $scope.targetManager = $scope.docs[i].manager;
+                        $scope.targetNick = $scope.docs[i].nick;
+                        $scope.targetHolder = $scope.docs[i].holder;
                         $scope.targetSite = $scope.docs[i].site;
-                        $scope.targetBonusWin = $scope.docs[i].bonus.win;
-                        $scope.targetBonusLose = $scope.docs[i].bonus.lose;
+                        $scope.targetDistributor = $scope.docs[i].distributor;
+                        $scope.targetCash = $scope.docs[i].cash;
+                        $scope.targetState = $scope.docs[i].state;
                     }
                 }
                 if (!docCheck) {
@@ -139,7 +166,7 @@ angular.module('Distributor')
                     $scope.validator.message = '존재하지 않는 리스트입니다. 새로고침 후 다시 시도 바랍니다.';
                 }
             } else { // mode === 'CREATE'
-
+                $scope.targetState = '신청';
             }
         };
 
@@ -155,12 +182,12 @@ angular.module('Distributor')
         ****************************************************************************/
         $scope.Create = function() {
             CRUDService.Create($scope.baseUrl).run({
-                name: $scope.targetName,
+                nick: $scope.targetNick,
+                holder: $scope.targetHolder,
                 site: $scope.targetSite,
-                manager: $scope.targetManager,
-                bonusWin: $scope.targetBonusWin,
-                bonusLose: $scope.targetBonusLose,
-                memo: $scope.targetMemo,
+                distributor: $scope.targetDistributor,
+                cash: $scope.targetCash,
+                state: $scope.targetState
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -201,11 +228,33 @@ angular.module('Distributor')
 
         $scope.Update = function() {
             CRUDService.Update($scope.baseUrl, $scope.targetId).run({
-                site: $scope.targetSite,
-                manager: $scope.targetManager,
-                bonusWin: $scope.targetBonusWin,
-                bonusLose: $scope.targetBonusLose,
-                memo: $scope.targetMemo,
+                nick: $scope.targetNick,
+                holder: $scope.targetHolder,
+                cash: $scope.targetCash,
+                state: $scope.targetState
+            }, function(res) {
+                if (res.failure) {
+                    $scope.validator.type = 'error';
+                    $scope.validator.message = res.failure;
+                } else {
+                    $scope.validator.message = '';
+                    $scope.selectAllSwitch = false;
+                    $scope.FormClose();
+                    alert('수정되었습니다.');
+                    $scope.List();
+                }
+            }, function(err) {
+                $scope.validator.type = 'error';
+                $scope.validator.message = '비정상적인 접근입니다.';
+            });
+        };
+
+        $scope.Accept = function() {
+            CRUDService.Update($scope.baseUrl + '/accept', $scope.targetId).run({
+                nick: $scope.targetNick,
+                holder: $scope.targetHolder,
+                cash: $scope.targetCash,
+                state: $scope.targetState
             }, function(res) {
                 if (res.failure) {
                     $scope.validator.type = 'error';
@@ -265,26 +314,33 @@ angular.module('Distributor')
         /****************************************************************************
             Etc Functions
         ****************************************************************************/
-        $scope.RenderList = function() {
-            // step 1. create memo shortcut
-            for (i = 0; i < $scope.docs.length; i++) {
-                $scope.docs[i].short_memo = $scope.CreateShortcut($scope.docs[i].memo, 20);
+        $scope.ChangeState = function(id) {
+            $scope.ResetTarget();
+            var docCheck = false;
+            for (var i in $scope.docs) {
+                if ($scope.docs[i]._id === id) {
+                    $scope.targetId = $scope.docs[i]._id;
+                    $scope.targetNick = $scope.docs[i].nick;
+                    $scope.targetHolder = $scope.docs[i].holder;
+                    $scope.targetState = '승인';
+                    $scope.Accept();
+                    break;
+                }
+            }
+            if(!docCheck) {
+                $scope.validator.type = 'error';
+                $scope.validator.message = '새로고침 후 다시 시도해주세요.';
             }
         };
 
-        $scope.CreateShortcut = function(str, length) {
-            if(!str || !angular.isString(str)) {
-                return null;
-            }
-            if (str.length > length) {
-                return str.slice(0, length) + '...';
-            } else {
-                return str;
+        $scope.RenderList = function() {
+            for (var m in $scope.docs) {
+                $scope.docs[m].cashCurrency = $filter('number')($scope.docs[m].cash);
             }
         };
 
         $scope.ChangePageSize = function() {
-            $scope.query.pageSize = parseInt($scope.query.pageSize);
+            $scope.query.pageSize = Number($scope.query.pageSize);
             if ($scope.query.pageSize > 0) {
                 $scope.query.page = 1;
                 $scope.List();
@@ -310,22 +366,26 @@ angular.module('Distributor')
             $scope.query.pageSize = 20;
             $scope.query.searchKeyword = '';
             $scope.query.searchFilter = '';
+            $scope.query.site = '전체';
+            $scope.query.distributor = '전체';
+            $scope.query.state = '전체';
         };
 
         $scope.ResetTarget = function() {
             $scope.targetId = null;
-            $scope.targetName = null;
-            $scope.targetMemo = null;
-            $scope.targetManager = null;
+            $scope.targetNick = null;
+            $scope.targetHolder = null;
             $scope.targetSite = null;
-            $scope.targetBonusWin = null;
-            $scope.targetBonusLose = null;
+            $scope.targetDistributor = null;
+            $scope.targetCash = null;
+            $scope.targetState = null;
         };
 
         $scope.Reset = function() {
             $scope.formSwitch = null;
             $scope.List();
             $scope.SiteList();
+            $scope.DistributorList();
             $scope.ResetTarget();
         };
 
@@ -333,5 +393,4 @@ angular.module('Distributor')
             Controller Init
         ****************************************************************************/
         $scope.Reset();
-
     });

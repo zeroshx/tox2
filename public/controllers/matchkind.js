@@ -34,7 +34,7 @@ angular.module('Match')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '종목'
+            '선택', '종목'
         ];
 
         $scope.Search = function(mode) {

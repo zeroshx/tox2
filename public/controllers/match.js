@@ -42,7 +42,7 @@ angular.module('Match')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '홈팀', '원정팀', '매치주제'
+            '선택', '홈팀', '원정팀', '매치주제'
         ];
 
         $scope.Search = function(mode) {

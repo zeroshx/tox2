@@ -37,7 +37,7 @@ angular.module('Match')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '리그', '국가'
+            '선택', '리그', '국가'
         ];
 
         $scope.Search = function(mode) {

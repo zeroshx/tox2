@@ -34,7 +34,7 @@ angular.module('Site')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '사이트'
+            '선택', '사이트'
         ];
 
         $scope.Search = function(mode) {

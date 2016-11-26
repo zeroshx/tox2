@@ -38,7 +38,7 @@ angular.module('User')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '아이디', '닉네임'
+            '선택', '아이디', '닉네임'
         ];
 
         $scope.Search = function(mode) {

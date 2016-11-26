@@ -11,7 +11,7 @@ angular.module('Client')
             pageSize: Number($routeParams.pageSize ? $routeParams.pageSize : 20),
             searchKeyword: $routeParams.searchKeyword ? $routeParams.searchKeyword : '',
             searchFilter: $routeParams.searchFilter ? $routeParams.searchFilter : '',
-            check: $routeParams.state ? $routeParams.state : '전체'
+            check: $routeParams.check ? $routeParams.check : '전체'
         };
 
         $scope.validator = {
@@ -35,7 +35,7 @@ angular.module('Client')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '보낸이', '받는이', '제목', '내용'
+            '선택', '보낸이', '받는이', '제목', '내용'
         ];
 
         $scope.Search = function(mode) {

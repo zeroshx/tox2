@@ -16,7 +16,7 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
 
     //메뉴 : 입/출금
     $rootScope.mainmenu.push({
-        name: '입/출금',
+        name: '재정',
         submenu: [{
             name: '입금 관리',
             path: '/finance/deposit'
@@ -24,11 +24,8 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
             name: '출금 관리',
             path: '/finance/withdrawal'
         }, {
-            name: '캐쉬 관리',
-            path: '/finance/cash'
-        }, {
-            name: '포인트 관리',
-            path: '/finance/point'
+            name: '화폐 변동 내역',
+            path: '/finance/history'
         }, {
             name: '입/출금 통계',
             path: '/finance/stat'

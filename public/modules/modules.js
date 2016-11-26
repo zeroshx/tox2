@@ -8,6 +8,7 @@ angular.module('User',[]);
 angular.module('Match',['ngFileUpload']);
 angular.module('Config',[]);
 angular.module('Client',[]);
+angular.module('Finance',[]);
 
 var _app = angular.module(ApplicationName, [
   'ngRoute',
@@ -19,5 +20,6 @@ var _app = angular.module(ApplicationName, [
   'User',
   'Match',
   'Config',
-  'Client'
+  'Client',
+  'Finance'
 ]);

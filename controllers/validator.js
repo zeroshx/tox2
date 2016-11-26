@@ -109,6 +109,18 @@ exports.nick = function(value, required) {
     return null;
 };
 
+exports.holder = function(value, required) {
+    if(!value && required) {
+        return '이름은 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    if(!(/^[가-힣a-zA-Z]{2,20}$/.test(value))) {
+        return '이름은 한글 또는 영문을 이용하여 2자 이상, 50자 이내입니다.';
+    }
+    return null;
+};
+
 exports.recommander = function(value, required) {
     if(!value && required) {
         return '추천인은 필수 입력 항목입니다.';
@@ -332,6 +344,21 @@ exports.matchState = function(value, required) {
         }
     }
     return '적절하지 않는 매치 상태입니다.';
+};
+
+exports.financeState = function(value, required) {
+    if(!value && required) {
+        return '신청 상태는 필수 입력 항목입니다.';
+    } else if (!value && !required) {
+        return null;
+    }
+    var _enum = ['신청', '승인'];
+    for(var i = 0; i < _enum.length; i++) {
+        if(_enum[i] === value) {
+            return null;
+        }
+    }
+    return '적절하지 않는 신청 상태입니다.';
 };
 
 exports.siteState = function(value, required) {

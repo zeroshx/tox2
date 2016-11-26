@@ -57,7 +57,7 @@ angular.module('Config')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '닉네임', '사이트', '메모'
+            '선택', '닉네임', '사이트', '메모'
         ];
 
         $scope.Search = function(mode) {

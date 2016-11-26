@@ -15,6 +15,8 @@ var ipblock = require('./ipblock.js');
 var user = require('./user.js');
 var question = require('./question.js');
 var message = require('./message.js');
+var deposit = require('./deposit.js');
+var withdrawal = require('./withdrawal.js');
 
 router.use('/', index);
 
@@ -37,5 +39,8 @@ router.use('/user', user);
 
 router.use('/client/question', question);
 router.use('/client/message', message);
+
+router.use('/finance/deposit', deposit);
+router.use('/finance/withdrawal', withdrawal);
 
 module.exports = router;

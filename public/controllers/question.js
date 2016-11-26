@@ -58,7 +58,7 @@ angular.module('Client')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '닉네임', '사이트', '제목', '내용'
+            '선택', '닉네임', '사이트', '제목', '내용'
         ];
 
         $scope.Search = function(mode) {
@@ -279,6 +279,7 @@ angular.module('Client')
 
         $scope.ChangeState = function (id) {
             $scope.ResetTarget();
+            var docCheck = false;
             for (var i in $scope.docs) {
                 if ($scope.docs[i]._id === id) {
                     docCheck = true;
@@ -291,6 +292,10 @@ angular.module('Client')
                     $scope.Update();
                     break;
                 }
+            }
+            if(!docCheck) {
+                $scope.validator.type = 'error';
+                $scope.validator.message = '새로고침 후 다시 시도해주세요.';
             }
         };
 

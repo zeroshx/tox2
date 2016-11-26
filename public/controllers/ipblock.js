@@ -34,7 +34,7 @@ angular.module('Config')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '아이피', '메모'
+            '선택', '아이피', '메모'
         ];
 
         $scope.Search = function(mode) {
