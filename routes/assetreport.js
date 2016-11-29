@@ -3,9 +3,7 @@ var router = express.Router();
 
 // controller
 var capi = require('../controllers/common.js');
-var ctrl = require('../controllers/blacklist.js');
-
-router.all('/', capi.authenticate);
+var ctrl = require('../controllers/assetreport.js');
 
 router.post('/',
   ctrl.Create

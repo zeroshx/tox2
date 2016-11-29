@@ -27,6 +27,7 @@ module.exports = function() {
 
     var Deposit = require('../models/Deposit.js');
     var Withdrawal = require('../models/Withdrawal.js');
+    var AssetReport = require('../models/AssetReport.js');
 
     // access to db
     var connection = mongoose.connection;
@@ -63,6 +64,7 @@ module.exports = function() {
     Message();
     Deposit();
     Withdrawal();
+    AssetReport();
 
     return mdb;
 };

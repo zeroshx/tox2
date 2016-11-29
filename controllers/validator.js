@@ -37,6 +37,7 @@ exports.password = function(value, required) {
 };
 
 exports.cash = function(value, required) {
+    value = String(value);
     if(!value && required) {
         return '캐쉬는 필수 입력 항목입니다.';
     } else if (!value && !required) {
@@ -49,6 +50,7 @@ exports.cash = function(value, required) {
 };
 
 exports.money = function(value, required) {
+    value = String(value);
     if(!value && required) {
         return '게임 머니는 필수 입력 항목입니다.';
     } else if (!value && !required) {
@@ -61,6 +63,7 @@ exports.money = function(value, required) {
 };
 
 exports.point = function(value, required) {
+    value = String(value);
     if(!value && required) {
         return '포인트는 필수 입력 항목입니다.';
     } else if (!value && !required) {
@@ -73,6 +76,7 @@ exports.point = function(value, required) {
 };
 
 exports.debt = function(value, required) {
+    value = String(value);
     if(!value && required) {
         return '빚은 필수 입력 항목입니다.';
     } else if (!value && !required) {
@@ -583,7 +587,7 @@ exports.accountBank = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[ㄱ-힣a-zA-Z0-9]{1,50}$/.test(value.bank))) {
+    if(!(/^[ㄱ-힣a-zA-Z0-9]{1,50}$/.test(value))) {
         return '은행명은 50자 이내입니다.';
     }
     return null;
@@ -595,7 +599,7 @@ exports.accountNumber = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[\-0-9]{1,50}$/.test(value.number))) {
+    if(!(/^[\-0-9]{1,50}$/.test(value))) {
         return '계좌번호는 30자 이내입니다.';
     }
     return null;
@@ -607,7 +611,7 @@ exports.accountPin = function(value, required) {
     } else if (!value && !required) {
         return null;
     }
-    if(!(/^[0-9]{4,8}$/.test(value.pin))) {
+    if(!(/^[0-9]{4,8}$/.test(value))) {
         return '계좌 인증코드는 숫자로 이루어진 4~8자입니다.';
     }
     return null;

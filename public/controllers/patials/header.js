@@ -24,8 +24,8 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
             name: '출금 관리',
             path: '/finance/withdrawal'
         }, {
-            name: '화폐 변동 내역',
-            path: '/finance/history'
+            name: '자산 변동 내역',
+            path: '/finance/report'
         }, {
             name: '입/출금 통계',
             path: '/finance/stat'
@@ -59,7 +59,7 @@ _app.controller('HeaderCtrl', function($rootScope, $scope) {
             path: '/user'
         }, {
             name: '접속기록',
-            path: '/user/history'
+            path: '/user/report'
         }, {
             name: '회원 통계',
             path: '/user/stat'

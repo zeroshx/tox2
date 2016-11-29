@@ -17,6 +17,7 @@ var question = require('./question.js');
 var message = require('./message.js');
 var deposit = require('./deposit.js');
 var withdrawal = require('./withdrawal.js');
+var assetreport = require('./assetreport.js');
 
 router.use('/', index);
 
@@ -42,5 +43,6 @@ router.use('/client/message', message);
 
 router.use('/finance/deposit', deposit);
 router.use('/finance/withdrawal', withdrawal);
+router.use('/finance/report', assetreport);
 
 module.exports = router;

@@ -4,19 +4,19 @@ angular.module('Config')
             $routeProvider
                 .when('/config/ipblock', {
                     templateUrl: '/views/ipblock.html'
-                    //   resolve: {
-                    //     preAuth: function(AuthService) {
-                    //       return AuthService.isAliveQ();
-                    //     }
-                    //   }
+                        //   resolve: {
+                        //     preAuth: function(AuthService) {
+                        //       return AuthService.isAliveQ();
+                        //     }
+                        //   }
                 })
                 .when('/config/blacklist', {
-                    templateUrl: '/views/blacklist.html'
-                    //   resolve: {
-                    //     preAuth: function(AuthService) {
-                    //       return AuthService.isAliveQ();
-                    //     }
-                    //   }
+                    templateUrl: '/views/blacklist.html',
+                    resolve: {
+                        preAuth: function(AuthService) {
+                            return AuthService.isAliveQ();
+                        }
+                    }
                 });
         }
     ]);

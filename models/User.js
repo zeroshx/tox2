@@ -55,6 +55,9 @@ var Model = new Schema({
         }
     }],
     account: {
+        holder: {
+            type: String
+        },
         bank: {
             type: String
         },
@@ -172,6 +175,14 @@ Model.statics.List = function(
                     $regex: '.*' + keyword + '.*'
                 }
             };
+        } else if (filter === '예금주') {
+            subquery = {
+                account: {
+                    holder: {
+                        $regex: '.*' + keyword + '.*'
+                    }
+                }
+            };
         }
     }
 
@@ -224,6 +235,7 @@ Model.statics.Create = function(
     site,
     distributor,
     memo,
+    accountHolder,
     accountBank,
     accountNumber,
     accountPin,
@@ -272,6 +284,7 @@ Model.statics.Create = function(
             newDoc.distributor = distributor;
             newDoc.memo = memo;
             newDoc.account = {
+                holder: accountHolder,
                 bank: accountBank,
                 number: accountNumber,
                 pin: accountPin
@@ -315,6 +328,7 @@ Model.statics.Update = function(
     site,
     distributor,
     memo,
+    accountHolder,
     accountBank,
     accountNumber,
     accountPin,
@@ -341,6 +355,7 @@ Model.statics.Update = function(
             distributor: distributor,
             memo: memo,
             account: {
+                holder: accountHolder,
                 bank: accountBank,
                 number: accountNumber,
                 pin: accountPin

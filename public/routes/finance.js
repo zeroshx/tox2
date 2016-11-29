@@ -16,6 +16,13 @@ angular.module('Finance')
                     //       return AuthService.isAliveQ();
                     //     }
                     //   }
+                }).when('/finance/report', {
+                    templateUrl: '/views/assetreport.html'
+                    //   resolve: {
+                    //     preAuth: function(AuthService) {
+                    //       return AuthService.isAliveQ();
+                    //     }
+                    //   }
                 });
         }
     ]);

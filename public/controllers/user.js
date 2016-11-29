@@ -38,7 +38,7 @@ angular.module('User')
             Search setting
         ****************************************************************************/
         $scope.searchFilters = [
-            '선택', '아이디', '닉네임'
+            '선택', '아이디', '닉네임', '예금주'
         ];
 
         $scope.Search = function(mode) {
@@ -112,6 +112,7 @@ angular.module('User')
                         $scope.targetMoney = $scope.docs[i].money;
                         $scope.targetPoint = $scope.docs[i].point;
                         $scope.targetDebt = $scope.docs[i].debt;
+                        $scope.targetAccountHolder = $scope.docs[i].account.holder;
                         $scope.targetAccountBank = $scope.docs[i].account.bank;
                         $scope.targetAccountNumber = $scope.docs[i].account.number;
                         $scope.targetAccountPin = $scope.docs[i].account.pin;
@@ -125,6 +126,8 @@ angular.module('User')
                         } else {
                             $scope.targetMemo = [];
                         }
+                        $scope.DistributorList();
+                        $scope.LevelList();
                     }
                 }
                 if (!docCheck) {
@@ -222,8 +225,10 @@ angular.module('User')
         $scope.siteList = [];
         $scope.SelectSite = function(name) {
             $scope.targetSite = name;
-            $scope.targetDistributor = '';
-            $scope.targetLevel = '';
+            $scope.targetDistributor = null;
+            $scope.targetLevel = null;
+            $scope.distributorList = null;
+            $scope.levelList = null;
             $scope.DistributorList();
             $scope.LevelList();
         };
@@ -255,6 +260,7 @@ angular.module('User')
                 money: $scope.targetMoney,
                 point: $scope.targetPoint,
                 debt: $scope.targetDebt,
+                accountHolder: $scope.targetAccountHolder,
                 accountBank: $scope.targetAccountBank,
                 accountNumber: $scope.targetAccountNumber,
                 accountPin: $scope.targetAccountPin,
@@ -288,6 +294,7 @@ angular.module('User')
                 cash: $scope.targetCash,
                 money: $scope.targetMoney,
                 point: $scope.targetPoint,
+                accountHolder: $scope.targetAccountHolder,
                 accountBank: $scope.targetAccountBank,
                 accountNumber: $scope.targetAccountNumber,
                 accountPin: $scope.targetAccountPin,
@@ -441,6 +448,7 @@ angular.module('User')
             $scope.targetMoney = null;
             $scope.targetPoint = null;
             $scope.targetDebt = null;
+            $scope.targetAccountHolder = null;
             $scope.targetAccountBank = null;
             $scope.targetAccountNumber = null;
             $scope.targetAccountPin = null;

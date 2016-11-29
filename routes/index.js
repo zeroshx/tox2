@@ -11,4 +11,23 @@ router.get('/',
   capi.refreshSession,
   ctrl.index
 );
+
+/* GET home page. */
+router.get('/login',
+  capi.refreshSession,
+  ctrl.index
+);
+
+/* GET home page. */
+router.get('/signup',
+  capi.refreshSession,
+  ctrl.index
+);
+
+/* GET home page. */
+router.get('/notfound',
+  capi.refreshSession,
+  ctrl.index
+);
+
 module.exports = router;

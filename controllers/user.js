@@ -88,6 +88,10 @@ exports.Create = function(req, res) {
         validator: 'userMemo'
     }, {
         required: false,
+        value: req.body.accountHolder,
+        validator: 'holder'
+    }, {
+        required: false,
         value: req.body.accountBank,
         validator: 'accountBank'
     }, {
@@ -118,6 +122,7 @@ exports.Create = function(req, res) {
         req.body.site,
         req.body.distributor,
         req.body.memo,
+        req.body.accountHolder,
         req.body.accountBank,
         req.body.accountNumber,
         req.body.accountPin,
@@ -190,6 +195,10 @@ exports.Update = function(req, res) {
         validator: 'userMemo'
     }, {
         required: false,
+        value: req.body.accountHolder,
+        validator: 'holder'
+    }, {
+        required: false,
         value: req.body.accountBank,
         validator: 'accountBank'
     }, {
@@ -219,6 +228,7 @@ exports.Update = function(req, res) {
         req.body.site,
         req.body.distributor,
         req.body.memo,
+        req.body.accountHolder,
         req.body.accountBank,
         req.body.accountNumber,
         req.body.accountPin,

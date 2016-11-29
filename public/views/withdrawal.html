@@ -211,7 +211,7 @@
                             <td>{{ doc.operatedAt }}</td>
                             <td data-ng-class="{'success' : doc.state === '승인', 'danger': doc.state === '신청'}">{{ doc.state }}</td>
                             <td>
-                                <button type="button" class="btn btn-warning btn-xs" data-ng-if="doc.state !== '완료'" data-ng-click="ChangeState(doc._id)">승인</button>
+                                <button type="button" class="btn btn-warning btn-xs" data-ng-if="doc.state !== '승인'" data-ng-click="ChangeState(doc._id)">승인</button>
                                 <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
                             </td>
                         </tr>
