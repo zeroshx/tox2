@@ -5,7 +5,7 @@ var router = express.Router();
 var capi = require('../controllers/common.js');
 var ctrl = require('../controllers/blacklist.js');
 
-router.all('/', capi.authenticate);
+// router.all('/', capi.authenticate);
 
 router.post('/',
   ctrl.Create

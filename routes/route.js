@@ -19,6 +19,8 @@ var deposit = require('./deposit.js');
 var withdrawal = require('./withdrawal.js');
 var assetreport = require('./assetreport.js');
 
+var capi = require('../controllers/common.js');
+
 router.use('/', index);
 
 router.use('/auth', auth);

@@ -1,0 +1,98 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 100px;
+    background: url("../images/background.jpg") no-repeat center;
+    background-size: cover;
+}
+
+body>.container {
+    padding: 240px 15px 0;
+}
+
+@media screen and (max-width: 768px) {
+    body>.container {
+        padding: 60px 15px 0;
+    }
+}
+
+.header {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 50px;
+    overflow: hidden;
+    background-color: rgb(70, 50, 30);
+    z-index: 999;
+}
+
+.header .container {
+    height: 100%;
+}
+
+.header-menu-wrapper {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+.header-menu-item-right {
+    float: right;
+    margin: 0px 0px 0px 40px;
+}
+
+.header-menu-item-left {
+    float: left;
+}
+
+.header-menu-wrapper li {
+    display: table;
+    height: 100%;
+}
+
+.header-menu-wrapper a {
+    display: table-cell;
+    vertical-align: middle;
+    color: white;
+    text-decoration: none;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 50px;
+    background-color: rgba(176, 176, 176, 0.5);
+}
+
+.footer .container {
+    display: table;
+    height: 100%;
+}
+
+.footer>.container>p {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.notice {
+    position: absolute;
+    bottom: 60px;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 40px;
+    color: white;
+    font-weight: bold;
+}

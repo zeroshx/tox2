@@ -1,4 +1,5 @@
 // basic modules
+var passport = require('passport');
 var express = require('express');
 var router = express.Router();
 
@@ -6,28 +7,37 @@ var router = express.Router();
 var capi = require('../controllers/common.js');
 var ctrl = require('../controllers/index.js');
 
-/* GET home page. */
+/* GET home page with login form */
 router.get('/',
-  capi.refreshSession,
   ctrl.index
 );
 
-/* GET home page. */
-router.get('/login',
-  capi.refreshSession,
-  ctrl.index
-);
-
-/* GET home page. */
 router.get('/signup',
-  capi.refreshSession,
-  ctrl.index
+  ctrl.signup
 );
 
-/* GET home page. */
-router.get('/notfound',
-  capi.refreshSession,
-  ctrl.index
+router.get('/usersetting', function(req, res) {
+    res.send("usersetting <a href=\"/logout\">Logout</a>");
+});
+
+router.get('/main', function(req, res) {
+    res.send("main <a href=\"/logout\">Logout</a>");
+});
+
+router.get('/logout',
+  ctrl.logout
+);
+
+router.post('/signup',
+  ctrl.RequestSignup
+);
+
+router.post('/login',
+  ctrl.RequestLogin
+);
+
+router.post('/request',
+  ctrl.RequestNonmemberService
 );
 
 module.exports = router;

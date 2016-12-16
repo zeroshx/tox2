@@ -80,6 +80,9 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
+    if (err.code === 'EBADCSRFTOKEN') {
+      console.log("EBADCSRFTOKEN");
+    }
     res.sendStatus(err.status || 500);
   });
 }

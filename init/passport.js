@@ -28,6 +28,7 @@ module.exports = function() {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
+        console.log(user);
         if (user.hasOwnProperty('failure')) {
             done(null, user);
         } else {
@@ -49,30 +50,34 @@ module.exports = function() {
     });
 
     passport.use('local-signup', new LocalStrategy({
-            usernameField: 'email',
-            passwordField: 'password',
             passReqToCallback: true
         },
         function(req, email, password, done) {
-            process.nextTick(function() {
-                User.Signup(
-                    req.body.email,
-                    req.body.nick,
-                    req.body.password,
-                    req.body.confirm,
-                    function(err, msg, user) {
-                        if (err) {
-                            nodemailer('init/passport.js:signup', JSON.stringify(err));
-                            return done(err);
-                        } else if (msg) {
-                            return done(null, {
-                                failure: msg
-                            });
-                        } else {
-                            return done(null, user);
-                        }
-                    });
-            });
+            console.log(req.body);
+            if(req.body.password !== req.body.confirm) {
+                return done(null, false, {
+                    failure: "[암호]와 [암호 확인]이 일치하지 않습니다."
+                });
+            }
+            // process.nextTick(function() {
+            //     User.Create(
+            //         req.body.uid,
+            //         req.body.nick,
+            //         req.body.password,
+            //         req.body.confirm,
+            //         function(err, msg, user) {
+            //             if (err) {
+            //                 nodemailer('init/passport.js:signup', JSON.stringify(err));
+            //                 return done(err);
+            //             } else if (msg) {
+            //                 return done(null, {
+            //                     failure: msg
+            //                 });
+            //             } else {
+            //                 return done(null, user);
+            //             }
+            //         });
+            // });
         }));
 
     passport.use('local-login', new LocalStrategy({

@@ -31,11 +31,11 @@ exports.logout = function(req, res) {
 };
 
 exports.alive = function(req, res) {
-    if (req.isAuthenticated()) {
-        return res.sendStatus(200);
-    } else {
-        return res.sendStatus(500);
-    }
+    // if (req.isAuthenticated()) {
+    //     return res.sendStatus(200);
+    // } else {
+    //     return res.sendStatus(500);
+    // }
 };
 
 exports.checkEmail = function(req, res) {

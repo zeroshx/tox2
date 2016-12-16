@@ -33,7 +33,6 @@ router.post('/checknick',
 );
 
 router.get('/me',
-  capi.authenticate,
   ctrl.me
 );
 
