@@ -16,6 +16,15 @@ var Model = new Schema({
     },
     lose: {
       type: Number
+    },
+    signup: {
+      type: Number
+    },
+    firstDeposit: {
+      type: Number
+    },
+    deposit: {
+      type: Number
     }
   },
   headcount: {
@@ -129,6 +138,9 @@ Model.statics.Create = function(
   name,
   bonusWin,
   bonusLose,
+  bonusSignup,
+  bonusFirstDeposit,
+  bonusDeposit,
   answer,
   memo,
   callback
@@ -150,7 +162,10 @@ Model.statics.Create = function(
     newDoc.name = name;
     newDoc.bonus = {
       win: bonusWin,
-      lose: bonusLose
+      lose: bonusLose,
+      signup: bonusSignup,
+      firstDeposit: bonusFirstDeposit,
+      deposit: bonusDeposit
     };
     newDoc.answer = answer;
     newDoc.headcount = 0;
@@ -172,6 +187,9 @@ Model.statics.Update = function(
   state,
   bonusWin,
   bonusLose,
+  bonusSignup,
+  bonusFirstDeposit,
+  bonusDeposit,
   answer,
   memo,
   callback
@@ -187,7 +205,10 @@ Model.statics.Update = function(
       state: state,
       bonus: {
         win: bonusWin,
-        lose: bonusLose
+        lose: bonusLose,
+        signup: bonusSignup,
+        firstDeposit: bonusFirstDeposit,
+        deposit: bonusDeposit
       },
       answer: answer,
       memo: memo,

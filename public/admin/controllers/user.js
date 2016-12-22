@@ -282,7 +282,7 @@ angular.module('User')
           $scope.List();
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -315,7 +315,7 @@ angular.module('User')
           $scope.List();
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -335,7 +335,7 @@ angular.module('User')
           $scope.selectAllSwitch = false;
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -361,7 +361,7 @@ angular.module('User')
           }
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 

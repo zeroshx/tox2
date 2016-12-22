@@ -3,33 +3,6 @@ var nodemailer = require('../init/nodemailer.js');
 
 var root = 'controller/user.js';
 
-exports.signup = function(req, res) {
-  if (req.session.passport.user.hasOwnProperty('failure')) {
-    var fail = req.user; // req.user has failure message.
-    delete req.session.passport;
-    delete req.user;
-    res.json(fail);
-    return;
-  }
-  res.json(req.user);
-};
-
-exports.login = function(req, res) {
-  if (req.session.passport.user.hasOwnProperty('failure')) {
-    var fail = req.user; // req.user has failure message.
-    delete req.session.passport;
-    delete req.user;
-    res.json(fail);
-    return;
-  }
-  res.json(req.user);
-};
-
-exports.logout = function(req, res) {
-  req.logout();
-  res.sendStatus(200);
-};
-
 exports.alive = function(req, res) {
   // if (req.isAuthenticated()) {
   //     return res.sendStatus(200);

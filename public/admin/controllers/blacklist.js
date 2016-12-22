@@ -167,7 +167,7 @@ angular.module('Config')
           $scope.List();
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -187,7 +187,7 @@ angular.module('Config')
           $scope.selectAllSwitch = false;
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -208,7 +208,7 @@ angular.module('Config')
           $scope.List();
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -234,7 +234,7 @@ angular.module('Config')
           }
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 

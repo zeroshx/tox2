@@ -106,6 +106,10 @@ angular.module('Site')
             $scope.targetMemo = $scope.docs[i].memo;
             $scope.targetBonusWin = $scope.docs[i].bonus.win;
             $scope.targetBonusLose = $scope.docs[i].bonus.lose;
+            $scope.targetBonusSignup = $scope.docs[i].bonus.signup;
+            $scope.targetBonusFirstDeposit = $scope.docs[i].bonus.firstDeposit;
+            $scope.targetBonusDeposit = $scope.docs[i].bonus.deposit;
+
             if (!$scope.docs[i].answer) {
               $scope.targetAnswer = [];
             } else {
@@ -138,6 +142,9 @@ angular.module('Site')
         name: $scope.targetName,
         bonusWin: $scope.targetBonusWin,
         bonusLose: $scope.targetBonusLose,
+        bonusSignup: $scope.targetBonusSignup,
+        bonusFirstDeposit: $scope.targetBonusFirstDeposit,
+        bonusDeposit: $scope.targetBonusDeposit,
         answer: $scope.targetAnswer,
         memo: $scope.targetMemo
       }, function(res) {
@@ -152,7 +159,7 @@ angular.module('Site')
           $scope.List();
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -172,7 +179,7 @@ angular.module('Site')
           $scope.selectAllSwitch = false;
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -181,6 +188,9 @@ angular.module('Site')
         state: $scope.targetState,
         bonusWin: $scope.targetBonusWin,
         bonusLose: $scope.targetBonusLose,
+        bonusSignup: $scope.targetBonusSignup,
+        bonusFirstDeposit: $scope.targetBonusFirstDeposit,
+        bonusDeposit: $scope.targetBonusDeposit,
         answer: $scope.targetAnswer,
         memo: $scope.targetMemo
       }, function(res) {
@@ -195,7 +205,7 @@ angular.module('Site')
           $scope.List();
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -221,7 +231,7 @@ angular.module('Site')
           }
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -293,6 +303,9 @@ angular.module('Site')
       $scope.targetMemo = null;
       $scope.targetBonusWin = null;
       $scope.targetBonusLose = null;
+      $scope.targetBonusSignup = null;
+      $scope.targetBonusFirstDeposit = null;
+      $scope.targetBonusDeposit = null;
       $scope.targetState = null;
       $scope.targetAnswer = null;
     };

@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 var index = require('./index.js');
-var auth = require('./auth.js');
 var site = require('./site.js');
 var sitelevel = require('./site.level.js');
 var siteconfig = require('./site.config.js');
@@ -20,11 +19,7 @@ var withdrawal = require('./withdrawal.js');
 var assetreport = require('./asset.report.js');
 var todo = require('./todo.js');
 
-var capi = require('../controllers/common.js');
-
 router.use('/', index);
-
-router.use('/auth', auth);
 
 router.use('/site', site);
 router.use('/site/level', sitelevel);

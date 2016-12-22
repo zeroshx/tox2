@@ -276,3 +276,11 @@ exports.Me = function(req, res) {
     }
   });
 };
+
+
+exports.Session = function(req, res) {
+  if(req.session.auth) {
+    return res.sendStatus(200);
+  }
+  return res.sendStatus(401);
+};

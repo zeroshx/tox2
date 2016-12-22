@@ -200,7 +200,7 @@ angular.module('Asset')
           $scope.List();
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -220,7 +220,7 @@ angular.module('Asset')
           $scope.selectAllSwitch = false;
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -242,7 +242,7 @@ angular.module('Asset')
           $scope.List();
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -264,7 +264,7 @@ angular.module('Asset')
           $scope.List();
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -290,7 +290,7 @@ angular.module('Asset')
           }
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 

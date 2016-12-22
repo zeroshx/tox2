@@ -27,7 +27,7 @@ angular.module('Todo')
           $scope.List();
         }
       }, function(err) {
-          $window.location.reload(true);
+          $window.location = '/';
       });
     };
 
@@ -43,7 +43,7 @@ angular.module('Todo')
           $scope.ResetTarget();
         }
       }, function(err) {
-          $window.location.reload(true);
+          $window.location = '/';
       });
     };
 
@@ -56,7 +56,7 @@ angular.module('Todo')
           $scope.List();
         }
       }, function(err) {
-          $window.location.reload(true);
+          $window.location = '/';
       });
     };
 
@@ -70,7 +70,7 @@ angular.module('Todo')
           $scope.List();
         }
       }, function(err) {
-          $window.location.reload(true);
+          $window.location = '/';
       });
     };
 

@@ -196,6 +196,10 @@ exports.RequestGuestService = function(req, res) {
 };
 
 exports.Logout = function(req, res) {
-  req.session.destroy();
-  res.redirect('/');
+  req.session.destroy(function(err){
+    if(err) {
+      
+    }
+    res.redirect('/');
+  });
 };

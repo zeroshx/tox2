@@ -148,7 +148,7 @@ angular.module('Match')
           $scope.List();
         }
       }, function(res) { //failure
-        $window.location.reload(true);
+        $window.location = '/';
       }, function(evt) {
         //console.log(evt);
       });
@@ -173,7 +173,7 @@ angular.module('Match')
           $scope.List();
         }
       }, function(res) { //failure
-        $window.location.reload(true);
+        $window.location = '/';
       }, function(evt) {
         //console.log(evt);
       });
@@ -194,7 +194,7 @@ angular.module('Match')
           $scope.selectAllSwitch = false;
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -220,7 +220,7 @@ angular.module('Match')
           }
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 

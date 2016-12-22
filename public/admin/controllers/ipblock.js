@@ -141,7 +141,7 @@ angular.module('Config')
           alert("추가되었습니다.");
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -161,7 +161,7 @@ angular.module('Config')
           $scope.selectAllSwitch = false;
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -181,7 +181,7 @@ angular.module('Config')
           alert('수정되었습니다.');
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 
@@ -207,7 +207,7 @@ angular.module('Config')
           }
         }
       }, function(err) {
-        $window.location.reload(true);
+        $window.location = '/';
       });
     };
 

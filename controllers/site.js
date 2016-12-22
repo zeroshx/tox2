@@ -62,6 +62,18 @@ exports.Create = function(req, res) {
     value: req.body.bonusLose,
     validator: 'bonus'
   }, {
+    required: true,
+    value: req.body.bonusSignup,
+    validator: 'money'
+  }, {
+    required: true,
+    value: req.body.bonusFirstDeposit,
+    validator: 'bonus'
+  }, {
+    required: true,
+    value: req.body.bonusDeposit,
+    validator: 'bonus'
+  }, {
     required: false,
     value: req.body.answer,
     validator: 'siteAnswer'
@@ -76,6 +88,9 @@ exports.Create = function(req, res) {
     req.body.name,
     req.body.bonusWin,
     req.body.bonusLose,
+    req.body.bonusSignup,
+    req.body.bonusFirstDeposit,
+    req.body.bonusDeposit,
     req.body.answer,
     req.body.memo,
     function(err, msg, doc) {
@@ -111,6 +126,18 @@ exports.Update = function(req, res) {
     value: req.body.bonusLose,
     validator: 'bonus'
   }, {
+    required: true,
+    value: req.body.bonusSignup,
+    validator: 'money'
+  }, {
+    required: true,
+    value: req.body.bonusFirstDeposit,
+    validator: 'bonus'
+  }, {
+    required: true,
+    value: req.body.bonusDeposit,
+    validator: 'bonus'
+  }, {
     required: false,
     value: req.body.answer,
     validator: 'siteAnswer'
@@ -125,6 +152,9 @@ exports.Update = function(req, res) {
     req.body.state,
     req.body.bonusWin,
     req.body.bonusLose,
+    req.body.bonusSignup,
+    req.body.bonusFirstDeposit,
+    req.body.bonusDeposit,
     req.body.answer,
     req.body.memo,
     function(err, msg, doc) {

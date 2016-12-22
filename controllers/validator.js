@@ -62,6 +62,9 @@ exports.cash = function(value, required) {
   } else if (!value && !required) {
     return null;
   }
+  if(isNaN(value)){
+    return '캐쉬는 숫자만 입력해주세요.';
+  }
   if (Number(value) < 0) {
     return '캐쉬는 0원 미만이 될 수 없습니다.';
   }
@@ -74,6 +77,9 @@ exports.money = function(value, required) {
     return '게임 머니는 필수 입력 항목입니다.';
   } else if (!value && !required) {
     return null;
+  }
+  if(isNaN(value)){
+    return '게임 머니는 숫자만 입력해주세요.';
   }
   if (Number(value) < 0) {
     return '게임 머니는 0원 미만이 될 수 없습니다.';
@@ -88,6 +94,9 @@ exports.point = function(value, required) {
   } else if (!value && !required) {
     return null;
   }
+  if(isNaN(value)){
+    return '포인트는 숫자만 입력해주세요.';
+  }
   if (Number(value) < 0) {
     return '포인트는 0점 미만이 될 수 없습니다.';
   }
@@ -100,6 +109,9 @@ exports.debt = function(value, required) {
     return '빚은 필수 입력 항목입니다.';
   } else if (!value && !required) {
     return null;
+  }
+  if(isNaN(value)){
+    return '빚은 숫자만 입력해주세요.';
   }
   if (Number(value) < 0) {
     return '빚은 0원 미만이 될 수 없습니다.';
@@ -210,6 +222,9 @@ exports.bonus = function(value, required) {
   } else if (!value && !required) {
     return null;
   }
+  if(isNaN(value)) {
+    return '보너스는 숫자만 입력해주세요.';
+  }
   if (Number(value) < 0 || Number(value) > 100) {
     return '보너스는 최소 0%, 최대 100%까지 가능합니다.';
   }
@@ -221,6 +236,9 @@ exports.maxBet = function(value, required) {
     return '최대 배팅 금액은 필수 입력 항목입니다.';
   } else if (!value && !required) {
     return null;
+  }
+  if(isNaN(value)) {
+    return '최대 배팅 금액은 숫자만 입력해주세요.';
   }
   if (Number(value) < 1) {
     return '최대 배팅 금액은 1원보다 적을 수 없습니다.';
@@ -234,6 +252,9 @@ exports.minBet = function(value, required) {
   } else if (!value && !required) {
     return null;
   }
+  if(isNaN(value)) {
+    return '최소 배팅 금액은 숫자만 입력해주세요.';
+  }
   if (Number(value) < 1) {
     return '최소 배팅 금액은 1원보다 적을 수 없습니다.';
   }
@@ -245,6 +266,9 @@ exports.score = function(value, required) {
     return '점수는 필수 입력 항목입니다.';
   } else if (!value && !required) {
     return null;
+  }
+  if(isNaN(value)) {
+    return '점수는 숫자만 입력해주세요.';
   }
   if (Number(value) < 0) {
     return '점수는 0보다 작을 수 없습니다.';
@@ -258,6 +282,9 @@ exports.cancelLimit = function(value, required) {
   } else if (!value && !required) {
     return null;
   }
+  if(isNaN(value)) {
+    return '배팅 취소 시간은 숫자만 입력해주세요.';
+  }
   if (Number(value) < 1) {
     return '배팅 취소 시간은 1분보다 작을 수 없습니다.';
   }
@@ -269,6 +296,9 @@ exports.cancelCount = function(value, required) {
     return '배팅 취소 횟수는 필수 입력 항목입니다.';
   } else if (!value && !required) {
     return null;
+  }
+  if(isNaN(value)) {
+    return '배팅 취소 횟수는 숫자만 입력해주세요.';
   }
   if (Number(value) < 1) {
     return '배팅 취소 횟수는 1보다 작을 수 없습니다.';
@@ -525,6 +555,9 @@ exports.kindConfig = function(value, required) {
     }
     if (value[i].som !== '단일' && value[i].som !== '조합') {
       return '종목 배팅 타입은 단일 또는 조합만 가능합니다.';
+    }
+    if (isNaN(value[i].maxMulti)) {
+      return '최대 조합 매치 수는 숫자만 입력해주세요.';
     }
     if (Number(value[i].maxMulti) < 1) {
       return '최대 조합 매치 수는 1보다 작을 수 없습니다.';

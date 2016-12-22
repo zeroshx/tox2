@@ -17,21 +17,18 @@
         <!-- 3. Custom form zone -->
         <div data-ng-show="formSwitch" class="row">
             <br>
-            <div class="col-sm-offset-3 col-sm-6">
+            <div class="col-sm-12">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <h3 class="panel-title">상세정보</h3>
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-4">
                                 <label>닉네임</label>
                                 <input type="text" class="form-control" data-ng-model="targetNick" placeholder="(한글, 영문, 숫자 조합으로 2자 이상 16자 이내)">
                             </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-4">
                                 <label>사이트</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" data-ng-model="targetSite">
@@ -45,14 +42,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-4">
                                 <label>메모</label>
                                 <textarea class="form-control" rows="5" data-ng-model="targetMemo" placeholder="(200자 이내)"></textarea>
                             </div>
-                        </div>
+                        </div>                    
                         <br>
                         <div class="row">
                             <center>

@@ -32,16 +32,16 @@ app.use(cookieParser());
 app.use(session({
   name: exfig.session_name,
   secret: exfig.session_secret,
-  resave: true,
+  resave: false,
   saveUninitialized: true,
   cookie: {
     path: '/',
     httpOnly: true,
-    secure: false,
-    maxAge: 30 * 60 * 1000 // 30 minutes
+    secure: false
   },
   store: new MongoStore({
-    url: exfig.session_store_url
+    url: exfig.session_store_url,
+    ttl: 60 * 60 // 1hour
   })
 }));
 app.use(express.static(path.join(__dirname, 'public')));

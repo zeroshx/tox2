@@ -1,34 +1,26 @@
 var app = angular.module(ApplicationName);
-app.factory('AuthService', function($resource, $location, $q) {
-    return {
+app.factory('AuthService', function($resource, $location, $window, $q) {
+  return {
 
-        isAlive: function() {
-            return $resource('/auth/alive', {}, {
-                run: {
-                    method: 'GET'
-                }
-            });
+    Session: function() {
+      var defer = $q.defer();
+      $resource('/user/session').get(
+        function(res) {
+          defer.resolve();
         },
+        function(err) {
+          defer.reject();
+          $window.location = '/';
+        });
+      return defer.promise;
+    },
 
-        isAliveQ: function() {
-            var defer = $q.defer();
-            $resource('/auth/alive').get(
-                function(res) {
-                    defer.resolve();
-                },
-                function(err) {
-                    defer.reject();
-                    $location.path('/login');
-                });
-            return defer.promise;
-        },
-
-        Me: function() {
-            return $resource('/user/me', {}, {
-                run: {
-                    method: 'GET'
-                }
-            });
+    Me: function() {
+      return $resource('/user/me', {}, {
+        run: {
+          method: 'GET'
         }
-    };
+      });
+    }
+  };
 });

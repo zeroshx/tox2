@@ -34,4 +34,9 @@ router.get('/me',
   ctrl.Me
 );
 
+router.get('/session',
+  capi.VerifyAdmin,
+  ctrl.Session
+);
+
 module.exports = router;
