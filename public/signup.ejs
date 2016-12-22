@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  <meta name="description" content="Change the TOTO world.">
+  <meta name="author" content="Zeros">
+
+  <title>TOX2-Signup</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <link href="stylesheets/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="stylesheets/sticky-footer-navbar.css" rel="stylesheet">
+  <link href="stylesheets/signup.css" rel="stylesheet">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="container">
+      <ul class="header-menu-wrapper">
+        <li class="header-menu-item-left"><a href="/"><i class="glyphicon glyphicon-menu-left"></i> 로그인으로 돌아가기</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Begin page content -->
+  <!-- Top content -->
+  <div class="top-content">
+
+    <div class="inner-bg">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-offset-3 col-sm-6">
+            <div class="form-box">
+              <div class="form-top">
+                <div class="form-top-left">
+                  <h3>TOX2 가입신청서</h3>
+                  <p>다양한 컨텐츠를 원한다면, 지금 바로 가입하세요!</p>
+                </div>
+                <div class="form-top-right">
+                  <i class="glyphicon glyphicon-pencil"></i>
+                </div>
+              </div>
+              <div class="form-bottom">
+                <form class="registration-form" method="post" action="/signup">
+                  <input type="hidden" name="_csrf" id="_csrf" value="<%=csrfToken%>">
+                  <% if (message) { %>
+                  <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><%=message%></strong>
+                  </div>
+                  <% } %>
+
+                  <% if(errorInput === 'uid') { %>
+                  <div class="form-group has-error has-feedback">
+                  <% } else { %>
+                    <div class="form-group">
+                  <% } %>
+                    <label for="uid">아이디</label>
+                    <input type="text" class="form-control input-lg" id="uid" name="uid" value="<%=uid%>" placeholder="">
+                  <% if(errorInput === 'uid') { %>
+                    <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                  <% } %>
+                  </div>
+
+                  <% if(errorInput === 'nick') { %>
+                  <div class="form-group has-error has-feedback">
+                  <% } else { %>
+                    <div class="form-group">
+                  <% } %>
+                    <label for="uid">닉네임</label>
+                    <input type="text" class="form-control input-lg" id="uid" name="nick" value="<%=nick%>" placeholder="">
+                  <% if(errorInput === 'nick') { %>
+                    <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                  <% } %>
+                  </div>
+
+                  <% if(errorInput === 'password') { %>
+                  <div class="form-group has-error has-feedback">
+                  <% } else { %>
+                    <div class="form-group">
+                  <% } %>
+                    <label for="password">비밀번호</label>
+                    <input type="password" class="form-control input-lg" id="password" name="password" value="<%=password%>" placeholder="">
+                  <% if(errorInput === 'password') { %>
+                    <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                  <% } %>
+                  </div>
+
+                  <% if(errorInput === 'password') { %>
+                  <div class="form-group has-error has-feedback">
+                  <% } else { %>
+                    <div class="form-group">
+                  <% } %>
+                    <label for="confirm">비밀번호 확인</label>
+                    <input type="password" class="form-control input-lg" id="confirm" name="confirm" value="<%=confirm%>" placeholder="">
+                  <% if(errorInput === 'password') { %>
+                    <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                  <% } %>
+                  </div>
+
+                  <br>
+                  <button type="submit" class="btn btn-success btn-lg">가입신청서 전송!</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice">
+    <center></center>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Copyright 2016. TOX2 all rights reserved.<br> Code by Zeros.<br></p>
+    </div>
+  </footer>
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <script src="javascripts/ie10-viewport-bug-workaround.js"></script>
+
+  <script src="javascripts/signup.js"></script>
+</body>
+
+</html>

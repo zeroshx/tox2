@@ -9,35 +9,28 @@ var ctrl = require('../controllers/index.js');
 
 /* GET home page with login form */
 router.get('/',
-  ctrl.index
+  capi.AuthRouting,
+  ctrl.Index
 );
 
 router.get('/signup',
-  ctrl.signup
+  ctrl.Signup
 );
 
-router.get('/usersetting', function(req, res) {
-    res.send("usersetting <a href=\"/logout\">Logout</a>");
-});
-
-router.get('/main', function(req, res) {
-    res.send("main <a href=\"/logout\">Logout</a>");
-});
-
 router.get('/logout',
-  ctrl.logout
+  ctrl.Logout
 );
 
 router.post('/signup',
-  ctrl.RequestSignup
+  ctrl.HandleSignup
 );
 
 router.post('/login',
-  ctrl.RequestLogin
+  ctrl.HandleLogin
 );
 
 router.post('/request',
-  ctrl.RequestNonmemberService
+  ctrl.RequestGuestService
 );
 
 module.exports = router;

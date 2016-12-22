@@ -4,12 +4,12 @@ var router = express.Router();
 var index = require('./index.js');
 var auth = require('./auth.js');
 var site = require('./site.js');
-var sitelevel = require('./sitelevel.js');
-var siteconfig = require('./siteconfig.js');
+var sitelevel = require('./site.level.js');
+var siteconfig = require('./site.config.js');
 var distributor = require('./distributor.js');
 var match = require('./match.js');
-var matchkind = require('./matchkind.js');
-var matchleague = require('./matchleague.js');
+var matchkind = require('./match.kind.js');
+var matchleague = require('./match.league.js');
 var blacklist = require('./blacklist.js');
 var ipblock = require('./ipblock.js');
 var user = require('./user.js');
@@ -17,7 +17,8 @@ var question = require('./question.js');
 var message = require('./message.js');
 var deposit = require('./deposit.js');
 var withdrawal = require('./withdrawal.js');
-var assetreport = require('./assetreport.js');
+var assetreport = require('./asset.report.js');
+var todo = require('./todo.js');
 
 var capi = require('../controllers/common.js');
 
@@ -43,8 +44,10 @@ router.use('/user', user);
 router.use('/client/question', question);
 router.use('/client/message', message);
 
-router.use('/finance/deposit', deposit);
-router.use('/finance/withdrawal', withdrawal);
-router.use('/finance/report', assetreport);
+router.use('/asset/deposit', deposit);
+router.use('/asset/withdrawal', withdrawal);
+router.use('/asset/report', assetreport);
+
+router.use('/todo', todo);
 
 module.exports = router;

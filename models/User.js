@@ -474,24 +474,23 @@ Model.statics.Login = function(
 //         });
 // };
 //
-// Model.statics.Me = function(id, callback) {
-//     this.findOne({
-//             _id: id
-//         })
-//         .populate('site distributor')
-//         .select('-password')
-//         .exec(function(err, user) {
-//             if (err) {
-//                 return callback(err);
-//             }
-//             if (!user) {
-//                 return callback(null, '데이터가 존재하지 않습니다.');
-//             }
-//             return callback(null, null, user);
-//         });
-// };
+Model.statics.Me = function(id, callback) {
+    this.findOne({
+            _id: id
+        })
+        .select('-password')
+        .exec(function(err, user) {
+            if (err) {
+                return callback(err);
+            }
+            if (!user) {
+                return callback(null, '데이터가 존재하지 않습니다.');
+            }
+            return callback(null, null, user);
+        });
+};
 //
-// Model.statics.GetUserWithNick = function(nick, callback) {
+// Model.statics.GetUserWithUid = function(nick, callback) {
 //     this.findOne({
 //         nick: nick
 //     }, function(err, user) {

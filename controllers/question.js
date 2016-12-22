@@ -27,7 +27,7 @@ exports.List = function(req, res) {
 
 exports.Create = function(req, res) {
 
-  var msg = validator.run([{
+  var rep = validator.run([{
     required: true,
     value: req.body.style,
     validator: 'style'
@@ -57,8 +57,8 @@ exports.Create = function(req, res) {
     validator: 'questionState'
   }]);
 
-  if (msg) return res.json({
-    failure: msg
+  if (rep) return res.json({
+    failure: rep.msg
   });
 
   Model.Create(
@@ -85,7 +85,7 @@ exports.Create = function(req, res) {
 
 exports.Update = function(req, res) {
 
-  var msg = validator.run([{
+  var rep = validator.run([{
     required: false,
     value: req.body.answer,
     validator: 'answer'
@@ -95,8 +95,8 @@ exports.Update = function(req, res) {
     validator: 'questionState'
   }]);
 
-  if (msg) return res.json({
-    failure: msg
+  if (rep) return res.json({
+    failure: rep.msg
   });
 
   if (req.body.answer) {

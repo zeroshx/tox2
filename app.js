@@ -18,11 +18,10 @@ var app = express();
   EXPRESS CONFIGURATION
 ********************************************************************/
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, '/public/images/favicon', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -46,8 +45,8 @@ app.use(session({
   })
 }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.initialize());
+//app.use(passport.session());
 app.use(flash());
 app.use(csurf());
 app.use(function(req, res, next) {
@@ -59,7 +58,7 @@ app.use(function(req, res, next) {
   EXTERNAL MODULES CONFIGURATION
 ********************************************************************/
 mongoInit();
-passportInit();
+//passportInit();
 /********************************************************************
   ROUTING & MOUNTING
 ********************************************************************/

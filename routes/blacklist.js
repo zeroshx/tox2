@@ -8,18 +8,22 @@ var ctrl = require('../controllers/blacklist.js');
 // router.all('/', capi.authenticate);
 
 router.post('/',
+  capi.VerifyAdmin,
   ctrl.Create
 );
 
 router.get('/',
+  capi.VerifyAdmin,
   ctrl.List
 );
 
 router.put('/:id',
+  capi.VerifyAdmin,
   ctrl.Update
 );
 
 router.delete('/:id',
+  capi.VerifyAdmin,
   ctrl.Delete
 );
 

@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>TOX2</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <meta name="description" content="Change the TOTO world.">
+    <meta name="author" content="Zeros">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="stylesheets/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/debug.css">
+
+    <!-- jQuery.js and bootstrap.js -->
+    <script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Angular.js -->
+    <script type="text/javascript" src="/lib/ng-file-upload/ng-file-upload-shim.min.js"></script>
+    <script type="text/javascript" src="/lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/ng-file-upload/ng-file-upload.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-resource/angular-resource.min.js"></script>
+
+</head>
+
+<body class="container-fluid" data-ng-app="__admin">
+
+    <div class="row">
+        <header class="col-sm-12" data-ng-include="'admin/views/partials/header.html'"></header>
+    </div>
+    <div class="row">
+        <nav class="col-sm-12" data-ng-include="'admin/views/partials/nav.html'"></nav>
+    </div>
+    <div class="row">
+        <aside class="col-sm-1" data-ng-include="'admin/views/partials/aside.html'"></aside>
+        <section class="col-sm-11 data-ng-view"></section>
+    </div>
+    <div class="row">
+        <footer class="col-sm-12" data-ng-include="'admin/views/partials/footer.html'"></footer>
+    </div>
+
+
+    <script type="text/javascript" src="/admin/module.js"></script>
+    <script type="text/javascript" src="/admin/route.js"></script>
+    <script type="text/javascript" src="/admin/services/auth.js"></script>
+    <script type="text/javascript" src="/admin/services/public.js"></script>
+    <script type="text/javascript" src="/admin/services/crud.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/patials/header.js"></script>
+    <script type="text/javascript" src="/admin/controllers/patials/nav.js"></script>
+    <script type="text/javascript" src="/admin/controllers/patials/aside.js"></script>
+    <script type="text/javascript" src="/admin/controllers/patials/footer.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/index.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/site.js"></script>
+    <script type="text/javascript" src="/admin/controllers/site.level.js"></script>
+    <script type="text/javascript" src="/admin/controllers/site.config.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/distributor.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/match.js"></script>
+    <script type="text/javascript" src="/admin/controllers/match.kind.js"></script>
+    <script type="text/javascript" src="/admin/controllers/match.league.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/ipblock.js"></script>
+    <script type="text/javascript" src="/admin/controllers/blacklist.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/user.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/question.js"></script>
+    <script type="text/javascript" src="/admin/controllers/message.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/deposit.js"></script>
+    <script type="text/javascript" src="/admin/controllers/withdrawal.js"></script>
+    <script type="text/javascript" src="/admin/controllers/asset.report.js"></script>
+
+    <script type="text/javascript" src="/admin/controllers/todo.js"></script>
+
+</body>
+
+</html>

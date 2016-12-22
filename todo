@@ -1,9 +1,0 @@
-1. 관리자 프론트 UI 직렬화
-
-2. 파일 네이밍 재정비
-
-3. 파일 및 디렉토리 구조
-  - EJS 디렉토리 Public 내부로 이동
-  - Angular Input Component 단위로 폴더화
-
-4. validator 사용 controller 코드 수정
