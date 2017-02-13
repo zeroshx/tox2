@@ -14,6 +14,7 @@ module.exports = function() {
   var Distributor = require('../models/distributor.js');
 
   var User = require('../models/user.js');
+  var UserHistory = require('../models/user.history.js');
 
   var Match = require('../models/match.js');
   var MatchKind = require('../models/match.kind.js');
@@ -30,6 +31,8 @@ module.exports = function() {
   var AssetReport = require('../models/asset.report.js');
 
   var Todo = require('../models/todo.js');
+
+  var Manager = require('../models/manager.js');
 
   // access to db
   var connection = mongoose.connection;
@@ -53,6 +56,7 @@ module.exports = function() {
 
   // register models
   User();
+  UserHistory();
   Site();
   SiteLevel();
   SiteConfig();
@@ -68,6 +72,7 @@ module.exports = function() {
   Withdrawal();
   AssetReport();
   Todo();
-  
+  Manager();
+
   return mdb;
 };

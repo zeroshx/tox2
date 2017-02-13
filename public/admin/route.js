@@ -150,6 +150,14 @@ angular.module(ApplicationName)
             }
           }
         })
+        .when('/config/manager', {
+          templateUrl: '/admin/views/manager.html',
+          resolve: {
+            preAuth: function(AuthService) {
+              return AuthService.Session();
+            }
+          }
+        })
         .when('/notfound', {
           templateUrl: '/admin/views/404.html',
           resolve: {

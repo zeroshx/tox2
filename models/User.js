@@ -19,6 +19,9 @@ var Model = new Schema({
   phone: {
     type: String
   },
+  email: {
+    type: String
+  },
   cash: {
     type: Number
   },
@@ -227,6 +230,7 @@ Model.statics.Create = function(
   nick,
   password,
   phone,
+  email,
   cash,
   money,
   point,
@@ -249,25 +253,17 @@ Model.statics.Create = function(
   var Document = this;
 
   Document.findOne({
-    $or: [{
       uid: uid
-    }, {
-      nick: nick
-    }]
   }, function(err, doc) {
     if (err) {
       return callback(err);
     }
     if (doc) {
-      if (doc.uid == uid) {
+      console.log(doc);
+      if (doc.uid === uid) {
         return callback(null, {
           element: 'uid',
           msg: '이미 존재하는 아이디 입니다.'
-        });
-      } else if (doc.nick == nick) {
-        return callback(null, {
-          element: 'nick',
-          msg: '이미 존재하는 닉네임 입니다.'
         });
       } else {
         return callback(null, {
@@ -283,6 +279,7 @@ Model.statics.Create = function(
       newDoc.nick = nick;
       newDoc.password = Document.GenerateHash(password);
       newDoc.phone = phone;
+      newDoc.email = email;
       newDoc.cash = cash | 0;
       newDoc.money = money | 0;
       newDoc.point = point | 0;
@@ -328,6 +325,7 @@ Model.statics.Update = function(
   id,
   password,
   phone,
+  email,
   cash,
   money,
   point,
@@ -354,6 +352,7 @@ Model.statics.Update = function(
     $set: {
       password: Document.GenerateHash(password),
       phone: phone,
+      email: email,
       cash: cash | 0,
       money: money | 0,
       point: point | 0,
@@ -418,7 +417,7 @@ Model.statics.Login = function(
     if (!doc) {
       return callback(null, {
         element: 'uid',
-        msg: '존재하지 않는 아이디입니다.'
+        msg: '존재하지 않는 아이디거나 비밀번호가 일치하지 않습니다.'
       });
     }
     // hash = GenerateHash(password);
@@ -438,71 +437,102 @@ Model.statics.Login = function(
     } else {
       return callback(null, {
         element: 'password',
-        msg: '존재하지 않는 아이디거나 비밀번호가 일치하지 않습니다.'
+        msg: '존재하지 않는 아이디거나 비밀번호가 일치하지 않습니다.',
+        nick: doc.nick,
+        site: doc.site,
+        level: doc.level
       });
     }
   });
 };
-//
-// Model.statics.CheckEmail = function(email, callback) {
-//     this.findOne({
-//         email: email
-//     }, function(err, user) {
-//         if (err) {
-//             return callback(err);
-//         }
-//         if (user) {
-//             return callback(null, '이미 존재하는 이메일입니다.');
-//         } else {
-//             return callback(null, null);
-//         }
-//     });
-// };
-//
-// Model.statics.CheckNick = function(nick, callback) {
-//         this.findOne({
-//             nick: nick
-//         }, function(err, user) {
-//             if (err) {
-//                 return callback(err);
-//             }
-//             if (user) {
-//                 return callback(null, '이미 존재하는 닉네임 입니다.');
-//             } else {
-//                 return callback(null, null);
-//             }
-//         });
-// };
-//
+
 Model.statics.Me = function(id, callback) {
-    this.findOne({
-            _id: id
-        })
-        .select('-password')
-        .exec(function(err, user) {
-            if (err) {
-                return callback(err);
-            }
-            if (!user) {
-                return callback(null, '데이터가 존재하지 않습니다.');
-            }
-            return callback(null, null, user);
-        });
+  this.findOne({
+      _id: id
+    })
+    .select('-password')
+    .exec(function(err, user) {
+      if (err) {
+        return callback(err);
+      }
+      if (!user) {
+        return callback(null, '데이터가 존재하지 않습니다.');
+      }
+      return callback(null, null, user);
+    });
 };
-//
-// Model.statics.GetUserWithUid = function(nick, callback) {
-//     this.findOne({
-//         nick: nick
-//     }, function(err, user) {
-//         if (err) {
-//             return callback(err);
-//         }
-//         if (!user) {
-//             return callback(null, '데이터가 존재하지 않습니다.');
-//         }
-//         return callback(null, null, user);
-//     });
-// };
+
+Model.statics.CheckNick = function(nick, callback) {
+  this.findOne({
+    nick: nick
+  }).exec(function(err, doc) {
+    if (err) {
+      return callback(err);
+    }
+    if (!doc) {
+      return callback(null, '데이터가 존재하지 않습니다.');
+    }
+    return callback(null, null, doc);
+  });
+};
+
+Model.statics.UpdateConfig = function(
+  id,
+  nick,
+  phone,
+  email,
+  cash,
+  money,
+  point,
+  level,
+  state,
+  site,
+  recommander,
+  callback
+) {
+
+  var Document = this;
+  var moment = new Date();
+
+  Document.findOne({
+    nick: nick
+  }, function(err, doc) {
+    if (err) {
+      return callback(err);
+    }
+    if (doc) {
+      return callback(null, '이미 존재하는 닉네임입니다,');
+    }
+    Document.findOneAndUpdate({
+      _id: id
+    }, {
+      $set: {
+        nick: nick,
+        phone: phone,
+        email: email,
+        cash: cash,
+        money: money,
+        point: point,
+        level: level,
+        state: state,
+        site: site,
+        recommander: recommander,
+        modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
+      }
+    }, {
+      runValidators: true
+    }, function(err, doc) {
+      if (err) {
+        return callback(err);
+      }
+      if (doc === null) {
+        return callback(null, '회원 기초설정에 실패하였습니다.');
+      }
+      return callback(null, null, doc);
+    });
+  });
+};
+
 /******************************************************************
 User Model's Statics End.
 ******************************************************************/

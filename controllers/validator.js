@@ -104,6 +104,7 @@ exports.point = function(value, required) {
 };
 
 exports.debt = function(value, required) {
+  console.log(value);
   value = String(value);
   if (!value && required) {
     return '빚은 필수 입력 항목입니다.';
@@ -312,10 +313,13 @@ exports.ip = function(value, required) {
   } else if (!value && !required) {
     return null;
   }
-  if (!(/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/.test(value))) {
-    return '적절하지 않는 아이피 형식입니다.';
+  if (/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/.test(value)) {
+    return null;
   }
-  return null;
+  if (/^([0-9A-Fa-f]{0,4}:){2,7}([0-9A-Fa-f]{1,4}$|((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4})$/.test(value)) {
+    return null;
+  }
+  return '적절하지 않는 아이피 형식입니다.';
 };
 
 exports.team = function(value, required) {
@@ -466,6 +470,21 @@ exports.questionState = function(value, required) {
     return null;
   }
   var _enum = ['등록', '처리중', '완료'];
+  for (var i = 0; i < _enum.length; i++) {
+    if (_enum[i] === value) {
+      return null;
+    }
+  }
+  return '적절하지 않은 질문 상태입니다.';
+};
+
+exports.historyState = function(value, required) {
+  if (!value && required) {
+    return '접속기록 상태는 필수 입력 항목입니다.';
+  } else if (!value && !required) {
+    return null;
+  }
+  var _enum = ['로그인 완료', '비밀번호 틀림', '아이디 틀림'];
   for (var i = 0; i < _enum.length; i++) {
     if (_enum[i] === value) {
       return null;

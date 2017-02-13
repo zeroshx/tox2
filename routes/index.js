@@ -9,7 +9,7 @@ var ctrl = require('../controllers/index.js');
 
 /* GET home page with login form */
 router.get('/',
-  capi.AuthRouting,
+  ctrl.SeparateUserRoute,
   ctrl.Index
 );
 
@@ -22,15 +22,20 @@ router.get('/logout',
 );
 
 router.post('/signup',
-  ctrl.HandleSignup
+  ctrl.CheckBlockIP,
+  ctrl.HandleSignup,
+  ctrl.SeparateUserRoute
 );
 
 router.post('/login',
-  ctrl.HandleLogin
+  ctrl.CheckBlockIP,
+  ctrl.HandleLogin,
+  ctrl.CheckBlacklist,
+  ctrl.SeparateUserRoute
 );
 
 router.post('/request',
-  ctrl.RequestGuestService
+  ctrl.RequestVisitorQuestion
 );
 
 module.exports = router;

@@ -103,6 +103,9 @@ _app.controller('HeaderCtrl', function($rootScope, $scope, AuthService) {
     }, {
       name: '블랙리스트',
       path: '/config/blacklist'
+    }, {
+      name: '관리자',
+      path: '/config/manager'
     }]
   });
 

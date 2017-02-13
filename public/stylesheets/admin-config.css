@@ -1,0 +1,29 @@
+html, body, .container-table {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    height: 100%;
+}
+
+.container-table {
+    display: table;
+}
+
+.vertical-center-row {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.item-wrapper {
+    margin: 80px;
+    display: inline-block;
+}
+
+.thumbnail {
+    border: none;
+}
+
+.thumbnail-image {
+    font-size: 250px;
+}

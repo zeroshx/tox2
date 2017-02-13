@@ -54,7 +54,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, site, distributor
     query.$and = [];
   } else {
     query.$and = [{
-      state: state
+      site: site
     }];
   }
 

@@ -16,20 +16,45 @@ aside {
     text-align: center;
 }
 
-table thead tr .font-12px{
-    font-size: 12px;
-}
-table tbody tr .font-12px{
+table thead tr .font-12px {
     font-size: 12px;
 }
 
-table thead tr .font-10px{
+table tbody tr .font-12px {
+    font-size: 12px;
+}
+
+table thead tr .font-10px {
     font-size: 10px;
 }
-table tbody tr .font-10px{
+
+table tbody tr .font-10px {
     font-size: 10px;
 }
 
 .td_font_bold {
     font-weight: bold;
+}
+
+html, body, .container-table {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    height: 100%;
+}
+
+.container-table {
+    display: table;
+}
+
+.vertical-center-row {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.item-wrapper {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
 }

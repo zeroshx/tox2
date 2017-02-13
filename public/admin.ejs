@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>TOX2</title>
+    <title>TOX2 - 관리자</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,7 +13,7 @@
     <meta name="author" content="Zeros">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="stylesheets/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="/stylesheets/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
@@ -36,17 +36,17 @@
 <body class="container-fluid" data-ng-app="__admin">
 
     <div class="row">
-        <header class="col-sm-12" data-ng-include="'admin/views/partials/header.html'"></header>
+        <header class="col-sm-12" data-ng-include="'/admin/views/partials/header.html'"></header>
     </div>
     <div class="row">
-        <nav class="col-sm-12" data-ng-include="'admin/views/partials/nav.html'"></nav>
+        <nav class="col-sm-12" data-ng-include="'/admin/views/partials/nav.html'"></nav>
     </div>
     <div class="row">
-        <aside class="col-sm-1" data-ng-include="'admin/views/partials/aside.html'"></aside>
+        <aside class="col-sm-1" data-ng-include="'/admin/views/partials/aside.html'"></aside>
         <section class="col-sm-11 data-ng-view"></section>
     </div>
     <div class="row">
-        <footer class="col-sm-12" data-ng-include="'admin/views/partials/footer.html'"></footer>
+        <footer class="col-sm-12" data-ng-include="'/admin/views/partials/footer.html'"></footer>
     </div>
 
 
@@ -75,8 +75,10 @@
 
     <script type="text/javascript" src="/admin/controllers/ipblock.js"></script>
     <script type="text/javascript" src="/admin/controllers/blacklist.js"></script>
+    <script type="text/javascript" src="/admin/controllers/manager.js"></script>
 
     <script type="text/javascript" src="/admin/controllers/user.js"></script>
+    <script type="text/javascript" src="/admin/controllers/user.history.js"></script>
 
     <script type="text/javascript" src="/admin/controllers/question.js"></script>
     <script type="text/javascript" src="/admin/controllers/message.js"></script>

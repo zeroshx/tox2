@@ -39,37 +39,34 @@
                 <label>사이트명</label>
                 <input type="text" class="form-control" data-ng-model="targetName" data-ng-readonly="formMode === 'UPDATE'" placeholder="(한글, 영문, 숫자 조합으로 2자 이상 16자 이내)">
               </div>
-              <div class="form-group col-sm-4">
+              <div class="form-group col-sm-8">
+                <label>메모</label>
+                <input type="text" class="form-control" data-ng-model="targetMemo" placeholder="(200자 이내)">
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-3">
                 <label>승리 보너스</label>
                 <div class="input-group">
                   <input type="text" class="form-control" data-ng-model="targetBonusWin" placeholder="(0 ~ 100)">
                   <span class="input-group-addon">%</span>
                 </div>
               </div>
-              <div class="form-group col-sm-4">
+              <div class="form-group col-sm-3">
                 <label>패배 보너스</label>
                 <div class="input-group">
                   <input type="text" class="form-control" data-ng-model="targetBonusLose" placeholder="(0 ~ 100)">
                   <span class="input-group-addon">%</span>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="form-group col-sm-4">
-                <label>가입 보너스 게임머니</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" data-ng-model="targetBonusSignup" placeholder="(처음 가입시 지급)">
-                  <span class="input-group-addon">원</span>
-                </div>
-              </div>
-              <div class="form-group col-sm-4">
+              <div class="form-group col-sm-3">
                 <label>첫충전 보너스</label>
                 <div class="input-group">
                   <input type="text" class="form-control" data-ng-model="targetBonusFirstDeposit" placeholder="(매일 첫 충전시 지급)">
                   <span class="input-group-addon">%</span>
                 </div>
               </div>
-              <div class="form-group col-sm-4">
+              <div class="form-group col-sm-3">
                 <label>충전 보너스</label>
                 <div class="input-group">
                   <input type="text" class="form-control" data-ng-model="targetBonusDeposit" placeholder="(매일 충전시 지급)">
@@ -78,9 +75,41 @@
               </div>
             </div>
             <div class="row">
-              <div class="form-group col-sm-12">
-                <label>메모</label>
-                <textarea class="form-control" rows="3" data-ng-model="targetMemo" placeholder="(200자 이내)"></textarea>
+              <div class="form-group col-sm-3">
+                <label>레벨</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" data-ng-model="targetConfigLevel" placeholder="">
+                    <div class="input-group-btn">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">선택 <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="" data-ng-click="targetConfigLevel=''">없음</a></li>
+                                <li data-ng-repeat="lv in levelList | orderBy: 'name'"><a href="" data-ng-click="SelectLevel(lv.name)">{{lv.name}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="form-group col-sm-3">
+                <label>가입 캐시</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="targetConfigCash" placeholder="">
+                  <span class="input-group-addon">C</span>
+                </div>
+              </div>
+              <div class="form-group col-sm-3">
+                <label>가입 게임머니</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="targetConfigMoney" placeholder="">
+                  <span class="input-group-addon">G</span>
+                </div>
+              </div>
+              <div class="form-group col-sm-3">
+                <label>가입 포인트</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="targetConfigPoint" placeholder="">
+                  <span class="input-group-addon">P</span>
+                </div>
               </div>
             </div>
             <br>
@@ -174,8 +203,9 @@
               <th>상태</th>
               <th>사이트</th>
               <th>승리 / 패배 보너스(%)</th>
-              <th>가입 머니</th>
               <th>첫충전 / 매충전 보너스(%)</th>
+              <th>가입 레벨</th>
+              <th>가입 캐시 / 게임머니 / 포인트</th>
               <th>회원수</th>
               <th>메모</th>
               <th>옵션</th>
@@ -187,8 +217,9 @@
               <td data-ng-class="{'success' : doc.state === '정상', 'warning': doc.state === '점검', 'danger' : doc.state === '정지'}">{{ doc.state }}</td>
               <td>{{ doc.name }}</td>
               <td>{{ doc.bonus.win }} / {{ doc.bonus.lose }}</td>
-              <td>{{ doc.bonus.signup }}</td>
               <td>{{ doc.bonus.firstDeposit }} / {{ doc.bonus.deposit }}</td>
+              <td>{{ doc.config.level }}</td>
+              <td>{{ doc.config.cashCurrency }} / {{ doc.config.moneyCurrency }} / {{ doc.config.pointCurrency }}</td>
               <td>{{ doc.headcount }}</td>
               <td>{{ doc.short_memo }}</td>
               <td>

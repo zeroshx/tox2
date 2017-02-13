@@ -4,7 +4,7 @@ app.factory('AuthService', function($resource, $location, $window, $q) {
 
     Session: function() {
       var defer = $q.defer();
-      $resource('/user/session').get(
+      $resource('/api/user/session').get(
         function(res) {
           defer.resolve();
         },
@@ -16,7 +16,7 @@ app.factory('AuthService', function($resource, $location, $window, $q) {
     },
 
     Me: function() {
-      return $resource('/user/me', {}, {
+      return $resource('/api/user/me', {}, {
         run: {
           method: 'GET'
         }

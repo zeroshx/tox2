@@ -1,5 +1,5 @@
 angular.module('Site')
-  .controller('SiteCtrl', function($rootScope, $scope, $routeParams, $window, CRUDService, PublicService) {
+  .controller('SiteCtrl', function($rootScope, $scope, $routeParams, $window, $filter, CRUDService, PublicService) {
 
     /****************************************************************************
         Basic Vars setting
@@ -44,6 +44,28 @@ angular.module('Site')
       } else {
         $scope.FirstPage();
       }
+    };
+
+    /****************************************************************************
+        Input Level Select setting
+    ****************************************************************************/
+    $scope.levelList = [];
+    $scope.SelectLevel = function(name) {
+      $scope.targetConfigLevel = name;
+    };
+
+    $scope.LevelList = function() {
+      CRUDService.Read('/site/level/forsite/' + $scope.targetName).run(function(res) {
+        if (res.failure) {
+          $scope.validator.type = 'error';
+          $scope.validator.message = res.failure;
+        } else {
+          $scope.levelList = res.docs;
+        }
+      }, function(err) {
+        $scope.validator.type = 'error';
+        $scope.validator.message = '비정상적인 접근입니다.';
+      });
     };
 
 
@@ -104,9 +126,12 @@ angular.module('Site')
             $scope.targetState = $scope.docs[i].state;
             $scope.targetName = $scope.docs[i].name;
             $scope.targetMemo = $scope.docs[i].memo;
+            $scope.targetConfigLevel = $scope.docs[i].config.level;
+            $scope.targetConfigCash = $scope.docs[i].config.cash;
+            $scope.targetConfigMoney = $scope.docs[i].config.money;
+            $scope.targetConfigPoint = $scope.docs[i].config.point;
             $scope.targetBonusWin = $scope.docs[i].bonus.win;
             $scope.targetBonusLose = $scope.docs[i].bonus.lose;
-            $scope.targetBonusSignup = $scope.docs[i].bonus.signup;
             $scope.targetBonusFirstDeposit = $scope.docs[i].bonus.firstDeposit;
             $scope.targetBonusDeposit = $scope.docs[i].bonus.deposit;
 
@@ -115,6 +140,8 @@ angular.module('Site')
             } else {
               $scope.targetAnswer = $scope.docs[i].answer;
             }
+
+            $scope.LevelList();
           }
         }
         if (!siteCheck) {
@@ -140,6 +167,10 @@ angular.module('Site')
       CRUDService.Create($scope.baseUrl).run({
         state: $scope.targetState,
         name: $scope.targetName,
+        configLevel: $scope.targetConfigLevel,
+        configCash: $scope.targetConfigCash,
+        configMoney: $scope.targetConfigMoney,
+        configPoint: $scope.targetConfigPoint,
         bonusWin: $scope.targetBonusWin,
         bonusLose: $scope.targetBonusLose,
         bonusSignup: $scope.targetBonusSignup,
@@ -186,6 +217,10 @@ angular.module('Site')
     $scope.Update = function() {
       CRUDService.Update($scope.baseUrl, $scope.targetId).run({
         state: $scope.targetState,
+        configLevel: $scope.targetConfigLevel,
+        configCash: $scope.targetConfigCash,
+        configMoney: $scope.targetConfigMoney,
+        configPoint: $scope.targetConfigPoint,
         bonusWin: $scope.targetBonusWin,
         bonusLose: $scope.targetBonusLose,
         bonusSignup: $scope.targetBonusSignup,
@@ -254,6 +289,9 @@ angular.module('Site')
       // step 1. create memo shortcut
       for (i = 0; i < $scope.docs.length; i++) {
         $scope.docs[i].short_memo = $scope.CreateShortcut($scope.docs[i].memo, 20);
+        $scope.docs[i].config.cashCurrency = $filter('number')($scope.docs[i].config.cash);
+        $scope.docs[i].config.moneyCurrency = $filter('number')($scope.docs[i].config.money);
+        $scope.docs[i].config.pointCurrency = $filter('number')($scope.docs[i].config.point);
       }
     };
 
@@ -301,9 +339,12 @@ angular.module('Site')
       $scope.targetId = null;
       $scope.targetName = null;
       $scope.targetMemo = null;
+      $scope.targetConfigLevel = null;
+      $scope.targetConfigCash = null;
+      $scope.targetConfigMoney = null;
+      $scope.targetConfigPoint = null;
       $scope.targetBonusWin = null;
       $scope.targetBonusLose = null;
-      $scope.targetBonusSignup = null;
       $scope.targetBonusFirstDeposit = null;
       $scope.targetBonusDeposit = null;
       $scope.targetState = null;

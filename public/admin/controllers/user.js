@@ -108,6 +108,7 @@ angular.module('User')
             $scope.targetNick = $scope.docs[i].nick;
             $scope.targetPassword = $scope.docs[i].password;
             $scope.targetPhone = $scope.docs[i].phone;
+            $scope.targetEmail = $scope.docs[i].email;
             $scope.targetCash = $scope.docs[i].cash;
             $scope.targetMoney = $scope.docs[i].money;
             $scope.targetPoint = $scope.docs[i].point;
@@ -256,6 +257,7 @@ angular.module('User')
         nick: $scope.targetNick,
         password: $scope.targetPassword,
         phone: $scope.targetPhone,
+        email: $scope.targetEmail,
         cash: $scope.targetCash,
         money: $scope.targetMoney,
         point: $scope.targetPoint,
@@ -290,9 +292,11 @@ angular.module('User')
       CRUDService.Update($scope.baseUrl, $scope.targetId).run({
         password: $scope.targetPassword,
         phone: $scope.targetPhone,
+        email: $scope.targetEmail,
         cash: $scope.targetCash,
         money: $scope.targetMoney,
         point: $scope.targetPoint,
+        debt: $scope.targetDebt,
         accountHolder: $scope.targetAccountHolder,
         accountBank: $scope.targetAccountBank,
         accountNumber: $scope.targetAccountNumber,
@@ -440,6 +444,7 @@ angular.module('User')
       $scope.targetNick = null;
       $scope.targetPassword = null;
       $scope.targetPhone = null;
+      $scope.targetEmail = null;
       $scope.targetCash = null;
       $scope.targetMoney = null;
       $scope.targetPoint = null;

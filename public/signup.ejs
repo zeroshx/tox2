@@ -13,14 +13,14 @@
   <title>TOX2-Signup</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <link href="stylesheets/ie10-viewport-bug-workaround.css" rel="stylesheet">
+  <link href="/stylesheets/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="stylesheets/sticky-footer-navbar.css" rel="stylesheet">
-  <link href="stylesheets/signup.css" rel="stylesheet">
+  <link href="/stylesheets/sticky-footer-navbar.css" rel="stylesheet">
+  <link href="/stylesheets/signup.css" rel="stylesheet">
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
@@ -77,19 +77,7 @@
                   <% if(errorInput === 'uid') { %>
                     <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                   <% } %>
-                  </div>
-
-                  <% if(errorInput === 'nick') { %>
-                  <div class="form-group has-error has-feedback">
-                  <% } else { %>
-                    <div class="form-group">
-                  <% } %>
-                    <label for="uid">닉네임</label>
-                    <input type="text" class="form-control input-lg" id="uid" name="nick" value="<%=nick%>" placeholder="">
-                  <% if(errorInput === 'nick') { %>
-                    <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                  <% } %>
-                  </div>
+                  </div>                  
 
                   <% if(errorInput === 'password') { %>
                   <div class="form-group has-error has-feedback">
@@ -139,11 +127,11 @@
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <script src="javascripts/ie10-viewport-bug-workaround.js"></script>
+  <script src="/javascripts/ie10-viewport-bug-workaround.js"></script>
 
-  <script src="javascripts/signup.js"></script>
+  <script src="/javascripts/signup.js"></script>
 </body>
 
 </html>

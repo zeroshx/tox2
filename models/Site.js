@@ -10,14 +10,25 @@ var Model = new Schema({
     index: true,
     unique: true
   },
+  config: {
+    level: {
+      type: String
+    },
+    cash: {
+      type: Number
+    },
+    money: {
+      type: Number
+    },
+    point: {
+      type: Number
+    }
+  },
   bonus: {
     win: {
       type: Number
     },
     lose: {
-      type: Number
-    },
-    signup: {
       type: Number
     },
     firstDeposit: {
@@ -136,9 +147,12 @@ Model.statics.ListAll = function(callback) {
 Model.statics.Create = function(
   state,
   name,
+  configLevel,
+  configCash,
+  configMoney,
+  configPoint,
   bonusWin,
   bonusLose,
-  bonusSignup,
   bonusFirstDeposit,
   bonusDeposit,
   answer,
@@ -160,10 +174,15 @@ Model.statics.Create = function(
     var newDoc = new Document();
     newDoc.state = state;
     newDoc.name = name;
+    newDoc.config = {
+      level: configLevel,
+      cash: configCash,
+      money: configMoney,
+      point: configPoint
+    };
     newDoc.bonus = {
       win: bonusWin,
       lose: bonusLose,
-      signup: bonusSignup,
       firstDeposit: bonusFirstDeposit,
       deposit: bonusDeposit
     };
@@ -185,9 +204,12 @@ Model.statics.Create = function(
 Model.statics.Update = function(
   id,
   state,
+  configLevel,
+  configCash,
+  configMoney,
+  configPoint,
   bonusWin,
   bonusLose,
-  bonusSignup,
   bonusFirstDeposit,
   bonusDeposit,
   answer,
@@ -203,10 +225,15 @@ Model.statics.Update = function(
   }, {
     $set: {
       state: state,
+      config: {
+        level: configLevel,
+        cash: configCash,
+        money: configMoney,
+        point: configPoint
+      },
       bonus: {
         win: bonusWin,
         lose: bonusLose,
-        signup: bonusSignup,
         firstDeposit: bonusFirstDeposit,
         deposit: bonusDeposit
       },
