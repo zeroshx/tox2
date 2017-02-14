@@ -1,7 +1,6 @@
 var ApplicationName = '__admin';
 
 angular.module('Index', []);
-angular.module('Auth', []);
 angular.module('Distributor', []);
 angular.module('Site', []);
 angular.module('User', []);
@@ -15,7 +14,6 @@ angular.module(ApplicationName, [
   'ngRoute',
   'ngResource',
   'Index',
-  'Auth',
   'Site',
   'Distributor',
   'User',

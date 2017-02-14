@@ -30,4 +30,9 @@ router.delete('/:id',
   ctrl.Delete
 );
 
+router.get('/new',
+  capi.VerifyUserApi,
+  ctrl.CheckNewMessage
+);
+
 module.exports = router;

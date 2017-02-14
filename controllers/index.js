@@ -180,7 +180,7 @@ exports.HandleLogin = function(req, res, next) {
           doc.site,
           req.hostname,
           ip,
-          '로그인 완료',
+          /*state*/'로그인 완료',
           function(err2, rep2, doc2) {
             if (err) { // internal error
               nodemailer(root + ':Login:Create', JSON.stringify(err));

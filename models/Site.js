@@ -268,18 +268,26 @@ Model.statics.Delete = function(id, callback) {
   });
 };
 
-Model.statics.GetSiteWithName = function(name, callback) {
+Model.statics.ModifyHeadcount = function(name, value, callback) {
 
   var Document = this;
+  var moment = new Date();
 
-  Document.findOne({
+  Document.findOneAndUpdate({
     name: name
+  }, {
+    $set: {
+      modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
+    },
+    $inc: {
+      headcount: value
+    }
   }, function(err, doc) {
     if (err) {
       return callback(err);
     }
     if (!doc) {
-      callback(null, '데이터가 존재하지 않습니다.');
+      return callback(null, '작업에 실패하였습니다.');
     }
     return callback(null, null, doc);
   });

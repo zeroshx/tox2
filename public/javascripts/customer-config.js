@@ -14,13 +14,9 @@ function CheckNick () {
       if(json.duplicated) {
         $('#user_nick_info').html('이미 사용중입니다.');
         $('#user_nick_info').attr('class', 'alert alert-danger input-width-50');
-      } else if(!json.duplicated){
+      } else {
         $('#user_nick_info').html('사용해도 좋습니다.');
         $('#user_nick_info').attr('class', 'alert alert-success input-width-50');
-      } else {
-        $('#user_nick_info').html('');
-        $('#user_nick_info').attr('class', 'hide');
-        alert('새로고침(F5) 후에 다시 시도해주세요.');
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {

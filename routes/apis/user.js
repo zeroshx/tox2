@@ -30,12 +30,12 @@ router.delete('/:id',
 );
 
 router.get('/me',
-  capi.VerifyAdminApi,
+  capi.VerifyUserApi,
   ctrl.Me
 );
 
 router.get('/session',
-  capi.VerifyAdminApi,
+  capi.VerifyUserApi,
   ctrl.Session
 );
 

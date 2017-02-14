@@ -148,3 +148,15 @@ exports.Delete = function(req, res) {
       }
     });
 };
+
+exports.CheckNewMessage = function(req, res) {
+  Model.count({receiver: req.query.nick}, function(err, count) {
+    if(err) {
+      nodemailer(root + ':Delete', JSON.stringify(err));
+      return res.sendStatus(500);
+    }
+    return res.json({
+      count: count
+    })
+  });
+};

@@ -13,6 +13,7 @@ var csurf = require('csurf');
 var exfig = require('./configs/express.js');
 var mongoInit = require('./init/mongoose.js');
 var passportInit = require('./init/passport.js');
+var helmet = require('helmet');
 var app = express();
 /********************************************************************
   EXPRESS CONFIGURATION
@@ -53,6 +54,7 @@ app.use(function(req, res, next) {
   res.cookie('XSRF-TOKEN', req.csrfToken());
   return next();
 });
+app.use(helmet());
 
 /********************************************************************
   EXTERNAL MODULES CONFIGURATION
