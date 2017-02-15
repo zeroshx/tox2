@@ -86,6 +86,9 @@ var Model = new Schema({
     type: String,
     index: true
   },
+  group: {
+    type: Schema.Types.ObjectId
+  },
   kind: {
     type: String,
     index: true
@@ -235,7 +238,7 @@ Model.statics.Create = function(
   varietySubject, varietyOption,
   offset,
   state, btype, mtype,
-  kind, league,
+  kind, league, group,
   schedule,
   callback
 ) {
@@ -258,6 +261,7 @@ Model.statics.Create = function(
   newDoc.mtype = mtype;
   newDoc.kind = kind;
   newDoc.league = league;
+  newDoc.group = group;
   newDoc.schedule = schedule;
 
   if (btype === '2-WAY') {
@@ -298,7 +302,7 @@ Model.statics.Update = function(
   varietySubject, varietyOption,
   offset,
   state, btype, mtype,
-  kind, league,
+  kind, league, group,
   schedule,
   callback
 ) {
@@ -333,6 +337,7 @@ Model.statics.Update = function(
       mtype: mtype,
       kind: kind,
       league: league,
+      group: group,
       schedule: schedule,
       modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
     }

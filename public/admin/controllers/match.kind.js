@@ -107,6 +107,7 @@ angular.module('Match')
             docCheck = true;
             $scope.targetId = $scope.docs[i]._id;
             $scope.targetName = $scope.docs[i].name;
+            $scope.targetGroup = $scope.docs[i].group;
           }
         }
         if (!docCheck) {
@@ -130,11 +131,12 @@ angular.module('Match')
     ****************************************************************************/
     $scope.Create = function() {
       Upload.upload({
-        url: $scope.baseUrl,
+        url: '/api' + $scope.baseUrl,
         method: 'POST',
         data: {
           image: $scope.file,
-          name: $scope.targetName
+          name: $scope.targetName,
+          group: $scope.targetGroup
         }
       }).then(function(res) { //success
         if (res.data.failure) {
@@ -156,10 +158,11 @@ angular.module('Match')
 
     $scope.Update = function() {
       Upload.upload({
-        url: $scope.baseUrl + "/" + $scope.targetId,
+        url: '/api' + $scope.baseUrl + "/" + $scope.targetId,
         method: 'PUT',
         data: {
-          image: $scope.file
+          image: $scope.file,
+          group: $scope.targetGroup
         }
       }).then(function(res) { //success
         if (res.data.failure) {
@@ -272,6 +275,7 @@ angular.module('Match')
     $scope.ResetTarget = function() {
       $scope.targetId = null;
       $scope.targetName = null;
+      $scope.targetGroup = null;
       $scope.targetImagePath = null;
     };
 

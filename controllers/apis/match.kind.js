@@ -67,6 +67,10 @@ exports.Create = function(req, res) {
       required: true,
       value: body.name,
       validator: 'kind'
+    }, {
+      required: true,
+      value: body.group,
+      validator: 'group'
     }]);
 
     if (rep) return res.json({
@@ -75,6 +79,7 @@ exports.Create = function(req, res) {
 
     Model.Create(
       body.name,
+      body.group,
       imagePath,
       function(err, msg, doc) {
         if (err) { // internal error
@@ -135,8 +140,20 @@ exports.Update = function(req, res) {
       var oldPath = file.image.path;
       var newPath = __dirname + "/../public/" + imagePath;
     }
+
+    var rep = validator.run([{
+      required: true,
+      value: body.group,
+      validator: 'group'
+    }]);
+
+    if (rep) return res.json({
+      failure: rep.msg
+    });
+
     Model.Update(
       req.params.id,
+      body.group,
       imagePath,
       function(err, msg, doc) {
         if (err) { // internal error

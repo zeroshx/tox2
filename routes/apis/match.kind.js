@@ -7,27 +7,27 @@ var ctrl = require('../../controllers/apis/match.kind.js');
 
 router.post('/',
   capi.VerifyAdminApi,
-    ctrl.Create
+  ctrl.Create
 );
 
 router.get('/',
   capi.VerifyAdminApi,
-    ctrl.List
+  ctrl.List
 );
 
 router.get('/all',
   capi.VerifyAdminApi,
-    ctrl.ListAll
+  ctrl.ListAll
 );
 
 router.put('/:id',
   capi.VerifyAdminApi,
-    ctrl.Update
+  ctrl.Update
 );
 
 router.delete('/:id',
   capi.VerifyAdminApi,
-    ctrl.Delete
+  ctrl.Delete
 );
 
 

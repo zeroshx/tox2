@@ -126,7 +126,7 @@ exports.phone = function(value, required) {
   } else if (!value && !required) {
     return null;
   }
-  if (!(/^[\-+0-9]{1,20}$/i.test(value))) {
+  if (!(/^\d{2,3}[-]?\d{3,4}[-]?\d{4}$/.test(value))) {
     return '연락처는 숫자, 붙임표(-)를 사용하여 최대 20자까지 가능합니다.';
   }
   return null;
@@ -522,6 +522,18 @@ exports.kind = function(value, required) {
   }
   if (!(/^.{2,30}$/.test(value))) {
     return '종목명은 최소 2자, 최대 30자까지 가능합니다.';
+  }
+  return null;
+};
+
+exports.group = function(value, required) {
+  if (!value && required) {
+    return '그룹명은 필수 입력 항목입니다.';
+  } else if (!value && !required) {
+    return null;
+  }
+  if (!(/^.{2,30}$/.test(value))) {
+    return '그룹명은 최소 2자, 최대 30자까지 가능합니다.';
   }
   return null;
 };

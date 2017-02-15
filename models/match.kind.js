@@ -7,6 +7,10 @@ var Model = new Schema({
     unique: true,
     index: true
   },
+  group: {
+    type: String,
+    index: true
+  },
   imagePath: {
     type: String
   },
@@ -36,6 +40,10 @@ Model.statics.List = function(page, pageSize, filter, keyword, callback) {
   if (typeof(keyword) === 'string' && keyword.length > 0) {
     if (filter === '종목') {
       query.name = {
+        $regex: '.*' + keyword + '.*'
+      };
+    } else if (filter === '그룹') {
+      query.group = {
         $regex: '.*' + keyword + '.*'
       };
     }
@@ -86,7 +94,7 @@ Model.statics.ListAll = function(callback) {
   });
 };
 
-Model.statics.Create = function(name, imagePath, callback) {
+Model.statics.Create = function(name, group, imagePath, callback) {
 
   var Document = this;
 
@@ -101,6 +109,7 @@ Model.statics.Create = function(name, imagePath, callback) {
     }
     var newDoc = new Document();
     newDoc.name = name;
+    newDoc.group = group;
     newDoc.imagePath = imagePath;
     var moment = new Date();
     newDoc.createdAt = moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString();
@@ -114,13 +123,14 @@ Model.statics.Create = function(name, imagePath, callback) {
   });
 };
 
-Model.statics.Update = function(id, imagePath, callback) {
+Model.statics.Update = function(id, group, imagePath, callback) {
 
   var Document = this;
   var moment = new Date();
 
   var query = {
     $set: {
+      group: group,
       modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
     }
   };

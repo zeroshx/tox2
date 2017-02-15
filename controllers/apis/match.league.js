@@ -110,7 +110,7 @@ exports.Create = function(req, res) {
               }
             });
           } else {
-            var targetPath = __dirname + "/../public/" + ml.imagePath;
+            var targetPath = __dirname + "/../public/" + doc.imagePath;
             fs.unlink(targetPath, function(err) {
               return res.json(doc);
             });
@@ -169,7 +169,7 @@ exports.Update = function(req, res) {
                 fs.writeFile(newPath, data, function(err) {
                   if (!err) {
                     fs.unlink(oldPath, function(err) {
-                      var targetPath = __dirname + "/../public/" + ml.imagePath;
+                      var targetPath = __dirname + "/../public/" + doc.imagePath;
                       fs.unlink(targetPath, function(err) {
                         return res.json(doc);
                       });
@@ -206,7 +206,7 @@ exports.Delete = function(req, res) {
           failure: msg
         });
       } else {
-        var targetPath = __dirname + "/../public/" + ml.imagePath;
+        var targetPath = __dirname + "/../public/" + doc.imagePath;
         fs.unlink(targetPath, function(err) {
           return res.json(doc);
         });

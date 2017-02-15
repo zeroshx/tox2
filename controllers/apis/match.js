@@ -173,7 +173,7 @@ exports.Create = function(req, res) {
     req.body.varietySubject, req.body.varietyOption,
     req.body.offset,
     req.body.state, req.body.btype, req.body.mtype,
-    req.body.kind, req.body.league,
+    req.body.kind, req.body.league, /*group*/undefined,
     req.body.schedule,
     function(err, msg, doc) {
       if (err) { // internal error
@@ -204,7 +204,7 @@ exports.Update = function(req, res) {
     req.body.varietySubject, req.body.varietyOption,
     req.body.offset,
     req.body.state, req.body.btype, req.body.mtype,
-    req.body.kind, req.body.league,
+    req.body.kind, req.body.league, /*group*/undefined,
     req.body.schedule,
     function(err, msg, doc) {
       if (err) { // internal error

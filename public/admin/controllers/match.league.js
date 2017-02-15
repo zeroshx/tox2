@@ -127,7 +127,7 @@ angular.module('Match')
     ****************************************************************************/
     $scope.Create = function() {
       Upload.upload({
-        url: $scope.baseUrl,
+        url: '/api' + $scope.baseUrl,
         method: 'POST',
         data: {
           image: $scope.file,
@@ -154,7 +154,7 @@ angular.module('Match')
 
     $scope.Update = function() {
       Upload.upload({
-        url: $scope.baseUrl + "/" + $scope.targetId,
+        url: '/api' + $scope.baseUrl + "/" + $scope.targetId,
         method: 'PUT',
         data: {
           image: $scope.file,
