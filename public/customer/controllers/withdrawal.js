@@ -1,10 +1,10 @@
 angular.module('My')
-  .controller('DepositCtrl', function($rootScope, $scope, $routeParams, $filter, $window, CRUDService, PublicService) {
+  .controller('WithdrawalCtrl', function($rootScope, $scope, $routeParams, $filter, $window, CRUDService, PublicService) {
 
     /****************************************************************************
         Basic Vars setting
     ****************************************************************************/
-    $scope.baseUrl = '/asset/deposit/customer';
+    $scope.baseUrl = '/asset/withdrawal/customer';
 
     $scope.query = {
       page: Number($routeParams.page ? $routeParams.page : 1),
@@ -99,7 +99,7 @@ angular.module('My')
         Etc Functions
     ****************************************************************************/
 
-    $scope.SubmitDeposit = function() {
+    $scope.SubmitWithdrawal = function() {
       $scope.Create();
     };
 

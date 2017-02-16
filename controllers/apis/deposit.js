@@ -41,7 +41,8 @@ exports.CustomerList = function(req, res) {
         return res.sendStatus(500);
       } else if (msg) { // exception control
         return res.json({
-          failure: msg
+          count: 0,
+          docs: []
         });
       } else {
         return res.json(doc);

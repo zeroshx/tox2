@@ -1,12 +1,12 @@
 <!-- first div class attr have 'col-xx-10' fixed. -->
-<div class="row" data-ng-controller="DepositCtrl">
+<div class="row" data-ng-controller="WithdrawalCtrl">
   <div class="col-sm-12">
 
     <!-- 1. Subject Info zone -->
     <div class="row">
       <div class="col-sm-12">
         <div class="page-header">
-          <h1>입금 신청</h1>
+          <h1>출금 신청</h1>
         </div>
       </div>
     </div>
@@ -19,6 +19,14 @@
       </div>
     </div>
 
+    <br>
+    <div class="row">
+      <div class="col-sm-offset-2 col-sm-8">
+        <center><h2>출금 가능 금액 : <span>{{me.money | number}}원</span></h2></center>
+      </div>
+    </div>
+
+    <br><br>
     <div class="row">
       <div class="col-sm-12">
         <center>
@@ -41,12 +49,12 @@
     <br><br>
     <div class="row">
       <div class="col-sm-12">
-        <center><button class="btn btn-lg btn-danger" data-ng-click="SubmitDeposit()">신 청</button></center>
+        <center><button class="btn btn-lg btn-danger" data-ng-click="SubmitWithdrawal()">신 청</button></center>
       </div>
     </div>
 
     <!-- 1. Subject Info zone -->
-    <br><br>
+
     <div class="row" data-ng-show="docs.length > 0">
       <div class="col-sm-12">
         <div class="page-header">

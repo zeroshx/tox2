@@ -10,7 +10,6 @@ router.post('/',
   ctrl.Create
 );
 
-
 router.get('/',
   capi.VerifyAdminApi,
   ctrl.List

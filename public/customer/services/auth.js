@@ -1,5 +1,5 @@
 var app = angular.module(ApplicationName);
-app.factory('AuthService', function($resource, $location, $window, $q) {
+app.factory('AuthService', function($rootScope, $resource, $location, $window, $q, $filter) {
   return {
 
     Session: function() {
@@ -8,7 +8,7 @@ app.factory('AuthService', function($resource, $location, $window, $q) {
         function(res) {
           defer.resolve();
         },
-        function(err) {          
+        function(err) {
           defer.reject();
           $window.location = '/';
         });
@@ -16,10 +16,41 @@ app.factory('AuthService', function($resource, $location, $window, $q) {
     },
 
     Me: function() {
-      return $resource('/api/user/me', {}, {
-        run: {
-          method: 'GET'
-        }
+
+      function GetUserData() {
+        return $q(function(resolve, reject) {
+          $resource('/api/user/me').get(
+            function(res) {
+              $rootScope.me = res;
+              $rootScope.me.cashCurrency = $filter('number')($rootScope.me.cash);
+              $rootScope.me.moneyCurrency = $filter('number')($rootScope.me.money);
+              $rootScope.me.pointCurrency = $filter('number')($rootScope.me.point);
+              resolve();
+            },
+            function(err) {
+              reject('GetUserData Rejected.');
+            });
+        });
+      }
+
+      function GetUserMessageCount() {
+        return $q(function(resolve, reject) {
+          $resource('/api/client/message/new').get(
+            function(res) {
+              $rootScope.me.messageCount = res.count;
+              resolve();
+            },
+            function(err) {
+              reject('GetUserMessageCount Rejected.');
+            });
+        });
+      }
+
+      return GetUserData()
+      .then(GetUserMessageCount)
+      .catch(function(reason) {
+        console.log(reason);
+        $window.location = '/logout';
       });
     }
   };

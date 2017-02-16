@@ -2,6 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Model = new Schema({
+  uid: {
+    type: String,
+    index: true
+  },
   nick: {
     type: String,
     index: true
@@ -133,7 +137,50 @@ Model.statics.List = function(page, pageSize, filter, keyword, site, distributor
   });
 };
 
+Model.statics.CustomerList = function(page, pageSize, uid, callback) {
+
+  var Document = this;
+
+  page = parseInt(page);
+  pageSize = parseInt(pageSize);
+
+  if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+    return callback(null, '비정상적인 접근입니다.');
+  }
+
+  Document.count({
+    uid: uid
+  }, function(err, count) {
+    if (err) {
+      return callback(err);
+    }
+    if (count !== 0) {
+      Document.find({
+        uid: uid
+      }).skip((page - 1) * pageSize)
+        .limit(pageSize)
+        .sort('-createdAt')
+        .exec(function(err, docs) {
+          if (err) {
+            return callback(err);
+          }
+          return callback(null, null, {
+            count: Math.ceil(count / pageSize),
+            docs: docs
+          });
+        });
+    } else {
+      if (typeof(keyword) === 'string' && keyword.length > 0) {
+        return callback(null, '검색 결과가 없습니다.');
+      } else {
+        return callback(null, '아무 데이터도 존재하지 않습니다.');
+      }
+    }
+  });
+};
+
 Model.statics.Create = function(
+  uid,
   nick,
   holder,
   site,
@@ -154,6 +201,7 @@ Model.statics.Create = function(
       return callback(null, '이미 존재합니다.');
     }
     var newDoc = new Document();
+    newDoc.uid = uid;
     newDoc.nick = nick;
     newDoc.holder = holder;
     newDoc.site = site;
@@ -174,6 +222,8 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
   id,
+  nick,
+  holder,
   site,
   distributor,
   cash,
@@ -188,14 +238,14 @@ Model.statics.Update = function(
     _id: id
   }, {
     $set: {
+      nick: nick,
+      holder: holder,
       site: site,
       distributor: distributor,
       cash: cash,
       state: state,
       modifiedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
     }
-  }, {
-    runValidators: true
   }, function(err, doc) {
     if (err) {
       return callback(err);
@@ -223,8 +273,6 @@ Model.statics.Accept = function(
       state: state,
       operatedAt: moment.toLocaleDateString() + ' ' + moment.toLocaleTimeString()
     }
-  }, {
-    runValidators: true
   }, function(err, doc) {
     if (err) {
       return callback(err);

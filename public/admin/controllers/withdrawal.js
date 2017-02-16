@@ -153,6 +153,7 @@ angular.module('Asset')
           if ($scope.docs[i]._id === id) {
             docCheck = true;
             $scope.targetId = $scope.docs[i]._id;
+            $scope.targetUid = $scope.docs[i].uid;
             $scope.targetNick = $scope.docs[i].nick;
             $scope.targetHolder = $scope.docs[i].holder;
             $scope.targetSite = $scope.docs[i].site;
@@ -182,6 +183,7 @@ angular.module('Asset')
     ****************************************************************************/
     $scope.Create = function() {
       CRUDService.Create($scope.baseUrl).run({
+        uid: $scope.targetUid,
         nick: $scope.targetNick,
         holder: $scope.targetHolder,
         site: $scope.targetSite,
@@ -228,6 +230,8 @@ angular.module('Asset')
       CRUDService.Update($scope.baseUrl, $scope.targetId).run({
         nick: $scope.targetNick,
         holder: $scope.targetHolder,
+        site: $scope.targetSite,
+        distributor: $scope.targetDistributor,
         cash: $scope.targetCash,
         state: $scope.targetState
       }, function(res) {
@@ -246,13 +250,8 @@ angular.module('Asset')
       });
     };
 
-    $scope.Accept = function() {
-      CRUDService.Update($scope.baseUrl + '/accept', $scope.targetId).run({
-        nick: $scope.targetNick,
-        holder: $scope.targetHolder,
-        cash: $scope.targetCash,
-        state: $scope.targetState
-      }, function(res) {
+    $scope.Accept = function(id) {
+      CRUDService.Update($scope.baseUrl + '/accept', id).run({}, function(res) {
         if (res.failure) {
           $scope.validator.type = 'error';
           $scope.validator.message = res.failure;
@@ -309,24 +308,6 @@ angular.module('Asset')
     /****************************************************************************
         Etc Functions
     ****************************************************************************/
-    $scope.ChangeState = function(id) {
-      $scope.ResetTarget();
-      var docCheck = false;
-      for (var i in $scope.docs) {
-        if ($scope.docs[i]._id === id) {
-          $scope.targetId = $scope.docs[i]._id;
-          $scope.targetNick = $scope.docs[i].nick;
-          $scope.targetHolder = $scope.docs[i].holder;
-          $scope.targetState = '승인';
-          $scope.Accept();
-          break;
-        }
-      }
-      if (!docCheck) {
-        $scope.validator.type = 'error';
-        $scope.validator.message = '새로고침 후 다시 시도해주세요.';
-      }
-    };
 
     $scope.RenderList = function() {
       for (var m in $scope.docs) {
@@ -368,6 +349,7 @@ angular.module('Asset')
 
     $scope.ResetTarget = function() {
       $scope.targetId = null;
+      $scope.targetUid = null;
       $scope.targetNick = null;
       $scope.targetHolder = null;
       $scope.targetSite = null;

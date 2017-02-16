@@ -6,7 +6,7 @@ angular.module(ApplicationName)
           templateUrl: '/customer/views/index.html',
           resolve: {
             preAuth: function(AuthService) {
-              return AuthService.Session();
+              return AuthService.Me();
             }
           }
         })
@@ -15,6 +15,14 @@ angular.module(ApplicationName)
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
+            }
+          }
+        })
+        .when('/my/withdrawal', {
+          templateUrl: '/customer/views/withdrawal.html',
+          resolve: {
+            preAuth: function(AuthService) {
+              return AuthService.Me();
             }
           }
         })
