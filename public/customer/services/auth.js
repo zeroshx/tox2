@@ -8,7 +8,7 @@ app.factory('AuthService', function($resource, $location, $window, $q) {
         function(res) {
           defer.resolve();
         },
-        function(err) {
+        function(err) {          
           defer.reject();
           $window.location = '/';
         });

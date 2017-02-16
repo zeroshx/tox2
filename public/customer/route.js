@@ -10,8 +10,16 @@ angular.module(ApplicationName)
             }
           }
         })
+        .when('/my/deposit', {
+          templateUrl: '/customer/views/deposit.html',
+          resolve: {
+            preAuth: function(AuthService) {
+              return AuthService.Session();
+            }
+          }
+        })
         .when('/notfound', {
-          templateUrl: '/admin/views/404.html',
+          templateUrl: '/customer/views/404.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();

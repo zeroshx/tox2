@@ -10,6 +10,7 @@ router.post('/',
   ctrl.Create
 );
 
+
 router.get('/',
   capi.VerifyAdminApi,
   ctrl.List
@@ -28,6 +29,16 @@ router.put('/accept/:id',
 router.delete('/:id',
   capi.VerifyAdminApi,
   ctrl.Delete
+);
+
+router.get('/customer',
+  capi.VerifyUserApi,
+  ctrl.CustomerList
+);
+
+router.post('/customer',
+  capi.VerifyUserApi,
+  ctrl.CustomerCreate
 );
 
 module.exports = router;
