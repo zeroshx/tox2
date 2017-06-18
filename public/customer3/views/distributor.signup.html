@@ -1,0 +1,92 @@
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="row" data-ng-controller="DistributorSignupCtrl">
+  <div class="col-sm-12">
+    <!-- 1. Subject Info zone -->
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="page-header">
+          <h1>총판 가입</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-offset-3 col-sm-6">
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-lg btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span data-ng-hide="query.searchFilter">선택 <span class="caret"></span></span>
+              <span data-ng-show="query.searchFilter">{{query.searchFilter}} <span class="caret"></span></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+              <li><a href data-ng-click="query.searchFilter='총판명'">총판명</a></li>
+              <li><a href data-ng-click="query.searchFilter='총판장'">총판장</a></li>
+            </ul>
+          </div>
+          <input type="text" class="form-control input-lg" data-ng-model="query.searchKeyword">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-lg btn-info" data-ng-click="Search()">검 색</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <table class="table table-hover table-center">
+          <thead>
+            <tr>
+              <th rowspan="2">총판레벨</th>
+              <th rowspan="2">총판명</th>
+              <th rowspan="2">총판장</th>
+              <th colspan="2">보너스</th>
+              <th rowspan="2">가입방식</th>
+              <th rowspan="2">옵션</th>
+            </tr>
+            <tr>
+              <th>승</th>
+              <th>패</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr data-ng-repeat-start="doc in docs">
+                <td>{{ doc.level }}</td>
+                <td>{{ doc.name }}</td>
+                <td>{{ doc.manager.nick }}</td>
+                <td>{{ doc.bonus.win }} %</td>
+                <td>{{ doc.bonus.lose }} %</td>
+                <td>{{ doc.joinStyle }}</td>
+                <td rowspan="2"><button type="button" class="btn btn-sm btn-success" data-ng-click="Join(doc._id)">가입신청</button></td>
+              </tr>
+              <tr class="active" data-ng-repeat-end>
+                <td colspan="6">{{ doc.memo }}</td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- list pagination zone -->
+    <div class="row">
+      <div class="col-sm-12">
+        <center>
+          <ul class="pagination">
+            <li>
+              <a href="" aria-label="Previous" data-ng-click="PreviousPage()">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="MovePage(page.number)">{{page.number}}</a></li>
+            <li>
+              <a href="" aria-label="Next" data-ng-click="NextPage()">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </center>
+      </div>
+    </div>
+
+  </div>
+</div>

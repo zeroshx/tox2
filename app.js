@@ -7,13 +7,11 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var methodOverride = require('method-override');
-var passport = require('passport');
 var flash = require('connect-flash');
 var csurf = require('csurf');
-var exfig = require('./configs/express.js');
-var mongoInit = require('./init/mongoose.js');
-var passportInit = require('./init/passport.js');
 var helmet = require('helmet');
+var exfig = require('./configs/express.js');
+var mongoose = require('./setup/mongoose.js');
 var app = express();
 /********************************************************************
   EXPRESS CONFIGURATION
@@ -24,8 +22,9 @@ app.set('view engine', 'ejs');
 
 app.use(favicon(path.join(__dirname, '/public/images/favicon', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '3mb'}));
 app.use(bodyParser.urlencoded({
+  limit: '3mb',
   extended: true
 }));
 app.use(methodOverride('X-HTTP-Method-Override')); // Google/GData
@@ -46,8 +45,6 @@ app.use(session({
   })
 }));
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use(passport.initialize());
-//app.use(passport.session());
 app.use(flash());
 app.use(csurf());
 app.use(function(req, res, next) {
@@ -59,12 +56,11 @@ app.use(helmet());
 /********************************************************************
   EXTERNAL MODULES CONFIGURATION
 ********************************************************************/
-mongoInit();
-//passportInit();
+mongoose();
 /********************************************************************
   ROUTING & MOUNTING
 ********************************************************************/
-app.use('/', require('./routes/route.js'));
+app.use('/', require('./route.js'));
 /********************************************************************
   EXPRESS BASIC ROUTE FUNCTION
 ********************************************************************/
@@ -76,7 +72,6 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
@@ -94,4 +89,5 @@ app.use(function(err, req, res, next) {
   res.sendStatus(err.status || 500);
 });
 
+console.log(app.get('env'));
 module.exports = app;

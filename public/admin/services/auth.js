@@ -1,10 +1,10 @@
-var app = angular.module(ApplicationName);
-app.factory('AuthService', function($resource, $location, $window, $q) {
+angular.module('TOX2ADMINAPP')
+  .factory('AuthService', function($resource, $location, $window, $q) {
   return {
 
     Session: function() {
       var defer = $q.defer();
-      $resource('/api/user/session').get(
+      $resource('/user/session').get(
         function(res) {
           defer.resolve();
         },
@@ -16,7 +16,7 @@ app.factory('AuthService', function($resource, $location, $window, $q) {
     },
 
     Me: function() {
-      return $resource('/api/user/me', {}, {
+      return $resource('/user/me', {}, {
         run: {
           method: 'GET'
         }

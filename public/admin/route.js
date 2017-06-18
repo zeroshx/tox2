@@ -1,9 +1,9 @@
-angular.module(ApplicationName)
+angular.module('TOX2ADMINAPP')
   .config(['$routeProvider',
     function($routeProvider) {
       $routeProvider
         .when('/', {
-          templateUrl: '/admin/views/index.html',
+          templateUrl: '/admin/interfaces/home/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -11,21 +11,21 @@ angular.module(ApplicationName)
           }
         })
         .when('/asset/deposit', {
-          templateUrl: '/admin/views/deposit.html',
+          templateUrl: '/admin/interfaces/deposit/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
             }
           }
         }).when('/asset/withdrawal', {
-          templateUrl: '/admin/views/withdrawal.html',
+          templateUrl: '/admin/interfaces/withdrawal/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
             }
           }
         }).when('/asset/report', {
-          templateUrl: '/admin/views/asset.report.html',
+          templateUrl: '/admin/interfaces/asset.report/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -33,7 +33,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/client/question', {
-          templateUrl: '/admin/views/question.html',
+          templateUrl: '/admin/interfaces/question/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -41,7 +41,15 @@ angular.module(ApplicationName)
           }
         })
         .when('/client/message', {
-          templateUrl: '/admin/views/message.html',
+          templateUrl: '/admin/interfaces/message/view.html',
+          resolve: {
+            preAuth: function(AuthService) {
+              return AuthService.Session();
+            }
+          }
+        })
+        .when('/client/board', {
+          templateUrl: '/admin/interfaces/board/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -49,7 +57,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/config/ipblock', {
-          templateUrl: '/admin/views/ipblock.html',
+          templateUrl: '/admin/interfaces/ipblock/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -57,7 +65,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/config/blacklist', {
-          templateUrl: '/admin/views/blacklist.html',
+          templateUrl: '/admin/interfaces/blacklist/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -65,7 +73,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/distributor', {
-          templateUrl: '/admin/views/distributor.html',
+          templateUrl: '/admin/interfaces/distributor/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -73,21 +81,21 @@ angular.module(ApplicationName)
           }
         })
         .when('/match', {
-          templateUrl: '/admin/views/match.html',
+          templateUrl: '/admin/interfaces/match/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
             }
           }
         }).when('/match/kind', {
-          templateUrl: '/admin/views/match.kind.html',
+          templateUrl: '/admin/interfaces/match.kind/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
             }
           }
         }).when('/match/league', {
-          templateUrl: '/admin/views/match.league.html',
+          templateUrl: '/admin/interfaces/match.league/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -95,7 +103,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/site', {
-          templateUrl: '/admin/views/site.html',
+          templateUrl: '/admin/interfaces/site/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -103,7 +111,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/site/level', {
-          templateUrl: '/admin/views/site.level.html',
+          templateUrl: '/admin/interfaces/site.level/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -111,7 +119,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/site/config', {
-          templateUrl: '/admin/views/site.config.html',
+          templateUrl: '/admin/interfaces/site.config/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -119,7 +127,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/user', {
-          templateUrl: '/admin/views/user.html',
+          templateUrl: '/admin/interfaces/user/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -127,7 +135,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/user/history', {
-          templateUrl: '/admin/views/user.history.html',
+          templateUrl: '/admin/interfaces/user.history/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -135,7 +143,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/user/stat', {
-          templateUrl: '/admin/views/user.stat.html',
+          templateUrl: '/admin/interfaces/user.stat/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -143,7 +151,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/todo', {
-          templateUrl: '/admin/views/todo.html',
+          templateUrl: '/admin/interfaces/todo/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -151,7 +159,7 @@ angular.module(ApplicationName)
           }
         })
         .when('/config/manager', {
-          templateUrl: '/admin/views/manager.html',
+          templateUrl: '/admin/interfaces/manager/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
@@ -159,13 +167,13 @@ angular.module(ApplicationName)
           }
         })
         .when('/notfound', {
-          templateUrl: '/admin/views/404.html',
+          templateUrl: '/admin/interfaces/404/view.html',
           resolve: {
             preAuth: function(AuthService) {
               return AuthService.Session();
             }
           }
         })
-        .otherwise('/notfound');
+        .otherwise('/');
     }
   ]);

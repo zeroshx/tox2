@@ -1,0 +1,10 @@
+<div class="page-bar">
+  <ul class="page-breadcrumb">
+    <li data-ng-repeat="bc in _breadcrumb">
+      <i class="{{bc.icon}}"></i>
+      <a ui-sref="{{bc.path}}" data-ng-if="!$last && bc.path">{{bc.name}}</a>
+      <span data-ng-if="$last || !bc.path">{{bc.name}}</span>
+      <i class="fa fa-angle-right" data-ng-if="!$last"></i>
+    </li>
+  </ul>
+</div>

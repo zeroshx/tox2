@@ -1,0 +1,242 @@
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="row" data-ng-controller="BoardFreeCtrl">
+  <div class="col-sm-12">
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="page-header">
+          <h1>자유게시판</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="formSwitch && formMode === 'WRITE'">
+      <div class="col-sm-12">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">제 목</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" data-ng-model="targetTitle" placeholder="(최소 2자 최대 50자)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">내 용</label>
+            <div class="col-sm-8">
+              <textarea class="form-control" rows="20" style="resize: none" data-ng-model="targetContent" placeholder="(최대 500자)"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <button class="btn btn-default" data-ng-click="AddBettingReport()">배팅 첨부</button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-sm-12">
+            <center>
+              <button class="btn btn-primary" data-ng-click="CreateWriting()">등 록</button>
+              <button class="btn btn-default" data-ng-click="FormClose()">취 소</button>
+            </center>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="formSwitch && formMode === 'READ'">
+      <div class="col-sm-12"><br>
+        <table class="table table-bordered">
+          <thead>
+            <tr class="active">
+              <th>
+                <div class="row">
+                  <div class="col-sm-2">
+                    <span>
+                      No. {{targetWriting._id}}
+                    </span>
+                  </div>
+                  <div class="col-sm-5">
+                    <span>
+                      {{targetWriting.title}}
+                    </span>
+                  </div>
+                  <div class="col-sm-3">
+                    <span class="pull-right">
+                      글쓴이: {{targetWriting.nick}}
+                    </span>
+                  </div>
+                  <div class="col-sm-2">
+                    <span class="pull-right">
+                      조회수: {{targetWriting.hit.count}}
+                    </span>
+                  </div>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><br><span style="white-space: pre-line">{{targetWriting.content}}</span><br><br></td>
+            </tr>
+            <tr>
+              <td>[[배팅내역존]]</td>
+            </tr>
+            <tr>
+              <td>
+                <br>
+                <div class="row">
+                  <div class="col-sm-offset-4 col-sm-2">
+                    <center>
+                      <a href data-ng-click="Opinion(targetWriting._id, targetWriting._id, 'GOOD', '글')">
+                        <span style="font-size: 60px; color:SeaGreen" class="glyphicon glyphicon-thumbs-up"></span>
+                      </a>
+                      <br><span style="color:SeaGreen">{{targetWriting.opinion.good}}</span>
+                    </center>
+                  </div>
+                  <div class="col-sm-2">
+                    <center>
+                      <a href data-ng-click="Opinion(targetWriting._id, targetWriting._id, 'BAD', '글')">
+                        <span style="font-size: 60px; color:LightCoral" class="glyphicon glyphicon-thumbs-down"></span>
+                      </a>
+                      <br><span style="color:LightCoral">{{targetWriting.opinion.bad}}</span>
+                    </center>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <button class="btn btn-warning pull-right" data-ng-click="">신고</button>
+                    <button class="btn btn-danger pull-right" style="margin-right: 10px" data-ng-show="me.uid === targetWriting.uid" data-ng-click="Delete(targetWriting._id)">삭제</button>
+                    <button class="btn btn-default pull-right" style="margin-right: 10px" data-ng-click="FormClose()">목록</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="formSwitch && formMode === 'READ'">
+      <div class="col-sm-12">
+
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="formSwitch && formMode === 'READ'">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="page-header">
+              <h3>댓글 리스트</h3>
+            </div>
+          </div>
+        </div>
+        <form class="form-horizontal">
+          <div class="form-group">
+            <div class="col-sm-11">
+              <textarea class="form-control" rows="3" style="resize: none" data-ng-model="targetReply" placeholder="(댓글 작성)"></textarea>
+            </div>
+            <div class="col-sm-1">
+              <button class="btn btn-default pull-right" style="padding: 24px 20px; font-size: 18px; border-radius: 8px;" data-ng-click="CreateReply(targetWriting._id)">등 록</button>
+            </div>
+          </div>
+        </form>
+        <div class="row" data-ng-repeat="rp in targetWriting.reply">
+          <div class="col-sm-12">
+            <blockquote>
+              <div class="row">
+                <div class="col-sm-2">
+                  <span style="font-size: 16px; font-weight: bold;">{{rp.uid}}</span>
+                </div>
+                <div class="col-sm-2">
+                  <div class="pull-right">
+                    <span style="color:SeaGreen">{{rp.opinion.good}}</span>
+                    <a href data-ng-click="Opinion(rp._id, targetWriting._id, 'GOOD', '댓글')">
+                      <span style="font-size: 20px; color:SeaGreen" class="glyphicon glyphicon-thumbs-up"></span>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div>
+                    <a href data-ng-click="Opinion(rp._id, targetWriting._id, 'BAD', '댓글')">
+                      <span style="font-size: 20px; color:LightCoral" class="glyphicon glyphicon-thumbs-down"></span>
+                    </a>
+                    <span style="color:LightCoral">{{rp.opinion.bad}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <span style="font-size: 14px; white-space: pre-line;">{{rp.content}}</span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <span style="font-size: 14px;">{{rp.createdAt}}</span>
+                </div>
+              </div>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" data-ng-hide="docs.length > 0">
+      <div class="col-sm-12">
+        <br>
+        <div class="alert alert-danger">게시물이 존재하지 않습니다.</div>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <button class="btn btn-default pull-right" data-ng-click="Refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true" data-ng-show="_refreshTimer === 0"></span><span data-ng-show="_refreshTimer > 0">{{_refreshTimer}}</span></button>
+        <button class="btn btn-success pull-right" style="margin-right: 10px" data-ng-click="WriteFormOpen()">글쓰기</button>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <table class="table table-hover table-center">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>제목</th>
+              <th>글쓴이</th>
+              <th>조회수</th>
+              <th>작성일시</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="doc in docs">
+              <td>{{ doc._id }}</td>
+              <td><a href data-ng-click="GetWriting(doc._id)">{{ doc.titleShort }}<span class="badge" data-ng-show="doc.reply.length > 0"> {{doc.reply.length}}</span></a></td>
+              <td>{{ doc.nick }}</td>
+              <td>{{ doc.hit.count }}</td>
+              <td>{{ doc.createdAt }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <center>
+          <ul class="pagination">
+            <li>
+              <a href="" aria-label="Previous" data-ng-click="PreviousPage()">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="MovePage(page.number)">{{page.number}}</a></li>
+            <li>
+              <a href="" aria-label="Next" data-ng-click="NextPage()">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>

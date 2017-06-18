@@ -1,0 +1,19 @@
+.table-align-center th {
+  text-align: center;
+}
+
+.table-align-center td {
+  text-align: center;
+}
+
+.thead-align-center th {
+  text-align: center;
+}
+
+.tbody-align-center td {
+  text-align: center;
+}
+
+.textarea-fixed-row {
+  resize: none;
+}

@@ -1,0 +1,296 @@
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="row" data-ng-controller="BoardCtrl">
+  <div class="col-sm-11">
+    <!-- 1. Subject Info zone -->
+    <div class="row">
+      <div class="page-header">
+        <h1>게시판 관리<button type="button" class="btn btn-primary btn-xs" data-ng-click="FormOpen('CREATE')">추가</button></h1>
+      </div>
+    </div>
+
+    <!-- 2. Alert Message zone -->
+    <div class="row">
+      <br>
+      <div data-ng-class="{'alert alert-danger' : validator.type == 'error', 'alert alert-info' : validator.type == 'info', 'alert alert-success' : validator.type == 'correct'}" data-ng-show="validator.message">{{validator.message}}</div>
+    </div>
+
+    <!-- 3. Custom form zone -->
+    <div data-ng-show="formSwitch" class="row">
+      <br>
+      <div class="col-sm-12">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-sm-4">
+                <label class="panel-title">게시글/댓글 작성</label>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <label>아이디</label>
+                    <input type="text" class="form-control" data-ng-readonly="formMode !== 'CREATE'" data-ng-model="targetUid" placeholder="(영문, 숫자 조합으로 2자 이상 16자 이내)">
+                  </div>
+                  <div class="col-sm-6">
+                    <label>닉네임</label>
+                    <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetNick" placeholder="(한글, 영문, 숫자 조합으로 2자 이상 16자 이내)">
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <label>레벨</label>
+                    <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetLevel" placeholder="">
+                  </div>
+                  <div class="col-sm-6">
+                    <label>사이트</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetSite">
+                      <div class="input-group-btn">
+                        <div class="dropdown">
+                          <button class="btn btn-default dropdown-toggle" data-ng-disabled="formMode === 'VERIFY'" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">선택 <span class="caret"></span></button>
+                          <ul class="dropdown-menu">
+                            <li data-ng-repeat="site in siteList"><a href="" data-ng-click="SelectSite(site.name)">{{site.name}}</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <label>게시판 구분</label>
+                    <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetSort" placeholder="(2자 이상 16자 이내)">
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <label>제목</label>
+                    <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetTitle" placeholder="(2자 이상 50자 이내)">
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <label>내용</label>
+                    <textarea class="form-control" style="resize: none" rows="5" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetContent" placeholder="(1000자 이내)"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <center>
+                <button type="submit" class="btn btn-primary" data-ng-show="formMode === 'CREATE'" data-ng-click="Create()">신청</button>
+                <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE'" data-ng-click="Update()">수정</button>
+                <button type="button" class="btn btn-danger" data-ng-click="FormClose()">취소</button>
+              </center>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. exception of no data zone -->
+    <div data-ng-hide="docs.length > 0" class="row">
+      <br>
+      <button type="button" class="btn btn-success btn-lg" data-ng-click="Search('RESET')">처음으로</button>
+    </div>
+
+    <br>
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-sm-2">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.pageSize">
+                  <span class="input-group-btn"><button class="btn btn-default" type="button" data-ng-click="ChangePageSize()">줄</button></span>
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.form">
+                  <div class="input-group-btn">
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">구분 <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="" data-ng-click="query.form = '전체'">전체</a></li>
+                        <li><a href="" data-ng-click="query.form = '글'">글</a></li>
+                        <li><a href="" data-ng-click="query.form = '댓글'">댓글</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.site">
+                  <div class="input-group-btn">
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">사이트 <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="" data-ng-click="query.site = '전체'">전체</a></li>
+                        <li data-ng-repeat="site in siteList"><a href="" data-ng-click="query.site = site.name">{{site.name}}</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-5">
+                <div class="input-group pull-right">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span data-ng-show="query.searchFilter">{{query.searchFilter}} </span>
+                                            <span data-ng-hide="query.searchFilter">선택 </span>
+                                            <span class="caret"></span>
+                                        </button>
+                    <ul class="dropdown-menu">
+                      <li data-ng-repeat="sch in searchFilters"><a href="" data-ng-click="query.searchFilter = sch">{{sch}}</a></li>
+                    </ul>
+                  </div>
+                  <input type="text" class="form-control" data-ng-model="query.searchKeyword">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">검색하기</button>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-ng-click="Search('RESET')">처음으로</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. main list zone -->
+    <div class="row">
+      <div class="col-sm-12" data-ng-show="docs.length > 0">
+        <table class="table table-hover table-center">
+          <thead>
+            <tr>
+              <th><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
+              <th>No.</th>
+              <th>사이트</th>
+              <th>아이디</th>
+              <th>닉네임</th>
+              <th>구분</th>
+              <th>제목</th>
+              <th>GOOD/BAD</th>
+              <th>조회수</th>
+              <th>댓글수</th>
+              <th>작성일시</th>
+              <th>상태</th>
+              <th>옵션</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="doc in docs">
+              <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
+              <td>{{ doc._id }}</td>
+              <td>{{ doc.site }}</td>
+              <td>{{ doc.uid }}</td>
+              <td>{{ doc.nick }}</td>
+              <td>{{ doc.sort }}<span data-ng-show="doc.sort">/</span>{{ doc.form }}</td>
+              <td>{{ doc.title }}</td>
+              <td>{{ doc.opinion.good }}/{{ doc.opinion.good }}</td>
+              <td>{{ doc.hit.count }}</td>
+              <td><a href data-toggle="modal" data-target="#replyModal" data-ng-click="GetReply(doc._id)">{{ doc.reply.length }}</a></td>
+              <td>{{ doc.createdAt }}</td>
+              <td><span style="color: red" data-ng-hide="doc.show === true">삭제</span></td>
+              <td>
+                <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
+                <button type="button" class="btn btn-info btn-xs" data-ng-click="FormOpen('VERIFY', doc._id)">확인</button>
+                <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-danger btn-md" data-ng-click="DeleteAll()">선택삭제</button>
+      </div>
+    </div>
+
+    <!-- list pagination zone -->
+    <div class="row">
+      <div class="col-sm-12">
+        <center>
+          <ul class="pagination">
+            <li>
+              <a href="" aria-label="Previous" data-ng-click="PreviousPage()">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="MovePage(page.number)">{{page.number}}</a></li>
+            <li>
+              <a href="" aria-label="Next" data-ng-click="NextPage()">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </center>
+      </div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="replyModalLabel">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="replyModalLabel">댓글 리스트</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" data-ng-model="targetReplySite" placeholder="(사이트)">
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" data-ng-model="targetReplyUid" placeholder="(아이디)">
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" data-ng-model="targetReplyNick" placeholder="(닉네임)">
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" data-ng-model="targetReplyLevel" placeholder="(레벨)">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-10">
+                  <textarea class="form-control" rows="3" style="resize: none" data-ng-model="targetReplyContent" placeholder="(댓글)"></textarea>
+                </div>
+                <div class="col-sm-2">
+                  <button class="btn btn-default" style="padding: 18px 28px; font-size: 24px; border-radius: 8px;" data-ng-click="AddReply()">등 록</button>
+                </div>
+              </div>
+            </form>
+            <div class="row" data-ng-repeat="rp in targetReply">
+              <div class="col-sm-11">
+                <blockquote>
+                  <span style="font-size: 16px; font-weight: bold;">{{rp.nick}} / {{rp.uid}} / {{rp.site}}</span>
+                  <br>
+                  <span style="font-size: 14px;">{{rp.content}}</span>
+                  <br>
+                  <span style="font-size: 14px;">{{rp.createdAt}}</span>
+                </blockquote>
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-danger" style="vertical-align: middle" data-ng-click="RemoveReply(rp._id)">X</button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

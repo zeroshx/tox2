@@ -1,0 +1,184 @@
+<div class="portlet box green-soft" data-ng-show="_formSwitch">
+  <div class="portlet-title">
+    <div class="caption">
+      <i class="fa fa-user"></i> {{_formFormat.meta.title}}
+    </div>
+  </div>
+  <div class="portlet-body form">
+    <div class="alert alert-info" data-ng-if="_formFormat.meta.notice">
+      <strong>잠깐!</strong> {{_formFormat.meta.notice}}
+    </div>
+    <form class="form-horizontal form-bordered">
+      <div class="form-body">
+
+        <div class="form-group" data-ng-repeat="e in _formFormat.element">
+          <label class="col-sm-4 control-label"><span class="text-danger" data-ng-if="e.required">(필수) </span>{{e.label}}</label>
+
+
+          <div class="col-sm-4" data-ng-if="e.type === 'text'">
+            <input type="text" class="form-control" dynamic-model="'_item' + e.bind" data-ng-readonly="_formAction === e.readonly" placeholder="{{e.placeholder}}">
+          </div>
+
+          <div class="col-sm-4" data-ng-if="e.type === 'text-unit'">
+            <div class="input-group">
+              <input type="text" class="form-control" dynamic-model="'_item' + e.bind" data-ng-readonly="_formAction === e.readonly" placeholder="{{e.placeholder}}">
+              <span class="input-group-addon">{{e.unit}}</span>
+            </div>
+          </div>
+
+          <div class="col-sm-4" data-ng-if="e.type === 'unit-text-unit'">
+            <div class="input-group">
+              <span class="input-group-addon">{{e.preUnit}}</span>
+              <input type="text" class="form-control" dynamic-model="'_item' + e.bind" data-ng-readonly="_formAction === e.readonly" placeholder="{{e.placeholder}}">
+              <span class="input-group-addon">{{e.unit}}</span>
+            </div>
+          </div>
+
+          <div class="col-sm-4" data-ng-if="e.type === 'multi-text'">
+            <textarea type="text" class="form-control textarea-fixed-row" rows="{{e.rows ? e.rows : 3}}" dynamic-model="'_item' + e.bind" placeholder="{{e.placeholder}}"></textarea>
+          </div>
+
+          <div class="col-sm-4" data-ng-if="e.type === 'text-dropdown'">
+            <div class="input-group">
+              <input type="text" class="form-control" dynamic-model="'_item' + e.bind" data-ng-readonly="_formAction === e.readonly" placeholder="{{e.placeholder}}">
+              <div class="input-group-btn">
+                <button type="button" class="btn dropdown-toggle" data-ng-class="e.dropdown.class ? e.dropdown.class:'btn-default'" data-ng-disabled="_formAction === e.readonly" data-toggle="dropdown" >
+                  선택 <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                  <li data-ng-repeat="dd in e.dropdown.list"><a href dynamic-click="'_item' + e.bind + ' = dd[e.dropdown.property]'">{{dd[e.dropdown.property]}}</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-4" data-ng-if="e.type === 'button-group'">
+            <div class="btn-group">
+              <button type="button" class="btn " data-ng-repeat="b in e.button" data-ng-disabled="_formAction === e.readonly" dynamic-class="'GetButtonClass(e.button, _item' + e.bind + ', b.value)'" dynamic-click="'_item' + e.bind + ' = b.value'">{{b.value}}</button>
+            </div>
+          </div>
+
+          <div class="col-sm-4 col-lg-3" data-ng-if="e.type === 'spinner'">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn blue btn-outline" type="button" data-ng-click="SpinnerUp(e.bind)" data-ng-disabled="_formAction === e.readonly"><i class="fa fa-plus"></i></button>
+              </span>
+              <input type="text" class="form-control" dynamic-model="'_item' + e.bind" data-ng-readonly="_formAction === e.readonly" placeholder="{{e.placeholder}}">
+              <span class="input-group-btn">
+                <button class="btn red btn-outline" type="button" data-ng-click="SpinnerDown(e.bind)" data-ng-disabled="_formAction === e.readonly"><i class="fa fa-minus"></i></button>
+              </span>
+            </div>
+          </div>
+
+          <div class="col-sm-4" data-ng-if="e.type === 'site-answer'">
+            <div class="row" dynamic-repeat="'ans in _item' + e.bind">
+              <div class="col-sm-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <div class="input-group">
+                      <input type="text" class="form-control" data-ng-model="ans.action" placeholder="액션명 (한글, 영문, 숫자 최소 2자 최대 10자 이내)">
+                      <span class="input-group-btn">
+                        <button class="btn red" type="button" data-ng-click="PopSiteAnswer($index)"><i class="fa fa-close"></i></button>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="panel-body">
+                    <input type="text" class="form-control" data-ng-model="ans.title" placeholder="제목 (한글, 영문, 숫자 최소 2자 최대 50자 이내)">
+                    <br>
+                    <textarea class="form-control textarea-fixed-row" rows="5" data-ng-model="ans.content" placeholder="내용 (500자 이내)"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <button type="button" class="btn purple" data-ng-click="PushSiteAnswer()">추가</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-4" data-ng-if="e.type === 'kind-config'">
+            <div class="row" dynamic-repeat="'kc in _item' + e.bind">
+              <div class="col-sm-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <div class="input-group">
+                      <input type="text" class="form-control" data-ng-model="kc.name">
+                      <div class="input-group-btn">
+                        <button type="button" class="btn dropdown-toggle" data-ng-class="e.dropdown.class ? e.dropdown.class:'btn-default'" data-ng-disabled="_formAction === e.readonly" data-toggle="dropdown">
+                          종목 <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right">
+                          <li data-ng-repeat="dd in e.dropdown.list"><a href data-ng-click="kc.name = dd[e.dropdown.property]">{{dd[e.dropdown.property]}}</a></li>
+                        </ul>
+                      </div>
+                      <div class="input-group-btn">
+                        <button class="btn red" type="button" data-ng-click="PopKindConfig($index)"><i class="fa fa-close"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="input-group">
+                          <span class="input-group-addon">최대</span>
+                          <input type="text" class="form-control" data-ng-model="kc.maxMulti">
+                          <span class="input-group-addon">조합</span>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="btn-group btn-group-justified">
+                            <a href class="btn btn-default" data-ng-click="kc.nah = !kc.nah"> 일반 + 핸디캡 </a>
+                            <a href class="btn" data-ng-class="{'btn-success': kc.nah, 'btn-danger': !kc.nah}" data-ng-click="kc.nah = !kc.nah"> <span data-ng-show="kc.nah">허용</span><span data-ng-show="!kc.nah">금지</span> </a>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="btn-group btn-group-justified">
+                            <a href class="btn btn-default" data-ng-click="kc.nau = !kc.nau"> 일반 + 언더오버 </a>
+                            <a href class="btn" data-ng-class="{'btn-success': kc.nau, 'btn-danger': !kc.nau}" data-ng-click="kc.nau = !kc.nau"> <span data-ng-show="kc.nau">허용</span><span data-ng-show="!kc.nau">금지</span> </a>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="btn-group btn-group-justified">
+                            <a href class="btn btn-default" data-ng-click="kc.hau = !kc.hau"> 핸디캡 + 언더오버 </a>
+                            <a href class="btn" data-ng-class="{'btn-success': kc.hau, 'btn-danger': !kc.hau}" data-ng-click="kc.hau = !kc.hau"> <span data-ng-show="kc.hau">허용</span><span data-ng-show="!kc.hau">금지</span> </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <button type="button" class="btn purple" data-ng-click="PushKindConfig()">추가</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="form-actions">
+        <div class="row">
+          <div class="col-sm-12">
+            <center>
+              <button type="button" class="btn btn-circle green-soft" data-ng-if="_formAction === 'CREATE'" data-ng-click="Create()">완료</button>
+              <button type="button" class="btn btn-circle yellow" data-ng-if="_formAction === 'MODIFY'" data-ng-click="Modify()">저장</button>
+              <button type="button" class="btn btn-circle grey-salsa btn-outline" data-ng-click="Close()">취소</button>
+            </center>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

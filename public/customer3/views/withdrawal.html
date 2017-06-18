@@ -1,0 +1,122 @@
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="row" data-ng-controller="WithdrawalCtrl">
+  <div class="col-sm-12">
+
+    <!-- 1. Subject Info zone -->
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="page-header">
+          <h1>출금 신청</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Alert Message zone -->
+    <div class="row">
+      <div class="col-sm-12">
+        <div data-ng-class="{'alert alert-danger' : validator.type == 'error', 'alert alert-info' : validator.type == 'info', 'alert alert-success' : validator.type == 'correct'}" data-ng-show="validator.message">{{validator.message}}</div>
+      </div>
+    </div>
+
+    <br>
+    <div class="row">
+      <div class="col-sm-offset-2 col-sm-8">
+        <center>
+          <h2>출금 가능 금액 : <span>{{me.cash | number}}원</span></h2></center>
+      </div>
+    </div>
+
+    <br><br>
+    <div class="row">
+      <div class="col-sm-12">
+        <center>
+          <button class="btn btn-lg btn-primary" data-ng-click="Cash(10000)">10,000원</button>
+          <button class="btn btn-lg btn-success" data-ng-click="Cash(50000)">50,000원</button>
+          <button class="btn btn-lg btn-info" data-ng-click="Cash(100000)">100,000원</button>
+          <button class="btn btn-lg btn-warning" data-ng-click="Cash(500000)">500,000원</button>
+          <button class="btn btn-lg btn-danger" data-ng-click="Cash(1000000)">1,000,000원</button>
+        </center>
+      </div>
+    </div>
+
+    <br><br>
+    <div class="row">
+      <div class="col-sm-offset-2 col-sm-8">
+        <center><input type="text" class="form-control input-lg" data-ng-model="targetCash"></center>
+      </div>
+    </div>
+
+    <br><br>
+    <div class="row">
+      <div class="col-sm-12">
+        <center>
+          <button class="btn btn-lg btn-danger" data-ng-click="SubmitWithdrawal()">신 청</button>
+          <button class="btn btn-lg btn-default" data-ng-click="CashReset()">초기화</button>
+        </center>
+      </div>
+    </div>
+
+    <!-- 1. Subject Info zone -->
+
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <div class="page-header">
+          <h3>이전 내역<button class="btn btn-lg btn-default pull-right" data-ng-click="Refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true" data-ng-show="_refreshTimer === 0"></span><span data-ng-show="_refreshTimer > 0">{{_refreshTimer}}</span></button></h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. main list zone -->
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <table class="table table-hover table-center">
+          <thead>
+            <tr>
+              <th>신청일시</th>
+              <th>사이트</th>
+              <th>총판</th>
+              <th>닉네임</th>
+              <th>예금주</th>
+              <th>금액</th>
+              <th>처리일시</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="doc in docs">
+              <td>{{ doc.createdAt }}</td>
+              <td>{{ doc.site }}</td>
+              <td>{{ doc.distributor }}</td>
+              <td>{{ doc.nick }}</td>
+              <td>{{ doc.holder }}</td>
+              <td>{{ doc.cashCurrency }}원</td>
+              <td>{{ doc.operatedAt }}</td>
+              <td>{{ doc.state }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- list pagination zone -->
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <center>
+          <ul class="pagination">
+            <li>
+              <a href="" aria-label="Previous" data-ng-click="PreviousPage()">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="MovePage(page.number)">{{page.number}}</a></li>
+            <li>
+              <a href="" aria-label="Next" data-ng-click="NextPage()">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>

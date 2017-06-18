@@ -1,0 +1,155 @@
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="row" data-ng-controller="MessageCtrl">
+  <div class="col-sm-12">
+
+    <!-- 1. Subject Info zone -->
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="page-header">
+          <h1>쪽지함</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Alert Message zone -->
+    <div class="row">
+      <div class="col-sm-12">
+        <div data-ng-class="{'alert alert-danger' : validator.type == 'error', 'alert alert-info' : validator.type == 'info', 'alert alert-success' : validator.type == 'correct'}" data-ng-show="validator.message">{{validator.message}}</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <button class="btn btn-lg btn-info" data-toggle="modal" data-target="#messageModal" data-ng-click="WriteReady()">쪽지쓰기</button>
+      </div>
+    </div>
+
+    <br>
+    <ul class="nav nav-tabs">
+      <li role="presentation" data-ng-class="{'active' : query.type === '수신'}" data-ng-click="ChangeType('수신')"><a href>받은 쪽지</a></li>
+      <li role="presentation" data-ng-class="{'active' : query.type === '발신'}" data-ng-click="ChangeType('발신')"><a href>보낸 쪽지</a></li>
+    </ul>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <br>
+        <button class="btn btn-default pull-right" data-ng-click="Refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true" data-ng-show="_refreshTimer === 0"></span><span data-ng-show="_refreshTimer > 0">{{_refreshTimer}}</span></button>
+        <div class="dropdown pull-right">
+          <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{query.check}} <span class="caret"></span></button>
+          <ul class="dropdown-menu">
+            <li><a href="" data-ng-click="query.check = '전체'">전체</a></li>
+            <li><a href="" data-ng-click="query.check = '읽음'">읽음</a></li>
+            <li><a href="" data-ng-click="query.check = '안읽음'">안읽음</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Alert Message zone -->
+    <div class="row" data-ng-show="docs.length === 0">
+      <div class="col-sm-12">
+        <br>
+        <div class="alert alert-info">저장된 쪽지가 없습니다.</div>
+      </div>
+    </div>
+
+    <!-- 6. main list zone -->
+    <br>
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <table class="table table-hover table-center">
+          <thead>
+            <tr>
+              <th><span data-ng-show="query.type === '수신'">보낸이</span><span data-ng-hide="query.type === '수신'">받는이</span></th>
+              <th>제목</th>
+              <th>보낸날짜</th>
+              <th>읽은날짜</th>
+              <th>상태</th>
+              <th data-ng-show="query.type === '수신'">옵션</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="doc in docs">
+              <td>{{ doc.sender.nick }}</td>
+              <td><a href data-toggle="modal" data-target="#messageModal" data-ng-click="GetMessage(doc._id)">{{ doc.titleShort }}</a></td>
+              <td>{{ doc.createdAt }}</td>
+              <td>{{ doc.checkedAt }}</td>
+              <td>{{ doc.check }}</td>
+              <td data-ng-show="query.type === '수신'">
+                <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#messageModal" data-ng-click="AnswerMessage(doc._id)">답장</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- list pagination zone -->
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <center>
+          <ul class="pagination">
+            <li>
+              <a href="" aria-label="Previous" data-ng-click="PreviousPage()">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="MovePage(page.number)">{{page.number}}</a></li>
+            <li>
+              <a href="" aria-label="Next" data-ng-click="NextPage()">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </center>
+      </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div class="modal" id="messageModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <br>
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label class="col-sm-2 control-label">보낸이</label>
+                <div class="col-sm-5">
+                  <input type="text" class="form-control" data-ng-model="targetSenderNick" placeholder="(닉네임)" readonly>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">받는이</label>
+                <div class="col-sm-5">
+                  <input type="text" class="form-control" data-ng-readonly="modalMode === 'READ'" data-ng-model="targetReceiverNick" placeholder="(닉네임)">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">제목</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" data-ng-readonly="modalMode === 'READ'" data-ng-model="targetTitle" placeholder="(최소 2자 최대 50자)">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">메시지</label>
+                <div class="col-sm-9">
+                  <textarea class="form-control" rows="8" style="resize: none" data-ng-readonly="modalMode === 'READ'" data-ng-model="targetContent" placeholder="(최대 500자)"></textarea>
+                </div>
+              </div>
+            </form>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-sm-12">
+                  <span class="pull-right">{{targetDate}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-ng-show="modalMode === 'WRITE'" data-ng-click="SendMessage()">보내기</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

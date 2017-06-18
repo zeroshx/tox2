@@ -1,0 +1,542 @@
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="row" data-ng-controller="MatchCtrl">
+  <div class="col-sm-11">
+    <!-- 1. Subject Info zone -->
+    <div class="row">
+      <div class="page-header">
+        <h1>매치 관리<button type="button" class="btn btn-primary btn-xs" data-ng-click="FormOpen('CREATE')">추가</button></h1>
+      </div>
+    </div>
+
+    <!-- 2. Alert Message zone -->
+    <div class="row">
+      <br>
+      <div data-ng-class="{'alert alert-danger' : validator.type == 'error', 'alert alert-info' : validator.type == 'info', 'alert alert-success' : validator.type == 'correct'}" data-ng-show="validator.message">{{validator.message}}</div>
+    </div>
+
+    <!-- 3. Custom form zone -->
+    <div data-ng-show="formSwitch" class="row">
+      <div class="col-sm-12">
+        <!-- 매치 정보 입력 폼 -->
+        <br>
+        <div class="row" data-ng-show="targetBtype && targetMtype">
+          <div class="col-sm-12">
+            <div class="panel panel-success">
+              <div class="panel-heading">
+                <h3 class="panel-title"><label>상세정보</label></h3>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="btn-group" role="group">
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-success' : targetBtype === '2-WAY', 'btn btn-default' : targetBtype !== '2-WAY'}" data-ng-click="SelectBettingType('2-WAY')">2-WAY</button>
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-warning' : targetBtype === '3-WAY', 'btn btn-default' : targetBtype !== '3-WAY'}" data-ng-click="SelectBettingType('3-WAY')">3-WAY</button>
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-danger' : targetBtype === 'VARIETY', 'btn btn-default' : targetBtype !== 'VARIETY'}" data-ng-click="SelectBettingType('VARIETY')">VARIETY</button>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="btn-group" role="group">
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-success' : targetMtype === '일반', 'btn btn-default' : targetMtype !== '일반'}" data-ng-click="SelectMatchType('일반')">일반</button>
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-warning' : targetMtype === '핸디캡', 'btn btn-default' : targetMtype !== '핸디캡'}" data-ng-click="SelectMatchType('핸디캡')">핸디캡</button>
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-danger' : targetMtype === '언더오버', 'btn btn-default' : targetMtype !== '언더오버'}" data-ng-click="SelectMatchType('언더오버')">언더오버</button>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="btn-group" role="group">
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-success' : targetState === '등록', 'btn btn-default' : targetState !== '등록'}" data-ng-disabled="targetState === '종료'" data-ng-click="SelectState('등록')">등록</button>
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-warning' : targetState === '배팅', 'btn btn-default' : targetState !== '배팅'}" data-ng-disabled="targetState === '종료'" data-ng-click="SelectState('배팅')">배팅</button>
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-danger' : targetState === '마감', 'btn btn-default' : targetState !== '마감'}" data-ng-disabled="targetState === '종료'" data-ng-click="SelectState('마감')">마감</button>
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-primary' : targetState === '종료', 'btn btn-default' : targetState !== '종료'}" data-ng-disabled="targetState !== '종료'" data-ng-click="SelectState('종료')">종료</button>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="row" data-ng-show="targetBtype!=='VARIETY'">
+                  <div class="col-sm-12">
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <label>일정</label>
+                        <div class="form-group">
+                          <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" data-ng-model="targetSchedule" data-ng-readonly="formMode === 'VERIFY'">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <label>리그</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetLeague">
+                          <div class="input-group-btn">
+                            <div class="dropdown">
+                              <button class="btn btn-default dropdown-toggle" type="button" data-ng-disabled="formMode === 'VERIFY'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">선택 <span class="caret"></span></button>
+                              <ul class="dropdown-menu">
+                                <li data-ng-repeat="league in leagueList"><a href="" data-ng-click="SelectLeague(league.name)">{{league.name}}</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <label>종목</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetKind">
+                          <div class="input-group-btn">
+                            <div class="dropdown">
+                              <button class="btn btn-default dropdown-toggle" type="button" data-ng-disabled="formMode === 'VERIFY'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">선택 <span class="caret"></span></button>
+                              <ul class="dropdown-menu">
+                                <li data-ng-repeat="kind in kindList"><a href="" data-ng-click="SelectKind(kind.name)">{{kind.name}}</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <label>친정팀</label>
+                        <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetHomeName" placeholder="(2자 이상 30자 이내)">
+                      </div>
+                      <div class="col-sm-4">
+                        <label>기준점</label>
+                        <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetOffset" data-ng-disabled="targetMtype === '일반'" placeholder="(-)0.0 (친정팀 기준)">
+                      </div>
+                      <div class="col-sm-4">
+                        <label>원정팀</label>
+                        <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetAwayName" placeholder="(2자 이상 30자 이내)">
+                      </div>
+                    </div>
+
+                    <br>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <label>친정팀 배당</label>
+                        <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetHomeRate" placeholder="00.00">
+                      </div>
+                      <div class="col-sm-4">
+                        <label>무승부 배당</label>
+                        <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetTieRate" data-ng-disabled="targetBtype === '2-WAY'" placeholder="00.00">
+                      </div>
+                      <div class="col-sm-4">
+                        <label>원정팀 배당</label>
+                        <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetAwayRate" placeholder="00.00">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" data-ng-show="targetBtype==='VARIETY'">
+                  <div class="col-sm-12">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <label>종목</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetKind">
+                          <div class="input-group-btn">
+                            <div class="dropdown">
+                              <button class="btn btn-default dropdown-toggle" type="button" data-ng-disabled="formMode === 'VERIFY'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">선택 <span class="caret"></span></button>
+                              <ul class="dropdown-menu">
+                                <li data-ng-repeat="kind in kindList"><a href="" data-ng-click="SelectKind(kind.name)">{{kind.name}}</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <label>리그</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetLeague">
+                          <div class="input-group-btn">
+                            <div class="dropdown">
+                              <button class="btn btn-default dropdown-toggle" type="button" data-ng-disabled="formMode === 'VERIFY'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">선택 <span class="caret"></span></button>
+                              <ul class="dropdown-menu">
+                                <li data-ng-repeat="league in leagueList"><a href="" data-ng-click="SelectLeague(league.name)">{{league.name}}</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <label>버라이어티 주제</label>
+                        <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetVarietySubject" placeholder="(2자 이상 50자 이내)">
+                      </div>
+                      <div class="col-sm-6">
+                        <label>일정</label>
+                        <div class="form-group">
+                          <div class='input-group date' id='datetimepicker2'>
+                            <input type='text' class="form-control" data-ng-model="targetSchedule" data-ng-readonly="formMode === 'VERIFY'">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <button type="button" class="btn btn-success" data-ng-disabled="formMode === 'VERIFY'" data-ng-click="AddOption()">선택지 추가</button>
+                      </div>
+                    </div>
+
+                    <div class="row" data-ng-repeat="var in targetVarietyOption">
+                      <br>
+                      <div class="col-sm-6">
+                        <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetVarietyOption[$index].name" placeholder="{{'선택 '+$index}}">
+                      </div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetVarietyOption[$index].rate" placeholder="00.00">
+                      </div>
+                      <div class="col-sm-1">
+                        <center>
+                          <button type="button" class="btn btn-danger" data-ng-disabled="formMode === 'VERIFY'" data-ng-click="RemoveOption($index)">X</button>
+                        </center>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 즉시 결과 처리 폼 -->
+        <br>
+        <div class="row" data-ng-show="targetState === '종료'">
+          <div class="col-sm-12">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title"><label>결과 입력</label></h3>
+              </div>
+              <div class="panel-body">
+                <form class="form form-inline row" data-ng-show="targetBtype!=='VARIETY'" novalidate>
+                  <div class="col-sm-4">
+                    <div class="input-group">
+                      <span class="input-group-addon">친정팀 점수</span>
+                      <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetHomeScore" data-ng-disabled="targetBtype==='2-WAY'">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <center>
+                      <div class="btn-group" role="group">
+                        <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-success' : targetResult === '친정승', 'btn btn-default' : targetResult !== '친정승'}" data-ng-click="SelectResult('친정승')">친정승</button>
+                        <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-warning' : targetResult === '무승부', 'btn btn-default' : targetResult !== '무승부'}" data-ng-show="targetBtype==='3-WAY'" data-ng-click="SelectResult('무승부')">무승부</button>
+                        <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-class="{'btn btn-danger' : targetResult === '원정승', 'btn btn-default' : targetResult !== '원정승'}" data-ng-click="SelectResult('원정승')">원정승</button>
+                      </div>
+                    </center>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="input-group pull-right">
+                      <input type="text" class="form-control" data-ng-readonly="formMode === 'VERIFY'" data-ng-model="targetAwayScore" data-ng-disabled="targetBtype==='2-WAY'">
+                      <span class="input-group-addon">원정팀 점수</span>
+                    </div>
+                  </div>
+                </form>
+
+                <div class=" row" data-ng-show="targetBtype==='VARIETY'">
+                  <div class="col-sm-4" data-ng-repeat="var in targetVarietyOption">
+                    <center>
+                      <br data-ng-show="$index / 3 >= 1">
+                      <button type="button" data-ng-disabled="formMode === 'VERIFY'" data-ng-show="var.name" data-ng-class="{'btn btn-warning' : targetResult === var.pick, 'btn btn-default' : targetResult !== var.pick}" data-ng-click="SelectResult(var.pick)">{{var.name}}</button>
+                    </center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 폼 액션 버튼 -->
+        <div class="row">
+          <center>
+            <button type="submit" class="btn btn-primary" data-ng-show="formMode === 'CREATE'" data-ng-click="Create()">추가</button>
+            <button type="submit" class="btn btn-warning" data-ng-show="formMode === 'UPDATE' && targetState !== '종료'" data-ng-click="Update()">수정</button>
+            <button type="button" class="btn btn-danger" data-ng-click="FormClose()"><span data-ng-if="targetState !== '종료'">취소</span><span data-ng-if="targetState === '종료'">확인</span></button>
+          </center>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. exception of no data zone -->
+    <div data-ng-hide="docs.length > 0" class="row">
+      <br>
+      <button type="button" class="btn btn-success btn-lg" data-ng-click="Search('RESET')">처음으로</button>
+    </div>
+
+    <br>
+    <div class="row" data-ng-show="docs.length > 0">
+      <div class="col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-sm-2">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.pageSize">
+                  <span class="input-group-btn"><button class="btn btn-default" type="button" data-ng-click="ChangePageSize()">줄</button></span>
+                </div>
+              </div>
+              <div class="col-sm-offset-4 col-sm-6">
+                <div class="input-group pull-right">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span data-ng-show="query.searchFilter">{{query.searchFilter}} </span>
+                                            <span data-ng-hide="query.searchFilter">선택 </span>
+                                            <span class="caret"></span>
+                                        </button>
+                    <ul class="dropdown-menu">
+                      <li data-ng-repeat="sch in searchFilters"><a href="" data-ng-click="query.searchFilter = sch">{{sch}}</a></li>
+                    </ul>
+                  </div>
+                  <input type="text" class="form-control" data-ng-model="query.searchKeyword">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-ng-click="Search()">검색하기</button>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-ng-click="Search('RESET')">처음으로</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.listMode">
+                  <div class="input-group-btn">
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">배팅방식 <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="" data-ng-click="query.listMode = 'WAY'">WAY</a></li>
+                        <li><a href="" data-ng-click="query.listMode = '2-WAY'">2-WAY</a></li>
+                        <li><a href="" data-ng-click="query.listMode = '3-WAY'">3-WAY</a></li>
+                        <li><a href="" data-ng-click="query.listMode = 'VARIETY'">VARIETY</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.state">
+                  <div class="input-group-btn">
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">상태 <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="" data-ng-click="query.state = '전체'">전체</a></li>
+                        <li><a href="" data-ng-click="query.state = '등록'">등록</a></li>
+                        <li><a href="" data-ng-click="query.state = '배팅'">배팅</a></li>
+                        <li><a href="" data-ng-click="query.state = '마감'">마감</a></li>
+                        <li><a href="" data-ng-click="query.state = '종료'">종료</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.result">
+                  <div class="input-group-btn">
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">결과 <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="" data-ng-click="query.result = '전체'">전체</a></li>
+                        <li><a href="" data-ng-click="query.result = '친정승'">친정승</a></li>
+                        <li><a href="" data-ng-click="query.result = '원정승'">원정승</a></li>
+                        <li><a href="" data-ng-click="query.result = '무승부'">무승부</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.mtype">
+                  <div class="input-group-btn ">
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">매치타입 <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="" data-ng-click="query.mtype = '전체'">전체</a></li>
+                        <li><a href="" data-ng-click="query.mtype = '일반'">일반</a></li>
+                        <li><a href="" data-ng-click="query.mtype = '핸디캡'">핸디캡</a></li>
+                        <li><a href="" data-ng-click="query.mtype = '언더오버'">언더오버</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.kind">
+                  <div class="input-group-btn">
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">종목 <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="" data-ng-click="query.kind = '전체'">전체</a></li>
+                        <li data-ng-repeat="kind in kindList"><a href="" data-ng-click="query.kind = kind.name">{{kind.name}}</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="query.league">
+                  <div class="input-group-btn">
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">리그 <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="" data-ng-click="query.league = '전체'">전체</a></li>
+                        <li data-ng-repeat="league in leagueList"><a href="" data-ng-click="query.league = league.name">{{league.name}}</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. main list zone -->
+    <div class="row">
+      <div class="col-sm-12" data-ng-show="docs.length > 0">
+        <div class="row">
+          <div class="col-sm-12">
+            <button class="btn btn-warning btn-sm" type="button">배팅가능</button>
+            <button class="btn btn-danger btn-sm" type="button">배팅마감</button>
+            <button class="btn btn-primary btn-sm" type="button">핸디캡</button>
+            <button class="btn btn-success btn-sm" type="button">언더오버</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <table class="table table-bordered table-center" data-ng-show="viewMode === 'WAY' || viewMode === '3-WAY' || viewMode === '2-WAY'">
+              <thead>
+                <tr class="active">
+                  <th class="font-12px" rowspan="2"><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
+                  <th class="font-12px" rowspan="2">일시</th>
+                  <th class="font-12px" rowspan="2">상태</th>
+                  <th class="font-12px" rowspan="2">종목</th>
+                  <th class="font-12px" rowspan="2">리그</th>
+                  <th class="font-12px" colspan="3">친정</th>
+                  <th class="font-12px" colspan="1">무</th>
+                  <th class="font-12px" colspan="3">원정</th>
+                  <th class="font-12px" colspan="3">배팅액</th>
+                  <th class="font-12px" rowspan="2">결과</th>
+                  <th class="font-12px" rowspan="2">설정</th>
+                </tr>
+                <tr class="active">
+                  <th class="">팀명</th>
+                  <th class="font-12px">점수</th>
+                  <th class="font-12px">배당</th>
+                  <th class="font-12px">(기준)</th>
+                  <th class="font-12px">배당</th>
+                  <th class="font-12px">점수</th>
+                  <th class="font-12px">팀명</th>
+                  <th class="font-12px">친정</th>
+                  <th class="font-12px">무</th>
+                  <th class="font-12px">원정</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-ng-repeat="doc in docs">
+                  <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
+                  <td class="font-10px">{{ doc.schedule }}</td>
+                  <td class="td_font_bold font-12px" data-ng-class="{'danger': doc.state === '마감', 'warning': doc.state === '배팅'}">{{ doc.state }}</td>
+                  <td class="font-12px">{{ doc.kind }}</td>
+                  <td class="font-10px">{{ doc.league }}</td>
+                  <td class="font-10px">{{ doc.home.short_name }}</td>
+                  <td class="font-12px">{{ doc.home.score }}</td>
+                  <td class="td_font_bold">{{ doc.home.rate }}</td>
+                  <td class="td_font_bold" data-ng-show="doc.mtype === '일반'">
+                    <span data-ng-show="doc.btype === '2-WAY'">VS</span>
+                    <span data-ng-show="doc.btype === '3-WAY'">{{ doc.tie.rate }}</span>
+                  </td>
+                  <td data-ng-class="{'info td_font_bold' : doc.mtype === '핸디캡', 'success td_font_bold' : doc.mtype === '언더오버'}" data-ng-show="doc.mtype !== '일반'">({{ doc.offset }})</td>
+                  <td class="td_font_bold">{{ doc.away.rate }}</td>
+                  <td>{{ doc.away.score }}</td>
+                  <td class="font-10px">{{ doc.away.short_name }}</td>
+                  <td class="td_font_bold font-12px">{{ doc.home.bet | number }}</td>
+                  <td class="td_font_bold font-12px">{{ doc.tie.bet | number }}</td>
+                  <td class="td_font_bold font-12px">{{ doc.away.bet | number }}</td>
+                  <td>{{ doc.result }}</td>
+                  <td>
+                    <button type="button" data-ng-show="doc.state === '등록' || doc.state === '배팅'" class="btn btn-success btn-xs" data-ng-click="">정산</button>
+                    <button type="button" data-ng-show="doc.state === '종료'" class="btn btn-primary btn-xs" data-ng-click="">복구</button>
+                    <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
+                    <button type="button" class="btn btn-info btn-xs" data-ng-click="FormOpen('VERIFY', doc._id)">확인</button>
+                    <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table class="table table-bordered table-center" data-ng-show="viewMode === 'VARIETY'">
+              <thead>
+                <tr class="active">
+                  <th><input type="checkbox" data-ng-model="selectAllSwitch" data-ng-click="SelectAll()"></th>
+                  <th>일시</th>
+                  <th>상태</th>
+                  <th>종목</th>
+                  <th>리그</th>
+                  <th>매치주제</th>
+                  <th>선택지 개수</th>
+                  <th>배팅수</th>
+                  <th>배팅총액</th>
+                  <th rowspan="2">설정</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-ng-repeat="doc in docs">
+                  <td><input type="checkbox" data-ng-model="docs[$index].checked"></td>
+                  <td class="font-12px">{{ doc.schedule }}</td>
+                  <td class="td_font_bold" data-ng-class="{'danger': doc.state === '마감', 'warning': doc.state === '배팅'}">{{ doc.state }}</td>
+                  <td class="font-12px">{{ doc.kind }}</td>
+                  <td class="font-12px">{{ doc.league }}</td>
+                  <td class="font-12px">{{ doc.variety.subject }}</td>
+                  <td class="font-12px">{{ doc.variety.option.length }}</td>
+                  <td class="font-12px">{{ doc.totalBetCount }}</td>
+                  <td class="font-12px">{{ doc.totalBet | number }}</td>
+                  <td>
+                    <button type="button" data-ng-show="doc.state === '등록' || doc.state === '배팅'" class="btn btn-success btn-xs" data-ng-click="">정산</button>
+                    <button type="button" data-ng-show="doc.state === '종료'" class="btn btn-primary btn-xs" data-ng-click="">복구</button>
+                    <button type="button" class="btn btn-warning btn-xs" data-ng-click="FormOpen('UPDATE', doc._id)">수정</button>
+                    <button type="button" class="btn btn-info btn-xs" data-ng-click="FormOpen('VERIFY', doc._id)">확인</button>
+                    <button type="button" class="btn btn-danger btn-xs" data-ng-click="Delete(doc._id, 'ONE')">삭제</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button type="button" class="btn btn-danger btn-md" data-ng-click="DeleteAll()">선택삭제</button>
+      </div>
+    </div>
+
+    <!-- list pagination zone -->
+    <div class="row">
+      <div class="col-sm-12">
+        <center>
+          <ul class="pagination">
+            <li>
+              <a href="" aria-label="Previous" data-ng-click="PreviousPage()">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li data-ng-repeat="page in pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="MovePage(page.number)">{{page.number}}</a></li>
+            <li>
+              <a href="" aria-label="Next" data-ng-click="NextPage()">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>

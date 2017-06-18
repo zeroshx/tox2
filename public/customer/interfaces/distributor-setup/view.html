@@ -1,0 +1,113 @@
+<h1 class="page-title">총판 생성<small></small></h1>
+
+<div class="page-bar">
+  <ul class="page-breadcrumb">
+    <li data-ng-repeat="bc in _breadcrumb">
+      <i class="{{bc.icon}}"></i>
+      <a ui-sref="{{bc.path}}" data-ng-if="!$last && bc.path !== ''">{{bc.name}}</a>
+      <span data-ng-if="$last || bc.path === ''">{{bc.name}}</span>
+      <i class="fa fa-angle-right" data-ng-if="!$last"></i>
+    </li>
+  </ul>
+</div>
+
+<div class="portlet light bordered">
+  <div class="portlet-title">
+    <div class="caption">
+      <i class="icon-equalizer font-red-sunglo"></i>
+      <span class="caption-subject font-red-sunglo bold uppercase">생성하기</span>
+      <span class="caption-helper">총판을 성장시켜 더 큰 수익을 낼 수 있습니다.</span>
+    </div>
+    <div class="actions">
+
+    </div>
+  </div>
+  <div class="portlet-body form">
+    <!-- BEGIN FORM-->
+    <form action="#" class="form-horizontal">
+      <div class="form-body">
+        <h3 class="form-section">총판 기본정보</h3>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">총판명</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" data-ng-model="targetName" placeholder="한글, 영문, 숫자를 이용하여 2자 이상 16자 이내만 가능">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">소개글</label>
+          <div class="col-sm-6">
+            <textarea class="form-control" rows="3" style="resize: none" data-ng-model="targetMemo"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">가입 방식</label>
+          <div class="col-sm-6">
+            <div class="btn-group btn-group">
+              <button type="button" data-ng-class="{'btn blue-madison': targetJoinStyle === '승인', 'btn btn-default': targetJoinStyle !== '승인'}" data-ng-click="SetSignupStyle('승인')">승인</button>
+              <button type="button" data-ng-class="{'btn green-sharp': targetJoinStyle === '자유', 'btn btn-default': targetJoinStyle !== '자유'}" data-ng-click="SetSignupStyle('자유')">자유</button>
+              <button type="button" data-ng-class="{'btn red-pink': targetJoinStyle === '비공개', 'btn btn-default': targetJoinStyle !== '비공개'}" data-ng-click="SetSignupStyle('비공개')">비공개</button>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="form-section">보너스 스탯 설정</h3>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">사용 가능 포인트</label>
+          <div class="col-sm-3">
+            <p class="form-control-static"> {{targetConfig.statusPoint}} </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">당첨 보너스</label>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <a href class="btn btn-icon-only red-sunglo" data-ng-click="Minus('WIN')">
+                  <i class="fa fa-minus"></i>
+                </a>
+              </span>
+              <input type="text" class="form-control" data-ng-model="targetBonusWin" readonly>
+              <span class="input-group-btn">
+                <a href class="btn btn-icon-only green-haze" data-ng-click="Plus('WIN')">
+                  <i class="fa fa-plus"></i>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">낙첨 보너스</label>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <a href class="btn btn-icon-only red-sunglo" data-ng-click="Minus('LOSE')">
+                  <i class="fa fa-minus"></i>
+                </a>
+              </span>
+              <input type="text" class="form-control" data-ng-model="targetBonusLose" readonly>
+              <span class="input-group-btn">
+                <a href class="btn btn-icon-only green-haze" data-ng-click="Plus('LOSE')">
+                  <i class="fa fa-plus"></i>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="form-actions">
+        <div class="row">
+          <div class="col-sm-offset-3 col-sm-9">
+            <button type="button" class="btn green" data-ng-click="CreateDistributor()">생성</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!-- END FORM-->
+  </div>
+</div>

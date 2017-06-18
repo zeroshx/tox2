@@ -1,6 +1,5 @@
-var app = angular.module(ApplicationName);
-
-app.factory('PublicService', function($httpParamSerializer) {
+angular.module('TOX2ADMINAPP')
+  .factory('PublicService', function($httpParamSerializer) {
     return {
         Pagination: function(curPage, totalPage, baseUrl, curQuery) {
             var pages = [];

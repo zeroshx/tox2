@@ -1,0 +1,261 @@
+<h1 class="page-title">{{_pageTitle}}<small></small></h1>
+
+<div class="page-bar">
+  <ul class="page-breadcrumb">
+    <li data-ng-repeat="bc in _breadcrumb">
+      <i class="{{bc.icon}}"></i>
+      <a ui-sref="{{bc.path}}" data-ng-if="!$last && bc.path !== ''">{{bc.name}}</a>
+      <span data-ng-if="$last || bc.path === ''">{{bc.name}}</span>
+      <i class="fa fa-angle-right" data-ng-if="!$last"></i>
+    </li>
+  </ul>
+</div>
+
+<div class="portlet light" data-ng-show="actionMode === 'WRITE'">
+  <div class="portlet-body">
+    <div class="note note-info">
+      <h4 class="block">게시글 작성 가이드</h4>
+      <p>이미지 업로드시 파일 크기는 최대 200KB입 니다. 또한 전체 게시글의 크기는 3MB를 넘을 수 없습니다.</p>
+    </div>
+    <form class="form-horizontal" role="form">
+      <div class="form-body">
+        <div class="form-group">
+          <label class="col-sm-1 control-label">구분</label>
+          <div class="col-sm-5">
+            <select class="form-control" data-ng-model="targetSort" data-ng-if="_query.sort !== '총판게시판'">
+                <option value="">게시판 선택</option>
+                <option value="자유게시판">자유게시판</option>
+                <option value="노하우/공략">노하우/공략</option>
+                <option value="건의/오류제보">건의/오류제보</option>
+            </select>
+            <select class="form-control" data-ng-model="targetSort" data-ng-if="_query.sort === '총판게시판'">
+                <option value="총판게시판">총판게시판</option>
+            </select>
+          </div>
+          <div class="col-sm-6">
+            <select class="form-control" data-ng-model="targetTitleHead">
+              <option value="">말머리 선택</option>
+              <option value="[잡담]">잡담</option>
+              <option value="[궁금]">궁금</option>
+              <option value="[자랑]">자랑</option>
+              <option value="[정보]">정보</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-1 control-label">제목</label>
+          <div class="col-sm-11">
+            <input type="text" class="form-control" data-ng-model="targetTitle" placeholder="(50자 이내)">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12">
+            <div id="summernote"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12">
+            <button class="btn btn-outline blue-soft">배팅첨부</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12">
+            <center>
+              <button class="btn btn-outline green-meadow" data-ng-click="CreateWriting()">등록</button>
+              <button class="btn btn-outline red-pink" data-ng-click="CloseAllAction()">취소</button>
+            </center>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="portlet light" data-ng-show="targetWriting && actionMode === 'READ'">
+  <div class="portlet-title">
+    <div class="caption">
+      <i class="fa fa-pencil"></i>
+      <span class="caption-subject bold font-grey-gallery uppercase">{{targetWriting.title}}</span>
+      <span class="caption-helper"> | 자유게시판</span>
+    </div>
+    <div class="tools">
+      <a href data-ng-click="CloseAllAction()"><i class="fa fa-remove"></i></a>
+    </div>
+  </div>
+  <div class="portlet-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <i class="fa fa-user"></i> {{targetWriting.nick}}
+      </div>
+      <div class="col-sm-6">
+        <div class="pull-right">
+          <i class="fa fa-calendar"></i>
+          <span>{{targetWriting.createdAt}}</span>
+        </div>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div class="row">
+      <div class="col-xs-12">
+        <span data-ng-bind-html="trustedHtml(targetWriting.content)"></span>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="pull-right">
+          <div class="btn-group-vertical" data-ng-click="Opinion('GOOD')">
+            <button type="button" class="btn green-dark"><i class="fa fa-thumbs-o-up"></i> 찬성</button>
+            <button type="button" class="btn btn-default">{{targetWriting.opinion.good}}</button>
+          </div>
+          <div class="btn-group-vertical" data-ng-click="Opinion('BAD')">
+            <button type="button" class="btn red-sunglo"><i class="fa fa-thumbs-o-down"></i> 반대</button>
+            <button type="button" class="btn btn-default">{{targetWriting.opinion.bad}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-xs-12">
+        <span>조회수 {{targetWriting.hit.count}}</span>
+      </div>
+    </div>
+    <hr>
+    <div class="portlet light" style="padding: 0">
+      <div class="portlet-title">
+        <div class="caption">
+          <span class="caption-subject bold font-grey-gallery uppercase">댓글 ({{replyTotal}})</span>
+        </div>
+        <div class="tools pull-left">
+          <a href="" class="expand" data-original-title="" title=""> </a>
+        </div>
+      </div>
+      <div class="portlet-body portlet-collapsed" style="display: none;">
+        <div class="row">
+          <div class="col-xs-8 col-sm-9 col-md-10">
+            <textarea class="form-control textarea-fixed-row" style="height: 80px" data-ng-model="targetReply"></textarea>
+          </div>
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            <button class="btn green-sharp btn-outline btn-block btn-lg sbold" style="height: 80px" data-ng-click="CreateReply(targetWriting._id, targetReply)">등 록</button>
+          </div>
+        </div>
+        <br>
+        <div class="c-comment-list" data-ng-show="replyTotal > 0">
+          <div class="media" data-ng-repeat-start="rp in targetWriting.reply">
+            <div class="media-left">
+              <a href><img class="media-object" alt="" data-ng-src="../images/levels/{{rp.level}}.png"></a>
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading">
+                <a href>{{rp.nick}}</a>
+                <br><span class="c-date">{{rp.createdAt}}</span>
+                <br><button class="btn btn-xs blue-soft" data-ng-click="ShowD2Reply(rp._id)">댓글</button>
+              </h4>
+              <h5>{{rp.content}}</h5>
+            </div>
+          </div>
+          <div class="row" data-ng-show="d2Reply === rp._id">
+            <div class="col-xs-8 col-sm-9 col-md-10">
+              <textarea class="form-control textarea-fixed-row" style="height: 50px" data-ng-model="targetD2Reply"></textarea>
+            </div>
+            <div class="col-xs-4 col-sm-3 col-md-2">
+              <button class="btn green-sharp btn-outline btn-block btn-lg sbold" style="height: 50px" data-ng-click="CreateReply(rp._id, targetD2Reply)">등 록</button>
+            </div>
+          </div>
+          <div class="mediaD2" data-ng-repeat-end data-ng-repeat="rprp in rp.reply | orderBy: 'createdAt': false">
+            <div class="media-left">
+              <a href><img class="media-object" alt="" data-ng-src="../images/levels/{{rprp.level}}.png"></a>
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading">
+                <a href>{{rprp.nick}}</a>
+                <br><span class="c-date">{{rprp.createdAt}}</span>
+              </h4>
+              <h5>{{rprp.content}}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="portlet light">
+  <div class="portlet-body">
+    <div class="row">
+      <div class="col-xs-3 col-sm-6">
+        <button class="btn btn-outline red-soft" data-ng-click="OpenWriteForm()">글쓰기</button>
+      </div>
+      <div class="col-xs-9 col-sm-6">
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown">
+              <span data-ng-hide="_query.searchFilter">필터 <i class="fa fa-angle-down"></i></span>
+              <span data-ng-show="_query.searchFilter">{{_query.searchFilter}} <i class="fa fa-angle-down"></i></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href data-ng-click="_query.searchFilter='글쓴이'">글쓴이</a></li>
+              <li><a href data-ng-click="_query.searchFilter='제목'">제목</a></li>
+              <li><a href data-ng-click="_query.searchFilter='내용'">내용</a></li>
+            </ul>
+          </div>
+          <!-- /btn-group -->
+          <input type="text" class="form-control" data-ng-model="_query.searchKeyword">
+          <span class="input-group-btn">
+            <button class="btn green-meadow btn-outline" type="button" data-ng-click="List()"><i class="fa fa-search"></i> 검색</button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="table-responsive">
+      <table class="table table-hover table-align-center">
+        <thead>
+          <tr class="active">
+            <th> # </th>
+            <th> 제목 </th>
+            <th> 작성자 </th>
+            <th> 게시일 </th>
+            <th> 조회 </th>
+            <th> 좋아요! </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="doc in _list">
+            <td> {{ doc._id }} </td>
+            <td style="text-align: left;"><a data-ng-click="GetWriting(doc._id)"> {{ doc.title }} </a></td>
+            <td> {{ doc.nick }} </td>
+            <td> {{ doc.createdAt}} </td>
+            <td> {{ doc.hit.count }} </td>
+            <td> {{ doc.opinion.good }} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <center>
+      <ul class="pagination">
+        <li>
+          <a href="" aria-label="Previous" data-ng-click="_PreviousPage()">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li data-ng-repeat="page in _pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="_MovePage(page.number)">{{page.number}}</a></li>
+        <li>
+          <a href="" aria-label="Next" data-ng-click="_NextPage()">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </center>
+    <div class="row">
+      <div class="col-sm-6">
+        <button class="btn btn-outline red-soft" data-ng-click="OpenWriteForm()">글쓰기</button>
+      </div>
+      <div class="col-sm-6">
+        <button class="btn btn-outline blue-soft pull-right" data-ng-click="ResetPage()">처음으로</button>
+      </div>
+    </div>
+  </div>
+</div>

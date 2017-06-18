@@ -1,0 +1,14 @@
+<div class="input-group">
+  <input type="text" class="form-control" data-ng-model="_query.site">
+  <div class="input-group-btn" data-ng-click="GetList('site', '/site/all')">
+    <button type="button" id="btn-site" class="btn btn-default dropdown-toggle ladda-button" data-style="zoom-in" data-spinner-color="black" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="ladda-label">사이트 <span class="caret"></span></span>
+        <span class="ladda-spinner"></span>
+        <div class="ladda-progress" style="width: 0px;"></div>
+      </button>
+    <ul class="dropdown-menu">
+      <li><a href data-ng-click="_query.site = '전체'">전체</a></li>
+      <li data-ng-repeat="item in _queryFilter.site.list"><a href data-ng-click="_query.site = item.name">{{item.name}}</a></li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+
+<view-title title-info-bind="_viewTitle"></view-title>
+
+<form-control item-bind="_item" format-bind="_formFormat" action-bind="_formAction" switch-bind="_formSwitch" create-function-bind="Add" modify-function-bind="Modify" cancel-function-bind="CloseForm"></form-control>
+
+<search-form query-bind="_query" search-filter-bind="_searchFilter" action-function-bind="List"></search-form>
+
+<div class="portlet light">
+  <div class="portlet-body">
+
+    <div class="row">
+      <div class="col-xs-12">
+        <button class="btn btn-circle green-dark" data-ng-click="CreateForm()">등록</button>
+      </div>
+    </div>
+
+    <div class="table-scrollable">
+      <table class="table table-hover table-center table-align-center table-nowrap">
+        <thead>
+          <tr class="active">
+            <th><input type="checkbox" data-ng-click="SelectAll()" data-ng-model="_selectLeader"></th>
+            <th>상태</th>
+            <th>사이트명</th>
+            <th>당첨 / 낙첨 보너스</th>
+            <th>첫충전 / 충전 보너스</th>
+            <th>회원수</th>
+            <th>등록일</th>
+            <th>옵션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable" data-ng-repeat="doc in _list" data-toggle="modal" data-target="#detailView" data-ng-click="DetailView(doc)">
+            <td stop-click><input type="checkbox" data-ng-init="_list[$index]._cbExist = true" data-ng-model="_list[$index]._cbSelected"></td>
+            <td data-ng-class="{'text-success': doc.state === '정상', 'text-warning': doc.state === '점검', 'text-danger': doc.state === '정지'}">{{ doc.state }}</td>
+            <td>{{ doc.name }}</td>
+            <td>{{ doc.bonus.win }}% / {{ doc.bonus.lose }}%</td>
+            <td>{{ doc.bonus.firstDeposit }}% / {{ doc.bonus.deposit }}%</td>
+            <td>{{ doc.headcount }}명</td>
+            <td>{{ doc.createdAt }}</td>
+            <td stop-click>
+              <button type="button" class="btn btn-xs yellow" data-ng-click="ModifyForm(doc)">수정</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pagination last-page-bind="_lastPage" query-bind="_query" action-function-bind="List"></pagination>
+
+  </div>
+</div>
+
+<div class="modal fade" id="detailView" tabindex="-1" role="dialog" data-backdrop="static" style="height: 80%">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">사이트 정보</h4>
+      </div>
+      <div class="modal-body">
+
+        <detail-view detail-view-format-bind="_detailViewFormat"></detail-view>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-circle yellow" data-dismiss="modal" data-ng-click="ModifyForm(_item)">수정</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn blue-sharp" data-dismiss="modal">확인</button>
+      </div>
+    </div>
+  </div>
+</div>

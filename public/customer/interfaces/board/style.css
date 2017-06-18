@@ -1,0 +1,36 @@
+
+.c-comment-list {
+  margin-bottom: 20px;
+}
+
+.c-comment-list .media {
+  margin: 30px 0 0 0;
+}
+
+.c-comment-list .media .media-body>.media:last-child {
+  margin-bottom: 0;
+}
+
+.c-comment-list .media-object {
+  height: 30px;
+  width: 30px;
+  border-radius: 50px !important;
+}
+
+.c-comment-list .mediaD2 {
+  margin: 30px 0 0 30px;
+}
+
+.c-comment-list .media-heading>a {
+  color: #9aa5b2;
+  font-weight: 500;
+}
+
+.c-comment-list .media-heading>a:hover {
+  color: #3598DC;
+  text-decoration: none;
+}
+
+.c-comment-list .media-heading>.c-date {
+  font-size: 14px;
+}

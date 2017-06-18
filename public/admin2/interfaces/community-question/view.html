@@ -1,0 +1,97 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+
+<view-title title-info-bind="_viewTitle"></view-title>
+
+<form-control item-bind="_item" format-bind="_formFormat" action-bind="_formAction" switch-bind="_formSwitch" create-function-bind="Add" modify-function-bind="Modify" cancel-function-bind="CloseForm"></form-control>
+
+<search-form query-bind="_query" search-filter-bind="_searchFilter" action-function-bind="List"></search-form>
+
+<div class="portlet light">
+  <div class="portlet-body">
+
+    <div class="row">
+      <div class="col-xs-12">
+        <button class="btn btn-circle yellow-crusta" data-ng-click="BulkPostpone()">선택 보류</button>
+      </div>
+    </div>
+
+    <div class="table-scrollable">
+      <table class="table table-hover table-center table-align-center table-nowrap">
+        <thead>
+          <tr class="active">
+            <th><input type="checkbox" data-ng-click="SelectAll()" data-ng-model="_selectLeader"></th>
+            <th>상태</th>
+            <th>사이트</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>분류</th>
+            <th>등록일시</th>
+            <th>처리일시</th>
+            <th>담당자</th>
+            <th>옵션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable" data-toggle="modal" data-target="#detailView" data-ng-click="DetailView(doc)" data-ng-repeat="doc in _list" >
+            <td stop-click><input type="checkbox" data-ng-init="_list[$index]._cbExist = true" data-ng-model="_list[$index]._cbSelected" data-ng-if="doc.state === '등록'"></td>
+            <td><span data-ng-class="{'text-success': doc.state === '완료', 'text-warning': doc.state === '처리중', 'text-danger': doc.state === '등록'}">{{ doc.state }}</span></td>
+            <td>{{ doc.site }}</td>
+            <td>{{ doc.question.title }}</td>
+            <td>
+              <span data-ng-if="doc.style === '회원'">{{ doc.nick }}({{ doc.uid }})</span>
+              <span data-ng-if="doc.style === '비회원'">{{ doc.uid }}</span>
+            </td>
+            <td>{{ doc.style }}</td>
+            <td>{{ doc.createdAt }}</td>
+            <td>{{ doc.operatedAt }}</td>
+            <td>{{ doc.operator }}</td>
+            <td stop-click>
+              <button type="button" class="btn btn-xs yellow-crusta" data-ng-click="Postpone(doc._id)" data-ng-show="doc.state === '등록'">보류</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pagination last-page-bind="_lastPage" query-bind="_query" action-function-bind="List"></pagination>
+
+  </div>
+</div>
+
+<div class="modal fade" id="detailView" tabindex="-1" role="dialog" data-backdrop="static" style="height: 80%">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">고객 문의</h4>
+      </div>
+      <div class="modal-body">
+
+        <detail-view detail-view-format-bind="_detailViewFormat"></detail-view>
+
+        <div class="detail-view" data-ng-show="_fAnswer">
+          <div class="detail-view-row row last-row">
+            <div class="col-sm-2 detail-view-label">
+              답변
+            </div>
+            <div class="col-sm-10 detail-view-column last-column">
+              <textarea type="text" class="form-control detail-view-data textarea-fixed-row" rows="5" data-ng-model="_answer"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-circle green-meadow" data-ng-click="AnswerForm()" data-ng-show="_item.state !== '완료'">답변</button>
+            <button type="button" class="btn btn-circle yellow-crusta" data-dismiss="modal" data-ng-click="Postpone(_item._id)" data-ng-show="_item.state === '등록'">보류</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn blue-sharp" data-dismiss="modal" data-ng-hide="_fAnswer">확인</button>
+        <button type="button" class="btn green-meadow" data-ng-click="Answer(_item._id)" data-ng-show="_fAnswer">완료</button>
+        <button type="button" class="btn red-soft" data-ng-click="CancelAnswer()" data-ng-show="_fAnswer">취소</button>
+      </div>
+    </div>
+  </div>
+</div>

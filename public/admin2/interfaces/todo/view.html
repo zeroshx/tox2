@@ -1,0 +1,81 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+<view-title title-info-bind="_viewTitle"></view-title>
+<form-control item-bind="_item" format-bind="_formFormat" action-bind="_formAction" switch-bind="_formSwitch" create-function-bind="Add" modify-function-bind="Modify" cancel-function-bind="CloseForm"></form-control>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="portlet light">
+      <div class="portlet-body">
+        <button class="btn btn-circle red-soft" data-ng-click="BulkRemove()">선택 삭제</button>
+        <button class="btn btn-circle blue-steel" data-ng-click="BulkComplete()">선택 마감</button>
+        <button class="btn btn-circle green-dark" data-ng-click="CreateForm()">등록</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="portlet box green-meadow">
+      <div class="portlet-title">
+        <div class="caption">
+          <i class="fa fa-gift"></i>진행
+        </div>
+      </div>
+      <div class="portlet-body">
+        <div class="table-scrollable">
+          <table class="table table-hover table-center table-align-center table-nowrap">
+            <thead>
+              <tr class="active">
+                <th><input type="checkbox" data-ng-click="SelectAll()" data-ng-model="_selectLeader"></th>
+                <th>중요도</th>
+                <th>할 일</th>
+                <th>옵션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-ng-repeat="doc in _list | orderBy: ['-order', 'registration.date']" data-ng-if="doc.state === '등록'">
+                <td stop-click><input type="checkbox" data-ng-init="_list[$index]._cbExist = true" data-ng-model="_list[$index]._cbSelected"></td>
+                <td data-ng-class="{'text-danger': doc.importance === '높음'}">{{ doc.importance }}</td>
+                <td>{{ doc.task }}</td>
+                <td stop-click>
+                  <button type="button" class="btn btn-xs blue-steel" data-ng-click="Complete(doc)">마감</button>
+                  <button type="button" class="btn btn-xs red-soft" data-ng-click="Remove(doc)">삭제</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="portlet box blue">
+      <div class="portlet-title">
+        <div class="caption">
+          <i class="fa fa-gift"></i>마감
+        </div>
+      </div>
+      <div class="portlet-body">
+        <div class="table-scrollable">
+          <table class="table table-hover table-center table-align-center table-nowrap">
+            <thead>
+              <tr class="active">
+                <th>일 시</th>
+                <th>중요도</th>
+                <th>완료된 일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-ng-repeat="doc in _list | orderBy:'completion.date':true" data-ng-if="doc.state === '완료'">
+                <td>{{ doc.completion.date }}</td>
+                <td>{{ doc.importance }}</td>
+                <td>{{ doc.task }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,93 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+
+<view-title title-info-bind="_viewTitle"></view-title>
+
+<form-control item-bind="_item" format-bind="_formFormat" action-bind="_formAction" switch-bind="_formSwitch" create-function-bind="Add" modify-function-bind="Modify" cancel-function-bind="CloseForm"></form-control>
+
+<search-form query-bind="_query" search-filter-bind="_searchFilter" action-function-bind="List"></search-form>
+
+<div class="portlet light">
+  <div class="portlet-body">
+
+    <div class="row">
+      <div class="col-xs-12">
+        <button class="btn btn-circle green-dark" data-ng-click="CreateForm()">등록</button>
+      </div>
+    </div>
+
+    <div class="table-scrollable">
+      <table class="table table-hover table-bordered table-center table-align-center table-nowrap">
+        <thead>
+          <tr class="">
+            <th rowspan="2"><input type="checkbox" data-ng-click="SelectAll()" data-ng-model="_selectLeader"></th>
+            <th rowspan="2">사이트</th>
+            <th rowspan="2">레벨</th>
+            <th colspan="4">보너스</th>
+            <th colspan="3">단일 배팅</th>
+            <th colspan="3">조합 배팅</th>
+            <th rowspan="2">옵션</th>
+          </tr>
+          <tr class="">
+            <th>당첨</th>
+            <th>낙첨</th>
+            <th>입금</th>
+            <th>추천인</th>
+            <th>최소 배팅액</th>
+            <th>최대 배팅액</th>
+            <th>최대 배당</th>
+            <th>최소 배팅액</th>
+            <th>최대 배팅액</th>
+            <th>최대 배당</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable" data-toggle="modal" data-target="#detailView" data-ng-click="DetailView(doc)" data-ng-repeat="doc in _list">
+            <td stop-click><input type="checkbox" data-ng-init="_list[$index]._cbExist = true" data-ng-model="_list[$index]._cbSelected"></td>
+            <td>{{doc.site}}</td>
+            <td>{{doc.name}}</td>
+            <td>{{doc.bonus.win}}%</td>
+            <td>{{doc.bonus.lose}}%</td>
+            <td>{{doc.bonus.charge}}%</td>
+            <td>{{doc.bonus.recommender}}%</td>
+            <td>{{doc.single.minBet | number}}원</td>
+            <td>{{doc.single.maxBet | number}}원</td>
+            <td>{{doc.single.maxRate}}</td>
+            <td>{{doc.multi.minBet | number}}원</td>
+            <td>{{doc.multi.maxBet | number}}원</td>
+            <td>{{doc.multi.maxRate}}</td>
+            <td stop-click>
+              <button type="button" class="btn btn-xs yellow" data-ng-click="ModifyForm(doc)">수정</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pagination last-page-bind="_lastPage" query-bind="_query" action-function-bind="List"></pagination>
+
+  </div>
+</div>
+
+<div class="modal fade" id="detailView" tabindex="-1" role="dialog" data-backdrop="static" style="height: 80%">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">사이트 레벨 설정</h4>
+      </div>
+      <div class="modal-body">
+
+        <detail-view detail-view-format-bind="_detailViewFormat"></detail-view>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-circle yellow" data-dismiss="modal" data-ng-click="ModifyForm(_item)">수정</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn blue-sharp" data-dismiss="modal">확인</button>
+      </div>
+    </div>
+  </div>
+</div>

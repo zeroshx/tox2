@@ -1,11 +1,10 @@
-var app = angular.module(ApplicationName);
-
-app.factory('CRUDService', function($resource) {
+angular.module('TOX2ADMINAPP')
+  .factory('CRUDService', function($resource) {
   var url = '/api';
   return {
 
     Create: function(path) {
-      return $resource(url + path, {}, {
+      return $resource(path, {}, {
         run: {
           method: 'POST'
         }
@@ -13,7 +12,7 @@ app.factory('CRUDService', function($resource) {
     },
 
     Read: function(path) {
-      return $resource(url + path, {}, {
+      return $resource(path, {}, {
         run: {
           method: 'GET'
         }
@@ -21,7 +20,7 @@ app.factory('CRUDService', function($resource) {
     },
 
     Update: function(path, id) {
-      return $resource(url + path + '/:id', {
+      return $resource(path + '/:id', {
         id: id
       }, {
         run: {
@@ -31,7 +30,7 @@ app.factory('CRUDService', function($resource) {
     },
 
     Delete: function(path, id) {
-      return $resource(url + path + '/:id', {
+      return $resource(path + '/:id', {
         id: id
       }, {
         run: {

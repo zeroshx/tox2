@@ -1,0 +1,45 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+
+<view-title title-info-bind="_viewTitle"></view-title>
+
+<search-form query-bind="_query" search-filter-bind="_searchFilter" action-function-bind="List"></search-form>
+
+<div class="portlet light">
+  <div class="portlet-body">
+
+    <div class="table-scrollable">
+      <table class="table table-hover table-center table-align-center table-nowrap">
+        <thead>
+          <tr class="active">
+            <th>사이트</th>
+            <th>아이디</th>
+            <th>닉네임</th>
+            <th>도메인</th>
+            <th>아이피</th>
+            <th>접속일시</th>
+            <th>상태</th>
+            <th>옵션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="doc in _list">
+            <td>{{doc.site}}</td>
+            <td>{{doc.uid}}</td>
+            <td>{{doc.nick}}</td>
+            <td>{{doc.domain}}</td>
+            <td>{{doc.ip}}</td>
+            <td>{{doc.createdAt}}</td>
+            <td data-ng-class="{'text-danger': doc.state === '비밀번호 틀림', 'text-info': doc.state === '아이디 틀림'}">{{doc.state}}</td>
+            <td stop-click>
+              <button type="button" class="btn btn-xs red-soft" data-ng-click="Ban(doc)">차단</button>
+              <button type="button" class="btn btn-xs dark" data-ng-click="Black(doc)">블랙</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pagination last-page-bind="_lastPage" query-bind="_query" action-function-bind="List"></pagination>
+
+  </div>
+</div>

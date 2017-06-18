@@ -1,0 +1,60 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+
+<view-title title-info-bind="_viewTitle"></view-title>
+
+<form-control item-bind="_item" format-bind="_formFormat" action-bind="_formAction" switch-bind="_formSwitch" create-function-bind="Add" modify-function-bind="Modify" cancel-function-bind="CloseForm"></form-control>
+
+<search-form query-bind="_query" search-filter-bind="_searchFilter" action-function-bind="List"></search-form>
+
+<div class="portlet light">
+  <div class="portlet-body">
+
+    <div class="row">
+      <div class="col-xs-12">
+        <button class="btn btn-circle green-dark" data-ng-click="CreateForm()">회원 등록</button>
+      </div>
+    </div>
+
+    <div class="table-scrollable">
+      <table class="table table-hover table-center table-align-center table-nowrap">
+        <thead>
+          <tr class="active">
+            <th><input type="checkbox" data-ng-click="SelectAll()" data-ng-model="_selectLeader"></th>
+            <th>사이트</th>
+            <th>총판</th>
+            <th>레벨</th>
+            <th>아이디</th>
+            <th>닉네임</th>
+            <th>캐시</th>
+            <th>칩</th>
+            <th>포인트</th>
+            <th>수익</th>
+            <th>상태</th>
+            <th>옵션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="doc in _list" user-detail-view mode-bind="UID" target-bind="{{doc.uid}}">
+            <td stop-click><input type="checkbox" data-ng-init="_list[$index]._cbExist = true" data-ng-model="_list[$index]._cbSelected"></td>
+            <td>{{doc.site}}</td>
+            <td>{{doc.distributor.name}}</td>
+            <td>{{doc.level}}</td>
+            <td>{{doc.uid}}</td>
+            <td>{{doc.nick}}</td>
+            <td>{{doc.cash | number}}</td>
+            <td>{{doc.chip | number}}</td>
+            <td>{{doc.point | number}}</td>
+            <td>{{doc.stat.deposit - doc.stat.withdrawal | number}}</td>
+            <td data-ng-class="{'text-danger': doc.state === '정지', 'text-info': doc.state === '테스터', 'text-success': doc.state === '운영자' || doc.state === '관리자'}">{{doc.state}}</td>
+            <td stop-click>
+              <button type="button" class="btn btn-xs yellow" data-ng-click="ModifyForm(doc)">수정</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pagination last-page-bind="_lastPage" query-bind="_query" action-function-bind="List"></pagination>
+
+  </div>
+</div>

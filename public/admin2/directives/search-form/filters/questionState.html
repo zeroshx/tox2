@@ -1,0 +1,14 @@
+<div class="input-group">
+  <input type="text" class="form-control" data-ng-model="_query.questionState">
+  <div class="input-group-btn">
+    <button type="button" id="btn-questionState" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    상태 <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li><a href data-ng-click="_query.questionState = '전체'">전체</a></li>
+      <li><a href data-ng-click="_query.questionState = '등록'">등록</a></li>
+      <li><a href data-ng-click="_query.questionState = '처리중'">처리중</a></li>
+      <li><a href data-ng-click="_query.questionState = '완료'">완료</a></li>
+    </ul>
+  </div>
+</div>

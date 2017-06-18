@@ -1,0 +1,202 @@
+<div class="portlet light">
+  <div class="portlet-body">
+    <div class="panel-group accordion" id="search-form-accordion" style="margin: 0">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="padding: 0 10px 10px 10px;">
+          <div class="row">
+            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+              <div class="input-group" style="margin-top: 10px">
+                <input type="text" class="form-control" data-ng-model="_query.pageSize">
+                <span class="input-group-btn"><button class="btn btn-default" type="button" data-ng-click="ChangeListSize()">줄</button></span>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-2 col-sm-2 col-xs-12"></div>
+            <div class="col-lg-6 col-md-7 col-sm-7 col-xs-12">
+              <div class="input-group" style="margin-top: 10px">
+                <div class="input-group-btn">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span data-ng-show="_query.searchFilter">{{_query.searchFilter}} </span>
+                    <span data-ng-hide="_query.searchFilter">선택 </span>
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li data-ng-repeat="sch in _searchFilter"><a href data-ng-click="_query.searchFilter = sch">{{sch}}</a></li>
+                  </ul>
+                </div>
+                <input type="text" class="form-control" data-ng-model="_query.searchKeyword">
+                <div class="input-group-btn">
+                  <button type="button" class="btn green-soft dropdown-toggle" data-ng-click="Search()"><i class="icon-magnifier"></i> 검 색</button>
+                </div>
+                <div class="input-group-btn" data-ng-if="_queryFilterCount > 0">
+                  <button type="button" class="btn btn-default accordion-toggle collapsed" data-toggle="collapse" data-parent="#search-form-accordion" href=".accordion-body" aria-expanded="false" data-ng-click="ShowQueryFilter()">
+                <i class="fa fa-chevron-down" data-ng-show="_queryFilterExpand"></i>
+                <i class="fa fa-chevron-up" data-ng-hide="_queryFilterExpand"></i>
+              </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-body panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+          <div class="panel-body" style="padding-top: 0" data-ng-if="_queryFilterCount > 0">
+            <div class="row">
+              <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12" style="margin-top: 15px" data-ng-repeat="qf in _queryFilter">
+                <!-- <data-ng-include src="'directives/search-form/filters/' + qf.name + '.html'" /> -->
+
+                <div class="input-group" data-ng-if="qf.name === 'site'">
+                  <input type="text" class="form-control" data-ng-model="_query.site">
+                  <div class="input-group-btn" data-ng-click="GetList('site', '/site/all')">
+                    <button type="button" id="btn-site" class="btn btn-default dropdown-toggle ladda-button" data-style="zoom-in" data-spinner-color="black" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="ladda-label">사이트 <span class="caret"></span></span>
+                        <span class="ladda-spinner"></span>
+                        <div class="ladda-progress" style="width: 0px;"></div>
+                      </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.site = '전체'">전체</a></li>
+                      <li data-ng-repeat="item in _queryFilter.site.list"><a href data-ng-click="_query.site = item.name">{{item.name}}</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="input-group" data-ng-if="qf.name === 'questionStyle'">
+                  <input type="text" class="form-control" data-ng-model="_query.questionStyle">
+                  <div class="input-group-btn">
+                    <button type="button" id="btn-questionStyle" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    분류 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.questionStyle = '전체'">전체</a></li>
+                      <li><a href data-ng-click="_query.questionStyle = '회원'">회원</a></li>
+                      <li><a href data-ng-click="_query.questionStyle = '비회원'">비회원</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="input-group" data-ng-if="qf.name === 'questionState'">
+                  <input type="text" class="form-control" data-ng-model="_query.questionState">
+                  <div class="input-group-btn">
+                    <button type="button" id="btn-questionState" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    상태 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.questionState = '전체'">전체</a></li>
+                      <li><a href data-ng-click="_query.questionState = '등록'">등록</a></li>
+                      <li><a href data-ng-click="_query.questionState = '처리중'">처리중</a></li>
+                      <li><a href data-ng-click="_query.questionState = '완료'">완료</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="input-group" data-ng-if="qf.name === 'messageConfirm'">
+                  <input type="text" class="form-control" data-ng-model="_query.messageConfirm">
+                  <div class="input-group-btn">
+                    <button type="button" id="btn-messageConfirm" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    상태 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.messageConfirm = '전체'">전체</a></li>
+                      <li><a href data-ng-click="_query.messageConfirm = '읽음'">읽음</a></li>
+                      <li><a href data-ng-click="_query.messageConfirm = '안읽음'">안읽음</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="input-group" data-ng-if="qf.name === 'distributor'">
+                  <input type="text" class="form-control" data-ng-model="_query.distributor">
+                  <div class="input-group-btn" data-ng-click="GetList('distributor', '/distributor/all')">
+                    <button type="button" id="btn-distributor" class="btn btn-default dropdown-toggle ladda-button" data-style="zoom-in" data-spinner-color="black" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="ladda-label">총판 <span class="caret"></span></span>
+                        <span class="ladda-spinner"></span>
+                        <div class="ladda-progress" style="width: 0px;"></div>
+                      </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.distributor = '전체'">전체</a></li>
+                      <li data-ng-repeat="item in _queryFilter.distributor.list"><a href data-ng-click="_query.distributor = item.name">{{item.name}}</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="input-group" data-ng-if="qf.name === 'userLevel'">
+                  <input type="text" class="form-control" data-ng-model="_query.userLevel">
+                  <div class="input-group-btn" data-ng-click="GetList('userLevel', '/site/level/all')">
+                    <button type="button" id="btn-userLevel" class="btn btn-default dropdown-toggle ladda-button" data-style="zoom-in" data-spinner-color="black" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="ladda-label">레벨 <span class="caret"></span></span>
+                        <span class="ladda-spinner"></span>
+                        <div class="ladda-progress" style="width: 0px;"></div>
+                      </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.userLevel = '전체'">전체</a></li>
+                      <li data-ng-repeat="item in _queryFilter.userLevel.list"><a href data-ng-click="_query.userLevel = item._id">{{item._id}}</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="input-group" data-ng-if="qf.name === 'assetState'">
+                  <input type="text" class="form-control" data-ng-model="_query.assetState">
+                  <div class="input-group-btn">
+                    <button type="button" id="btn-assetState" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    상태 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.assetState = '전체'">전체</a></li>
+                      <li><a href data-ng-click="_query.assetState = '신청'">신청</a></li>
+                      <li><a href data-ng-click="_query.assetState = '승인'">승인</a></li>
+                      <li><a href data-ng-click="_query.assetState = '취소'">취소</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="input-group" data-ng-if="qf.name === 'boardForm'">
+                  <input type="text" class="form-control" data-ng-model="_query.boardForm">
+                  <div class="input-group-btn">
+                    <button type="button" id="btn-boardForm" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    상태 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.boardForm = '전체'">전체</a></li>
+                      <li><a href data-ng-click="_query.boardForm = '글'">글</a></li>
+                      <li><a href data-ng-click="_query.boardForm = '댓글'">댓글</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="input-group" data-ng-if="qf.name === 'userHistoryState'">
+                  <input type="text" class="form-control" data-ng-model="_query.userHistoryState">
+                  <div class="input-group-btn">
+                    <button type="button" id="btn-userHistoryState" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    상태 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.userHistoryState = '전체'">전체</a></li>
+                      <li><a href data-ng-click="_query.userHistoryState = '로그인 완료'">로그인 완료</a></li>
+                      <li><a href data-ng-click="_query.userHistoryState = '비밀번호 틀림'">비밀번호 틀림</a></li>
+                      <li><a href data-ng-click="_query.userHistoryState = '아이디 틀림'">아이디 틀림</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="input-group" data-ng-if="qf.name === 'userState'">
+                  <input type="text" class="form-control" data-ng-model="_query.userState">
+                  <div class="input-group-btn">
+                    <button type="button" id="btn-userState" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    상태 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href data-ng-click="_query.userState = '전체'">전체</a></li>
+                      <li><a href data-ng-click="_query.userState = '정지'">정지</a></li>
+                      <li><a href data-ng-click="_query.userState = '일반'">일반</a></li>
+                      <li><a href data-ng-click="_query.userState = '테스트'">테스트</a></li>
+                      <li><a href data-ng-click="_query.userState = '운영자'">운영자</a></li>
+                      <li><a href data-ng-click="_query.userState = '관리자'">관리자</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

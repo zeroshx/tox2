@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>TOX2 - 관리자</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <meta name="description" content="Change the TOTO world.">
+    <meta name="author" content="Zeros">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link rel="stylesheet" href="./styles/ie10-viewport-bug-workaround.css">
+    <script type="text/javascript" src="./scripts/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/debug.css">
+
+</head>
+
+<body class="container-fluid" data-ng-app="TOX2ADMINAPP">
+
+    <div class="row">
+        <header class="col-sm-12" data-ng-include="'/admin/interfaces/tpl/header.html'"></header>
+    </div>
+    <div class="row">
+        <nav class="col-sm-12" data-ng-include="'/admin/interfaces/tpl/nav.html'"></nav>
+    </div>
+    <div class="row">
+        <aside class="col-sm-1" data-ng-include="'/admin/interfaces/tpl/aside.html'"></aside>
+        <section class="col-sm-11 data-ng-view"></section>
+    </div>
+    <div class="row">
+        <footer class="col-sm-12" data-ng-include="'/admin/interfaces/tpl/footer.html'"></footer>
+    </div>
+
+    <script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="/lib/moment/locale/ko.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="/lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-resource/angular-resource.min.js"></script>
+    <script type="text/javascript" src="/lib/ng-file-upload/ng-file-upload-shim.min.js"></script>
+    <script type="text/javascript" src="/lib/ng-file-upload/ng-file-upload.min.js"></script>
+
+    <script type="text/javascript" src="/admin/app.js"></script>
+    <script type="text/javascript" src="/admin/route.js"></script>
+    <script type="text/javascript" src="/admin/services/auth.js"></script>
+    <script type="text/javascript" src="/admin/services/public.js"></script>
+    <script type="text/javascript" src="/admin/services/crud.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/tpl/header.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/tpl/nav.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/tpl/aside.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/tpl/footer.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/home/controller.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/site/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/site.level/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/site.config/controller.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/distributor/controller.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/match/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/match.kind/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/match.league/controller.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/ipblock/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/blacklist/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/manager/controller.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/user/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/user.history/controller.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/question/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/message/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/board/controller.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/deposit/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/withdrawal/controller.js"></script>
+    <script type="text/javascript" src="/admin/interfaces/asset.report/controller.js"></script>
+
+    <script type="text/javascript" src="/admin/interfaces/todo/controller.js"></script>
+
+</body>
+
+</html>

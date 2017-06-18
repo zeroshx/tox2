@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+
+<head>
+    <meta charset="utf-8" />
+    <title>ToX2 - 로그인</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="Preview page of Metronic Admin Theme #2 for " name="description" />
+    <meta content="" name="author" />
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+    <link href="../assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="../assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN THEME GLOBAL STYLES -->
+    <link href="../assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+    <link href="../assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME GLOBAL STYLES -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="/index/styles/index.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL STYLES -->
+    <!-- BEGIN THEME LAYOUT STYLES -->
+    <!-- END THEME LAYOUT STYLES -->
+    <link rel="shortcut icon" href="favicon.ico" /> </head>
+<!-- END HEAD -->
+
+<body class="login">
+    <!-- BEGIN : LOGIN PAGE 5-1 -->
+
+    <div class="user-login-5">
+        <div class="row bs-reset">
+            <div class="col-md-6 bs-reset mt-login-5-bsfix">
+                <div class="login-bg" style="background-image:url(../assets/pages/img/login/bg1.jpg)">
+                    <img class="login-logo" src="../assets/pages/img/login/logo.png" /> </div>
+            </div>
+            <div class="col-md-6 login-container bs-reset mt-login-5-bsfix">
+                <button type="button" class="btn red pull-right" id="btn-question-form">고객센터</button>
+                <div class="login-content">
+                    <h1>ToX2</h1>
+                    <p> 다양하고, 재미있고 모든 컨텐츠가 무료입니다. 당신의 능력을 보여주세요. </p>
+
+                    <form action="javascript:;" class="login-form" method="post">
+                        <h3 class="font-green">로그인</h3>
+                        <hr>
+                        <div class="alert alert-danger display-hide" id="login-form-alert">
+                            <button class="close" data-close="alert"></button>
+                            <span id="login-form-message"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <input class="form-control form-control-solid placeholder-no-fix form-group" type="text" autocomplete="off" placeholder="아이디" id="loginUid" name="loginUid" required/>
+                            </div>
+                            <div class="col-xs-6">
+                                <input class="form-control form-control-solid placeholder-no-fix form-group" type="password" autocomplete="off" placeholder="비밀번호" id="loginPassword" name="loginPassword" required/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 text-right">
+                                <button type="button" class="btn purple" id="btn-login">로그인</button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="forgot-password-form">
+                                    <a href="javascript:;" id="forget-password-form" class="forget-password">비밀번호를 잊으셨나요?</a>
+                                </div>
+                                <button type="button" class="btn blue btn-outline" id="btn-signup-form">회원가입</button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <form action="javascript:;" class="signup-form" method="post">
+                        <h3 class="font-green">간편 회원 가입</h3>
+                        <hr>
+                        <div class="alert alert-danger display-hide" id="signup-form-alert">
+                            <button class="close" data-close="alert"></button>
+                            <span id="signup-form-message"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-xs-12">
+                                <input class="form-control form-control-solid placeholder-no-fix form-group" type="text" autocomplete="off" placeholder="아이디" id="signupUid" name="signupUid" required/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-xs-12">
+                                <input class="form-control form-control-solid placeholder-no-fix form-group" type="password" autocomplete="off" placeholder="비밀번호" id="signupPassword" name="signupPassword" required/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-xs-12">
+                                <input class="form-control form-control-solid placeholder-no-fix form-group" type="password" autocomplete="off" placeholder="비밀번호 확인" id="signupPasswordConfirm" name="signupPasswordConfirm" required/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="button" class="btn green" id="btn-signup">회원가입</button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="button" class="btn blue btn-outline" id="btn-login-form1">돌아가기</button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <!-- BEGIN FORGOT PASSWORD FORM -->
+                    <form class="forget-form" action="javascript:;" method="post">
+                        <h3 class="font-green">비밀번호를 잊으셨나요?</h3>
+                        <p> 비밀번호 재설정을 위해 당신의 이메일 주소를 보내주세요. </p>
+                        <div class="alert alert-danger display-hide" id="forget-form-alert">
+                            <button class="close" data-close="alert"></button>
+                            <span id="forget-form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control placeholder-no-fix form-group" type="text" autocomplete="off" placeholder="이메일" id="forgetEmail" name="forgetEmail" />
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn blue btn-outline" id="btn-login-form2">돌아가기</button>
+                            <button type="button" class="btn blue uppercase pull-right" id="btn-forget">전송</button>
+                        </div>
+                    </form>
+                    <!-- END FORGOT PASSWORD FORM -->
+
+                    <form action="javascript:;" class="question-form" method="post">
+                        <h3 class="font-green">고객문의</h3>
+                        <hr>
+                        <div class="alert alert-danger display-hide" id="question-form-alert">
+                            <button class="close" data-close="alert"></button>
+                            <span id="question-form-message"></span>
+                        </div>
+                        <div class="form-group form-md-line-input form-md-floating-label">
+                            <input type="text" class="form-control" id="questionEmail" name="questionEmail">
+                            <label for="questionEmail">답변 받을 이메일</label>
+                            <span class="help-block">고객님 문의에 대한 답변은 약간의 시간이 소요될 수 있습니다.</span>
+                        </div>
+                        <div class="form-group form-md-line-input form-md-floating-label">
+                            <textarea class="form-control" rows="7" id="questionContent" name="questionContent"></textarea>
+                            <label for="questionContent">문의 내용</label>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="button" class="btn yellow" id="btn-question">문의하기</button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="button" class="btn blue btn-outline" id="btn-login-form3">돌아가기</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="login-footer">
+                    <div class="row bs-reset">
+                        <div class="col-xs-12 bs-reset">
+                            <div class="login-copyright text-center">
+                                <p>Copyright &copy; Coderavel 2017</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="_csrf" id="_csrf" value="<%=csrfToken %>">
+    <!-- END : LOGIN PAGE 5-1 -->
+    <!--[if lt IE 9]>
+<script src="../assets/global/plugins/respond.min.js"></script>
+<script src="../assets/global/plugins/excanvas.min.js"></script>
+<script src="../assets/global/plugins/ie8.fix.min.js"></script>
+<![endif]-->
+    <!-- BEGIN CORE PLUGINS -->
+    <script src="../assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+    <!-- END CORE PLUGINS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="../assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN THEME GLOBAL SCRIPTS -->
+    <script src="../assets/global/scripts/app.min.js" type="text/javascript"></script>
+    <!-- END THEME GLOBAL SCRIPTS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="/index/scripts/index.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <!-- BEGIN THEME LAYOUT SCRIPTS -->
+    <!-- END THEME LAYOUT SCRIPTS -->
+    <%# <script>
+        $(document).ready(function() {
+            $('#clickmewow').click(function() {
+                $('#radio1003').attr('checked', 'checked');
+            });
+        })
+    </script>%>
+</body>
+
+</html>

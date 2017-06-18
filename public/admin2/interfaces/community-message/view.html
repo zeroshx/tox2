@@ -1,0 +1,87 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+
+<view-title title-info-bind="_viewTitle"></view-title>
+
+<form-control item-bind="_item" format-bind="_formFormatCopy" action-bind="_formAction" switch-bind="_formSwitch" create-function-bind="Send" modify-function-bind="Modify" cancel-function-bind="CloseForm"></form-control>
+
+<search-form query-bind="_query" search-filter-bind="_searchFilter" action-function-bind="List"></search-form>
+
+<div class="portlet light">
+  <div class="portlet-body">
+
+    <div class="row">
+      <div class="col-xs-12">
+        <button class="btn btn-circle red-soft" data-ng-click="BulkRemove()">선택 삭제</button>
+        <button class="btn btn-circle green-dark" data-ng-click="SendAll()">전체쪽지</button>
+        <button class="btn btn-circle yellow-crusta" data-ng-click="SendSite()">사이트쪽지</button>
+        <button class="btn btn-circle blue-soft" data-ng-click="SendDistributor()">총판쪽지</button>
+        <button class="btn btn-circle purple" data-ng-click="SendUser()">회원쪽지</button>
+      </div>
+    </div>
+
+    <div class="table-scrollable">
+      <table class="table table-hover table-center table-align-center table-nowrap">
+        <thead>
+          <tr class="active">
+            <th><input type="checkbox" data-ng-click="SelectAll()" data-ng-model="_selectLeader"></th>
+            <th>상태</th>
+            <th>분류</th>
+            <th>보낸이</th>
+            <th>받은이</th>
+            <th>제목</th>
+            <th>발송일</th>
+            <th>수신일</th>
+            <th>옵션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable" data-ng-repeat="doc in _list" data-toggle="modal" data-target="#detailView" data-ng-click="DetailView(doc)">
+            <td stop-click><input type="checkbox" data-ng-init="_list[$index]._cbExist = true" data-ng-model="_list[$index]._cbSelected"></td>
+            <td data-ng-class="{'text-success': doc.confirm === '읽음', 'text-danger': doc.confirm === '안읽음'}">{{ doc.confirm }}</td>
+            <td>{{ doc.category }}</td>
+            <td><span stop-click data-ng-click="SendUserDirectly(doc.sender.uid, doc.sender.nick)">{{ doc.sender.nick }}({{doc.sender.uid}})</span></td>
+            <td>
+              <span data-ng-if="doc.category === '전체'">모든 회원</span>
+              <span data-ng-if="doc.category === '사이트'">{{doc.receiver.site}}의 회원</span>
+              <span data-ng-if="doc.category === '총판'">{{doc.receiver.distributor}}의 회원</span>
+              <span stop-click data-ng-if="doc.category === '회원'" data-ng-click="SendUserDirectly(doc.receiver.uid, doc.receiver.nick)">{{ doc.receiver.nick }}({{doc.receiver.uid}})</span>
+            </td>
+            <td>{{ doc.title }}</td>
+            <td>{{ doc.createdAt }}</td>
+            <td>{{ doc.confirmedAt }}</td>
+            <td stop-click>
+              <button type="button" class="btn btn-xs red-soft" data-ng-click="Remove(doc._id)">삭제</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pagination last-page-bind="_lastPage" query-bind="_query" action-function-bind="List"></pagination>
+
+  </div>
+</div>
+
+<div class="modal fade" id="detailView" tabindex="-1" role="dialog" data-backdrop="static" style="height: 80%">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">메시지 확인</h4>
+      </div>
+      <div class="modal-body">
+
+        <detail-view detail-view-format-bind="_detailViewFormat"></detail-view>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-circle yellow" data-dismiss="modal" data-ng-click="Remove(_item._id)">삭제</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn blue-sharp" data-dismiss="modal">확인</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,222 @@
+<h1 class="page-title">총판 정보<small></small></h1>
+
+<div class="page-bar">
+  <ul class="page-breadcrumb">
+    <li data-ng-repeat="bc in _breadcrumb">
+      <i class="{{bc.icon}}"></i>
+      <a ui-sref="{{bc.path}}" data-ng-if="!$last && bc.path !== ''">{{bc.name}}</a>
+      <span data-ng-if="$last || bc.path === ''">{{bc.name}}</span>
+      <i class="fa fa-angle-right" data-ng-if="!$last"></i>
+    </li>
+  </ul>
+</div>
+
+<div class="portlet box green" data-ng-show="targetDistributor.awaiter.length > 0 && __GetUser('me').distributor.rank === '총판장'">
+  <div class="portlet-title">
+    <div class="caption">
+      <i class="fa fa-gift"></i>가입 신청 대기자 (총 {{targetDistributor.awaiter.length}}명)
+    </div>
+    <div class="tools">
+      <a href="javascript:;" class="expand" data-original-title="" title=""></a>
+    </div>
+  </div>
+  <div class="portlet-body portlet-collapsed" style="display: none;">
+    <button class="btn btn-danger pull-right" data-ng-click="AwaiterRejectAll()">전체 취소</button>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>닉네임</th>
+          <th>레벨</th>
+          <th>보유게임머니</th>
+          <th>상태</th>
+          <th>옵션</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-ng-repeat="aw in targetDistributor.awaiter">
+          <td>{{ aw.nick }}</td>
+          <td>{{ aw.level }}</td>
+          <td>{{ aw.chip | number}}원</td>
+          <td>{{ aw.state }}</td>
+          <td>
+            <button class="btn btn-xs btn-success" data-ng-click="AwaiterAccept(aw.nick, aw._id)">승인</button>
+            <button class="btn btn-xs btn-danger" data-ng-click="AwaiterReject(aw.nick, aw._id)">취소</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="portlet light bordered form-fit">
+  <div class="portlet-title">
+    <div class="caption">
+      <i class="icon-user font-blue-hoki"></i>
+      <span class="caption-subject font-blue-hoki bold">{{targetDistributor.name}}</span>
+      <span class="caption-helper"></span>
+    </div>
+    <div class="actions">
+      <a href class="btn btn-circle yellow-gold" data-ng-click="Modify()" data-ng-show="viewMode !== 'UPDATE' && __GetUser('me').distributor.rank === '총판장'">
+        <i class="fa fa-pencil"></i> 수정
+      </a>
+      <a href class="btn btn-circle green" data-ng-click="Update()" data-ng-show="viewMode === 'UPDATE' && __GetUser('me').distributor.rank === '총판장'">
+        <i class="fa fa-plus"></i> 저장
+      </a>
+      <a href class="btn btn-circle btn-outline purple-intense" data-ng-click="ModifyCancel()" data-ng-show="viewMode === 'UPDATE' && __GetUser('me').distributor.rank === '총판장'">
+        <i class="fa fa-plus"></i> 취소
+      </a>
+    </div>
+  </div>
+  <div class="portlet-body form">
+    <!-- BEGIN FORM-->
+    <form class="form-horizontal form-bordered form-row-stripped">
+      <div class="form-body">
+        <div class="form-group">
+          <label class="control-label col-md-3">사이트</label>
+          <div class="col-md-9">
+            <span class="form-control-static"> {{targetDistributor.site}} </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-3">총판장</label>
+          <div class="col-md-9">
+            <span class="form-control-static"> {{targetDistributor.manager.nick}} </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-3">총판 레벨</label>
+          <div class="col-md-9">
+            <span class="form-control-static"> {{targetDistributor.level}} </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-3">가입 방식</label>
+          <div class="col-md-3">
+            <span class="form-control-static" data-ng-show="viewMode !== 'UPDATE'"> {{targetDistributor.joinStyle}} </span>
+            <select class="form-control" data-ng-model="targetJoinStyle" data-ng-show="viewMode === 'UPDATE'">
+              <option>자유</option>
+              <option>승인</option>
+              <option>비공개</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label">현재 / 최대 회원수</label>
+          <div class="col-md-8">
+            <p class="form-control-static">{{targetDistributor.headcount}} / <span class="font-red-mint">20</span></p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label">보너스</label>
+          <div class="col-md-8 table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">당첨시</th>
+                  <th class="text-center">낙첨시</th>
+                  <th class="text-center">합</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-center">{{targetDistributor.bonus.win}} %</td>
+                  <td class="text-center">{{targetDistributor.bonus.lose}} %</td>
+                  <td class="text-center">{{targetDistributor.statusPoint}} %</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label">다음 레벨</label>
+          <div class="col-md-8">
+            <p class="form-control-static">Lv.{{targetNextLevelInfo.name}}</p>
+            <div class="progress" data-ng-if="targetPercent < 50">
+              <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" style="width: {{targetPercent}}%"></div>
+              {{targetPercent}}% ({{(targetNextLevelInfo.requirement - targetDistributor.contribution) | number}} 경험치 필요)
+            </div>
+            <div class="progress" data-ng-if="targetPercent > 50">
+              <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" style="width: {{targetPercent}}%">
+                {{targetPercent}}% ({{(targetNextLevelInfo.requirement - targetDistributor.contribution) | number}} 경험치 필요)
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label">다음 레벨 혜택</label>
+          <div class="col-md-8">
+            <p class="form-control-static">회원가입: +{{targetNextLevelInfo.maxHeadcount - targetCurLevelInfo.maxHeadcount}}명 / 보너스 추가: +{{targetNextLevelInfo.statusPoint}}%</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label">소개</label>
+          <div class="col-md-8">
+            <span class="form-control-static" data-ng-show="viewMode !== 'UPDATE'">{{targetDistributor.memo}}</span>
+            <textarea class="form-control" rows="5" style="resize: none" data-ng-model="targetMemo" data-ng-show="viewMode === 'UPDATE'" placeholder="(200자 이내)"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="row">
+          <div class="col-md-offset-3 col-md-9">
+            <button type="submit" class="btn red" data-ng-click="DropOut()"><i class="fa fa-check"></i> 총판탈퇴</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="portlet box blue">
+  <div class="portlet-title">
+    <div class="caption">
+      <i class="fa fa-gift"></i>총판 회원 리스트 (총 {{targetMemberTotal}}명)
+    </div>
+    <div class="tools">
+      <a href="javascript:;" class="collapse" data-original-title="" title=""></a>
+    </div>
+  </div>
+  <div class="portlet-body portlet-collapsed" style="display: block;">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>닉네임</th>
+            <th>등급</th>
+            <th>기여도</th>
+            <th>가입일</th>
+            <th>옵션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="doc in _list">
+            <td>{{ doc.nick }}</td>
+            <td>{{ doc.distributor.rank }}</td>
+            <td>{{ doc.distributor.contribution | number }}</td>
+            <td>{{ doc.distributor.joinDate }}</td>
+            <td>
+              <button class="btn btn-xs btn-info" data-ng-show="doc.distributor.rank !== '총판장' && __GetUser('me').distributor.rank === '총판장'" data-ng-click="HandOver(doc.nick, doc._id)">인계</button>
+              <button class="btn btn-xs btn-danger" data-ng-show="doc.distributor.rank !== '총판장' && __GetUser('me').distributor.rank === '총판장'" data-ng-click="Expell(doc.nick, doc._id)">추방</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <center>
+      <ul class="pagination">
+        <li>
+          <a href="" aria-label="Previous" data-ng-click="_PreviousPage()">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li data-ng-repeat="page in _pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="_MovePage(page.number)">{{page.number}}</a></li>
+        <li>
+          <a href="" aria-label="Next" data-ng-click="_NextPage()">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </center>
+  </div>
+</div>

@@ -1,0 +1,161 @@
+<h1 class="page-title">고객센터<small></small></h1>
+
+<div class="page-bar">
+  <ul class="page-breadcrumb">
+    <li data-ng-repeat="bc in _breadcrumb">
+      <i class="{{bc.icon}}"></i>
+      <a ui-sref="{{bc.path}}" data-ng-if="!$last && bc.path !== ''">{{bc.name}}</a>
+      <span data-ng-if="$last || bc.path === ''">{{bc.name}}</span>
+      <i class="fa fa-angle-right" data-ng-if="!$last"></i>
+    </li>
+  </ul>
+</div>
+
+<div class="portlet light">
+  <div class="portlet-body">
+    <button class="btn blue btn-block btn-outline " data-toggle="modal" data-target="#WriteQuestionModal" data-ng-click="WriteQuestion()">문의하기</button>
+  </div>
+</div>
+
+<div class="portlet light">
+  <div class="portlet-title">
+    <div class="caption">
+      <i class="icon-puzzle font-grey-gallery"></i>
+      <span class="caption-subject bold font-grey-gallery uppercase"> 문의 내역 </span>
+      <span class="caption-helper"></span>
+    </div>
+
+    <div class="actions">
+      <div class="btn-group">
+        <button class="btn btn-outline purple dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+          {{_query.state}}
+          <i class="fa fa-angle-down"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li data-ng-click="SelectQuestionState('전체')"><a href>전체</a></li>
+          <li data-ng-click="SelectQuestionState('등록')"><a href>등록</a></li>
+          <li data-ng-click="SelectQuestionState('처리중')"><a href>처리중</a></li>
+          <li data-ng-click="SelectQuestionState('완료')"><a href>완료</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="portlet-body">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>상태</th>
+            <th>제목</th>
+            <th>문의일시</th>
+            <th>답변일시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="doc in _list">
+            <td>{{ doc.state }}</td>
+            <td><a href data-toggle="modal" data-target="#ReadQuestionModal" data-ng-click="GetQuestion(doc)">{{ doc.question.title }}</a></td>
+            <td>{{ doc.createdAt }}</td>
+            <td>{{ doc.operatedAt }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <center>
+      <ul class="pagination">
+        <li>
+          <a href="" aria-label="Previous" data-ng-click="_PreviousPage()">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li data-ng-repeat="page in _pages" data-ng-class="{active : page.active}"><a href="" data-ng-click="_MovePage(page.number)">{{page.number}}</a></li>
+        <li>
+          <a href="" aria-label="Next" data-ng-click="_NextPage()">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </center>
+  </div>
+</div>
+
+<div id="WriteQuestionModal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title"><span class="font-green-sharp">고객센터 Q&A</span></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">제목</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" data-ng-model="targetTitle" placeholder="(최소 2자, 최대 50자)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">내용</label>
+            <div class="col-sm-9">
+              <textarea class="form-control" rows="8" style="resize: none" data-ng-model="targetContent" placeholder="(최대 500자)"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn dark btn-outline">취소</button>
+        <button type="button" class="btn green" data-ng-click="SendQuestion()">보내기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ReadQuestionModal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title"><span class="font-green-sharp">고객센터 Q&A</span></h4>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td class="active"> 닉네임 </td>
+                <td> {{targetQuestion.nick}} </td>
+                <td class="active"> 사이트 </td>
+                <td> {{targetQuestion.site}} </td>
+              </tr>
+              <tr>
+                <td class="active"> 제목 </td>
+                <td colspan="3"> {{targetQuestion.question.title}} </td>
+              </tr>
+              <tr>
+                <td class="active"> 내용 </td>
+                <td colspan="3"> <span style="white-space: pre-line"> {{targetQuestion.question.content}} </span> </td>
+              </tr>
+              <tr>
+                <td class="active"> 상태 </td>
+                <td> {{targetQuestion.state}} </td>
+                <td class="active"> 처리일시 </td>
+                <td> {{targetQuestion.operatedAt}} </td>
+              </tr>
+              <tr>
+                <td colspan="4"></td>
+              </tr>
+              <tr>
+                <td class="active"> 답변 </td>
+                <td colspan="3"> <span style="white-space: pre-line"> {{targetQuestion.answer}} </span> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn green">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="row" data-ng-controller="DistributorSetupCtrl">
+  <div class="col-sm-12">
+    <!-- 1. Subject Info zone -->
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="page-header">
+          <h1>총판 생성</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">총판명</label>
+        <div class="col-sm-7">
+          <input type="targetName" class="form-control" data-ng-model="targetName" >
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">소개글</label>
+        <div class="col-sm-7">
+          <textarea class="form-control" rows="3" style="resize: none" data-ng-model="targetMemo" placeholder="여러 회원들에게 보여집니다."></textarea>
+        </div>
+      </div>
+      <hr>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">가입 방식 설정</label>
+        <div class="btn-group col-sm-7" role="group">
+          <button type="button" data-ng-class="{'btn btn-success': targetJoinStyle === '자유', 'btn btn-default': targetJoinStyle !== '자유'}" data-ng-click="SetSignupStyle('자유')">자유</button>
+          <button type="button" data-ng-class="{'btn btn-success': targetJoinStyle === '승인', 'btn btn-default': targetJoinStyle !== '승인'}" data-ng-click="SetSignupStyle('승인')">승인</button>
+        </div>
+      </div>
+      <hr>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">보너스 스탯 설정</label>
+        <div class="col-sm-7">
+          <p class="form-control-static">잔여 스탯: {{targetConfig.statusPoint}}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <p class="form-control-static">승리 보너스(%)</p>
+        </div>
+        <div class="col-sm-offset-1 col-sm-3">
+          <div class="input-group">
+            <div class="input-group-btn">
+              <button class="btn btn-default" data-ng-click="Plus('WIN')"><span class="glyphicon glyphicon-chevron-up"></span></button>
+            </div>
+            <input type="text" class="form-control text-center" data-ng-model="targetBonusWin" readonly>
+            <div class="input-group-btn">
+              <button class="btn btn-default" data-ng-click="Minus('WIN')"><span class="glyphicon glyphicon-chevron-down"></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <p class="form-control-static">패배 보너스(%)</p>
+        </div>
+        <div class="col-sm-offset-1 col-sm-3">
+          <div class="input-group">
+            <div class="input-group-btn">
+              <button class="btn btn-default" data-ng-click="Plus('LOSE')"><span class="glyphicon glyphicon-chevron-up"></span></button>
+            </div>
+            <input type="text" class="form-control text-center" data-ng-model="targetBonusLose" readonly>
+            <div class="input-group-btn">
+              <button class="btn btn-default" data-ng-click="Minus('LOSE')"><span class="glyphicon glyphicon-chevron-down"></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="form-group">
+        <center><button class="btn btn-lg btn-success" data-ng-click="Create()">만들기</button></center>
+      </div>
+    </div>
+  </div>
+</div>

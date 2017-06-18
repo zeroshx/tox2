@@ -1,0 +1,154 @@
+<script type="text/ng-template" id="UserDetailModal.html">
+  <div class="modal-header">
+    <button type="button" class="close" data-ng-click="$ctrl.ok()"><span>&times;</span></button>
+    <h3 class="modal-title" id="modal-title">
+      <button type="button" class="btn btn-lg btn-circle btn-outline green-meadow" data-ng-click="$ctrl.Reset()" data-ng-show="$ctrl._viewMode">&lt;</button>
+      회원정보
+      <span data-ng-show="$ctrl._viewMode"> - {{$ctrl._viewTitle}}</span>
+    </h3>
+
+  </div>
+  <div class="modal-body" id="modal-body">
+
+    <div class="row" data-ng-show="!$ctrl._viewMode">
+      <div class="col-sm-12">
+        <detail-view detail-view-format-bind="$ctrl._detailViewFormat"></detail-view>
+        <div class="detail-view">
+          <div class="detail-view-row last-row row">
+            <div class="col-sm-2 detail-view-label">메모</div>
+            <div class="col-sm-10 detail-view-column last-column">
+              <div class="row" data-ng-repeat="m in $ctrl.memo">
+                <div class="col-sm-12">
+                  <button class="btn btn-xs red" type="button" data-ng-click="$ctrl.RemoveMemo($index)"><i class="fa fa-close"></i></button>
+                  <span>[{{m.date}}] {{m.content}}</span>
+                  <br><br>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="input-group">
+                    <input type="text" class="form-control" data-ng-model="$ctrl.iMemo">
+                    <span class="input-group-btn">
+                    <button class="btn green-meadow" type="button" data-ng-click="$ctrl.AddMemo()">추가</button>
+                  </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="$ctrl._viewMode === 'MODIFY_MONEY'">
+      <div class="col-sm-12">
+
+        <div class="md-checkbox-inline">
+          <div class="md-checkbox has-success">
+            <input type="checkbox" id="checkbox14" class="md-check" data-ng-checked="$ctrl.modifyMoney.selected === 'cash'" data-ng-click="$ctrl.modifyMoney.selected = 'cash'">
+            <label for="checkbox14">
+              <span class="inc"></span>
+              <span class="check"></span>
+              <span class="box"></span> 캐시</label>
+          </div>
+          <div class="md-checkbox has-error">
+            <input type="checkbox" id="checkbox15" class="md-check" data-ng-checked="$ctrl.modifyMoney.selected === 'chip'" data-ng-click="$ctrl.modifyMoney.selected = 'chip'">
+            <label for="checkbox15">
+              <span class="inc"></span>
+              <span class="check"></span>
+              <span class="box"></span> 칩</label>
+          </div>
+          <div class="md-checkbox has-info">
+            <input type="checkbox" id="checkbox16" class="md-check" data-ng-checked="$ctrl.modifyMoney.selected === 'point'" data-ng-click="$ctrl.modifyMoney.selected = 'point'">
+            <label for="checkbox16">
+              <span class="inc"></span>
+              <span class="check"></span>
+              <span class="box"></span> 포인트</label>
+          </div>
+        </div>
+        <br>
+        <div class="form-group form-md-line-input has-warning">
+          <input type="text" class="form-control input-lg text-center" id="modifyMoney_target" data-ng-model="$ctrl.modifyMoney.amount" only-number>
+          <label for="modifyMoney_target">증가 또는 감소할 금액</label>
+        </div>
+        <center>
+          <button type="button" class="btn green-meadow" data-ng-click="$ctrl.ModifyMoney('INC')"><i class="fa fa-plus-circle"></i> 증가</button>
+          <button type="button" class="btn red-soft" data-ng-click="$ctrl.ModifyMoney('DEC')"><i class="fa fa-minus-circle"></i> 감소</button>
+          <button type="button" class="btn btn-default" data-ng-click="$ctrl.Reset()"><i class="fa fa-arrow-circle-left"></i> 취소</button>
+        </center>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="$ctrl._viewMode === 'SEND_MESSAGE'">
+      <div class="col-sm-12 form">
+        <form action="#">
+          <div class="form-body">
+            <div class="form-group">
+                <label class="control-label">To. </label>
+                <h4 class="form-control-static"> {{$ctrl._user.nick}}({{$ctrl._user.uid}}), {{$ctrl._user.site}}, {{$ctrl._user.level}}</h4>
+            </div>
+            <div class="form-group">
+              <label class="control-label">제목</label>
+              <input type="text" class="form-control" data-ng-model="$ctrl.sendMessage.title">
+            </div>
+            <div class="form-group last">
+              <label class="control-label">내용</label>
+              <textarea class="form-control textarea-fixed-row" rows="5" data-ng-model="$ctrl.sendMessage.content"></textarea>
+            </div>
+          </div>
+          <div class="form-actions right">
+            <button type="button" class="btn green" data-ng-click="$ctrl.SendMessage()">전송</button>
+            <button type="button" class="btn default" data-ng-click="$ctrl.Reset()">취소</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="$ctrl._viewMode === 'MONEY_REPORT'">
+      <div class="col-sm-12">
+        <div class="table-scrollable">
+          <table class="table table-hover table-center table-align-center table-nowrap">
+            <thead>
+              <tr class="active">
+                <th>캐시</th>
+                <th>칩</th>
+                <th>포인트</th>
+                <th>빚</th>
+                <th>메모</th>
+                <th>처리일시</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-ng-repeat="doc in $ctrl.moneyReport.list" >
+                <td>{{doc.after.cash | number}}</td>
+                <td>{{doc.after.chip | number}}</td>
+                <td>{{doc.after.point | number}}</td>
+                <td>{{doc.after.debt | number}}</td>
+                <td>{{doc.memo}}</td>
+                <td>{{doc.createdAt}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <center><button type="button" class="btn default" data-ng-click="$ctrl.Reset()">확인</button></center>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <hr>
+        <button type="button" class="btn btn-circle red-soft" data-ng-click="$ctrl.ModifyMoneyReady()">게임머니수정</button>
+        <button type="button" class="btn btn-circle dark" data-ng-click="$ctrl.Black()">블랙</button>
+        <button type="button" class="btn btn-circle green-meadow" data-ng-click="$ctrl.SendMessageReady()">쪽지쓰기</button>
+        <button type="button" class="btn btn-circle purple" data-ng-click="$ctrl.MoneyReportReady()">게임머니내역</button>
+        <button type="button" class="btn btn-circle green-meadow" data-ng-click="">배팅내역</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+
+    <button type="button" class="btn blue-sharp" data-ng-click="$ctrl.ok()">확인</button>
+
+  </div>
+</script>

@@ -1,0 +1,95 @@
+<!-- first div class attr have 'col-xx-10' fixed. -->
+<div class="row" data-ng-controller="ManagerCtrl">
+  <div class="col-sm-11">
+    <!-- 1. Subject Info zone -->
+    <div class="row">
+      <div class="page-header">
+        <h1>관리자 설정</h1>
+      </div>
+    </div>
+
+    <!-- 3. Custom form zone -->
+    <div class="row">
+      <div class="page-header">
+        <h4>1.회원가입</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>연락처 입력 보너스</label>
+          <input type="text" class="form-control" data-ng-model="target.signup.bonus.phone" placeholder="">
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>이메일 입력 보너스</label>
+          <input type="text" class="form-control" data-ng-model="target.signup.bonus.email" placeholder="">
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <!-- 3. Custom form zone -->
+    <div class="row">
+      <div class="page-header">
+        <h4>2.총판 생성</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>초기 스탯 포인트</label>
+          <input type="text" class="form-control" data-ng-model="target.distributor.setup.statusPoint" placeholder="">
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-8">
+        <label>레벨 설정</label>
+        <table class="table table-hover table-center">
+          <thead>
+            <tr>
+              <th>Lv</th>
+              <th>요구치</th>
+              <th>최대 회원수</th>
+              <th>추가 보너스 스탯 포인트</th>
+              <th>옵션</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="dl in target.distributor.level">
+              <td>{{ dl.name }}</td>
+              <td>{{ dl.requirement }}</td>
+              <td>{{ dl.maxHeadcount }}</td>
+              <td>{{ dl.statusPoint }}</td>
+              <td>
+                <button class="btn btn-sm btn-danger" data-ng-click="RemoveDistributorLevel($index)">제거</button>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="text" class="text-center" data-ng-model="targetLevel.name"></td>
+              <td><input type="text" class="text-center" data-ng-model="targetLevel.requirement"></td>
+              <td><input type="text" class="text-center" data-ng-model="targetLevel.maxHeadcount"></td>
+              <td><input type="text" class="text-center" data-ng-model="targetLevel.statusPoint"></td>
+              <td>
+                <button class="btn btn-sm btn-success" data-ng-click="AddDistributorLevel()">추가</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <br>
+    <div class="row">
+      <div class="col-sm-3">
+        <button type="button" class="btn btn-primary" data-ng-click="Upsert()">저 장</button>
+      </div>
+    </div>
+
+  </div>
+</div>

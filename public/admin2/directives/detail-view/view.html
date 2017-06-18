@@ -1,0 +1,116 @@
+<div class="detail-view">
+  <div class="detail-view-row row" data-ng-repeat="dvRow in _detailViewFormat" data-ng-class="{'last-row': $last}">
+    <div data-ng-repeat="dvCol in dvRow">
+
+      <div data-ng-if="dvCol.type === 'text'">
+        <div class="col-sm-{{dvCol.width[0]}} detail-view-label" data-ng-if="dvCol.label">
+          {{dvCol.label}}
+        </div>
+        <div class="col-sm-{{dvCol.width[1]}} detail-view-column" data-ng-class="{'last-column': $last}">
+          <input type="text" class="detail-view-data" value="{{dvCol.value}} {{dvCol.unit}}" readonly="">
+        </div>
+      </div>
+
+      <div data-ng-if="dvCol.type === 'number'">
+        <div class="col-sm-{{dvCol.width[0]}} detail-view-label" data-ng-if="dvCol.label">
+          {{dvCol.label}}
+        </div>
+        <div class="col-sm-{{dvCol.width[1]}} detail-view-column" data-ng-class="{'last-column': $last}">
+          <input type="text" class="detail-view-data" value="{{dvCol.value | number}} {{dvCol.unit}}" readonly="">
+        </div>
+      </div>
+
+      <div data-ng-if="dvCol.type === 'multi-text'">
+        <div class="col-sm-{{dvCol.width[0]}} detail-view-label" data-ng-if="dvCol.label">
+          {{dvCol.label}}
+        </div>
+        <div class="col-sm-{{dvCol.width[1]}} detail-view-column" data-ng-class="{'last-column': $last}">
+          <textarea type="text" class="form-control detail-view-data textarea-fixed-row" rows="{{dvCol.rows ? dvCol.rows : 3}}" readonly="">{{dvCol.value}} {{dvCol.unit}}</textarea>
+        </div>
+      </div>
+
+      <div data-ng-if="dvCol.type === 'board-content'">
+        <div class="col-sm-{{dvCol.width[0]}} detail-view-label" data-ng-if="dvCol.label">
+          {{dvCol.label}}
+        </div>
+        <div class="col-sm-{{dvCol.width[1]}} detail-view-column" data-ng-class="{'last-column': $last}">
+          <span data-ng-bind-html="dvCol.value"></span>
+          <input type="text" class="detail-view-data" value="(없음)" readonly="" data-ng-show="!dvCol.value">
+        </div>
+      </div>
+
+      <div data-ng-if="dvCol.type === 'site-answer'">
+        <div class="col-sm-{{dvCol.width[0]}} detail-view-label" data-ng-if="dvCol.label">
+          {{dvCol.label}}
+        </div>
+        <div class="col-sm-{{dvCol.width[1]}} detail-view-column" data-ng-class="{'last-column': $last}">
+          <input type="text" class="detail-view-data" value="(없음)" readonly="" data-ng-show="dvCol.value.length === 0">
+          <button type="button" class="btn green-soft" data-ng-click="_siteAnswerFlag = true" data-ng-show="dvCol.value.length > 0 && !_siteAnswerFlag">펼치기</button>
+          <div class="row" data-ng-repeat="ans in dvCol.value" data-ng-show="_siteAnswerFlag">
+            <div class="col-sm-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <div class="input-group">
+                    {{ans.action}}
+                  </div>
+                </div>
+                <div class="panel-body">
+                  {{ans.title}}
+                  <hr>
+                  <textarea type="text" class="form-control detail-view-data textarea-fixed-row" rows="3" data-ng-model="ans.content" readonly=""></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn red-soft" data-ng-click="_siteAnswerFlag = false" data-ng-show="dvCol.value.length > 0 && _siteAnswerFlag">접기</button>
+        </div>
+      </div>
+
+      <div data-ng-if="dvCol.type === 'kind-config'">
+        <div class="col-sm-{{dvCol.width[0]}} detail-view-label" data-ng-if="dvCol.label">
+          {{dvCol.label}}
+        </div>
+        <div class="col-sm-{{dvCol.width[1]}} detail-view-column" data-ng-class="{'last-column': $last}">
+          <input type="text" class="detail-view-data" value="(없음)" readonly="" data-ng-show="dvCol.value.length === 0">
+          <button type="button" class="btn green-soft" data-ng-click="_kindConfigFlag = true" data-ng-show="dvCol.value.length > 0 && !_kindConfigFlag">펼치기</button>
+          <div class="row" data-ng-repeat="kc in dvCol.value" data-ng-show="_kindConfigFlag">
+            <div class="col-sm-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  {{kc.name}}
+                </div>
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      최대 조합: {{kc.maxMulti}}경기
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      일반 + 핸디캡: [<span data-ng-if="kc.nah">허용</span><span data-ng-if="!kc.nah">금지</span>]
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      일반 + 언더오버: [<span data-ng-if="kc.nau">허용</span><span data-ng-if="!kc.nau">금지</span>]
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      핸디캡 + 언더오버: [<span data-ng-if="kc.hau">허용</span><span data-ng-if="!kc.hau">금지</span>]
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn red-soft" data-ng-click="_kindConfigFlag = false" data-ng-show="dvCol.value.length > 0 && _kindConfigFlag">접기</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
