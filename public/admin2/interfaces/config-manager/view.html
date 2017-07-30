@@ -1,0 +1,105 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+
+<view-title title-info-bind="_viewTitle"></view-title>
+
+<div class="portlet box blue ">
+  <div class="portlet-title">
+    <div class="caption">
+      <i class="fa fa-gift"></i>회원가입 설정</div>
+    <div class="tools">
+      <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+    </div>
+  </div>
+  <div class="portlet-body form">
+    <form class="form-horizontal form-bordered">
+      <div class="form-body">
+        <div class="form-group">
+          <label class="control-label col-sm-3">연락처 입력 보너스</label>
+          <div class="col-sm-9">
+            <span data-ng-show="!_signupConfigModify">{{_signupConfig.bonus.phone | number}}</span>
+            <input type="text" class="form-control" data-ng-model="_signupConfig.bonus.phone" data-ng-show="_signupConfigModify">
+            <span class="help-block text-danger"> 회원가입시 연락처를 입력할 경우 해당 금액을 칩(Chip)으로 보상합니다. </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-3">이메일 입력 보너스</label>
+          <div class="col-sm-9">
+            <span data-ng-show="!_signupConfigModify">{{_signupConfig.bonus.email | number}}</span>
+            <input type="text" class="form-control" data-ng-model="_signupConfig.bonus.email" data-ng-show="_signupConfigModify">
+            <span class="help-block text-danger"> 회원가입시 이메일을 입력할 경우 해당 금액을 칩(Chip)으로 보상합니다. </span>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-offset-3 col-sm-9">
+                <button type="button" class="btn yellow-gold" data-ng-click="ToggleSignupConfig()"><i class="fa fa-cog"></i> <span data-ng-show="!_signupConfigModify">수정</span><span data-ng-show="_signupConfigModify">취소</span></button>
+                <button type="button" class="btn green-soft" data-ng-show="_signupConfigModify" data-ng-click="SaveSignupConfig()"><i class="fa fa-check"></i> 저장</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="portlet box green ">
+  <div class="portlet-title">
+    <div class="caption">
+      <i class="fa fa-gift"></i>메신저 채팅방 관리</div>
+    <div class="tools">
+      <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+    </div>
+  </div>
+  <div class="portlet-body form">
+    <form class="form-horizontal form-bordered">
+      <div class="form-body">
+        <div class="form-group">
+          <label class="control-label col-sm-3">리스트</label>
+          <div class="col-sm-9">
+            <div class="table-scrollable">
+              <table class="table table-hover table-center table-align-center table-nowrap">
+                <thead>
+                  <tr class="active">
+                    <th>채팅방</th>
+                    <th>개설일</th>
+                    <th>옵션</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="clickable" data-ng-repeat="doc in _messengerConfig.room">
+                    <td>{{ doc.name }}</td>
+                    <td>{{ doc.createdAt | datetime }}</td>
+                    <td stop-click>
+                      <button type="button" class="btn btn-xs red-soft" data-ng-click="RemoveMessengerRoom(doc._id)">제거</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-3">채팅방 추가</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" data-ng-model="_messengerRoomName">
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-offset-3 col-sm-9">
+                <button type="button" class="btn green-soft" data-ng-click="AddMessengerRoom()"><i class="fa fa-check"></i> 추가</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

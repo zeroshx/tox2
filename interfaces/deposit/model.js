@@ -31,14 +31,12 @@ var Model = new Schema({
   operator: {
     type: String
   },
-  createdAt: {
-    type: String
-  },
   operatedAt: {
-    type: String
+    type: Date
   },
-  modifiedAt: {
-    type: String
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -91,19 +89,6 @@ Model.statics.List = function(page, pageSize, filter, keyword, site, distributor
         }
       };
     }
-    // else if (filter === '사이트') {
-    //   subquery = {
-    //     site: {
-    //       $regex: '.*' + keyword + '.*'
-    //     }
-    //   };
-    // } else if (filter === '총판') {
-    //   subquery = {
-    //     distributor: {
-    //       $regex: '.*' + keyword + '.*'
-    //     }
-    //   };
-    // }
   }
 
   if (query.$and.length > 0) {
@@ -136,17 +121,17 @@ Model.statics.CustomerList = function(page, pageSize, uid, callback) {
 
   var Document = this;
 
-  Document.count({
+  var query = {
     uid: uid
-  }, (err, count) => {
+  };
+
+  Document.count(query, (err, count) => {
     if (err) return callback(err);
     if (count === 0) return callback(null, null, {
-      lastPage: 0,
+      lastPage: 1,
       docs: []
     });
-    Document.find({
-        uid: uid
-      })
+    Document.find(query)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .sort('-createdAt')
@@ -171,7 +156,6 @@ Model.statics.Create = function(
   callback
 ) {
   var Document = this;
-  var timer = new Date();
   var newDoc = new Document();
 
   newDoc.uid = uid;
@@ -181,7 +165,7 @@ Model.statics.Create = function(
   newDoc.distributor = distributor;
   newDoc.cash = cash;
   newDoc.state = state;
-  newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
+
   newDoc.save((err, doc) => {
     if (err) return callback(err);
     if (!doc) return callback(null, 'failure');
@@ -201,7 +185,6 @@ Model.statics.Update = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
@@ -212,8 +195,7 @@ Model.statics.Update = function(
       site: site,
       distributor: distributor,
       cash: cash,
-      state: state,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      state: state
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -238,7 +220,7 @@ Model.statics.ChangeState = function(
     $set: {
       state: state,
       operator: operator,
-      operatedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      operatedAt: timer.getTime()
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -260,7 +242,7 @@ Model.statics.Delete = function(id, callback) {
   });
 };
 
-Model.statics.CheckState= function(id, state, callback) {
+Model.statics.CheckState = function(id, state, callback) {
 
   var Document = this;
 

@@ -1,0 +1,74 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+
+<view-title title-info-bind="_viewTitle"></view-title>
+
+<form-control item-bind="_item" format-bind="_formFormat" action-bind="_formAction" switch-bind="_formSwitch" create-function-bind="Add" modify-function-bind="Modify" cancel-function-bind="CloseForm"></form-control>
+
+<search-form query-bind="_query" search-filter-bind="_searchFilter" action-function-bind="List"></search-form>
+
+<div class="portlet light">
+  <div class="portlet-body">
+
+    <div class="row">
+      <div class="col-xs-12">
+        <button class="btn btn-circle green-dark" data-ng-click="CreateForm()">등록</button>
+        <button class="btn btn-circle red" data-ng-click="BulkRemove()">선택 삭제</button>
+      </div>
+    </div>
+
+    <div class="table-scrollable">
+      <table class="table table-hover table-align-center table-nowrap">
+        <thead>
+          <tr class="active">
+            <th><input type="checkbox" data-ng-click="SelectAll()" data-ng-model="_selectLeader"></th>
+            <th>종목</th>
+            <th>그룹</th>
+            <th>이미지</th>
+            <th>이미지 경로</th>
+            <th>옵션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable" data-toggle="modal" data-target="#detailView" data-ng-click="DetailView(doc)" data-ng-repeat="doc in _list" >
+            <td stop-click><input type="checkbox" data-ng-init="_list[$index]._cbExist = true" data-ng-model="_list[$index]._cbSelected"></td>
+            <td>{{ doc.name }}</td>
+            <td>{{ doc.group }}</td>
+            <td><img width="40px" height="40px" data-ng-show="doc.imagePath" data-ng-src="{{doc.imagePath}}"></td>
+            <td>{{ doc.imagePath }}</td>
+            <td stop-click>
+              <button type="button" class="btn btn-xs yellow" data-ng-click="ModifyForm(doc)">수정</button>
+              <button type="button" class="btn btn-xs red" data-ng-click="Remove(doc)">삭제</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pagination last-page-bind="_lastPage" query-bind="_query" action-function-bind="List"></pagination>
+
+  </div>
+</div>
+
+<div class="modal fade" id="detailView" tabindex="-1" role="dialog" data-backdrop="static" style="height: 80%">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">종목 정보</h4>
+      </div>
+      <div class="modal-body">
+
+        <detail-view detail-view-format-bind="_detailViewFormat"></detail-view>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-circle yellow" data-dismiss="modal" data-ng-click="ModifyForm(_item)">수정</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn blue-sharp" data-dismiss="modal">확인</button>
+      </div>
+    </div>
+  </div>
+</div>

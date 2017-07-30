@@ -35,7 +35,7 @@
             <td>{{ doc.betCancelLimit }}분</td>
             <td>{{ doc.betCancelCount }}회</td>
             <td>{{ doc.kindConfig.length }}개</td>
-            <td>{{ doc.createdAt }}</td>
+            <td>{{ doc.createdAt | datetime }}</td>
             <td stop-click>
               <button type="button" class="btn btn-xs yellow" data-ng-click="ModifyForm(doc)">수정</button>
             </td>

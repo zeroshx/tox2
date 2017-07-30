@@ -160,10 +160,10 @@ angular.module('TOX2ADMINAPP')
           $scope.validator.message = res.failure;
           $anchorScroll(0);
         } else {
-          $scope.kindList = res.docs;
+          $scope.kindList = res;
         }
       }, function(err) {
-        $window.location = '/';
+        //$window.location = '/';
       });
     };
 
@@ -180,10 +180,10 @@ angular.module('TOX2ADMINAPP')
           $scope.validator.message = res.failure;
           $anchorScroll(0);
         } else {
-          $scope.leagueList = res.docs;
+          $scope.leagueList = res;
         }
       }, function(err) {
-        $window.location = '/';
+        //$window.location = '/';
       });
     };
 
@@ -222,7 +222,7 @@ angular.module('TOX2ADMINAPP')
           alert("추가되었습니다.");
         }
       }, function(err) {
-        $window.location = '/';
+        //$window.location = '/';
       });
     };
 
@@ -257,7 +257,7 @@ angular.module('TOX2ADMINAPP')
           alert('수정되었습니다.');
         }
       }, function(err) {
-        $window.location = '/';
+        //$window.location = '/';
       });
     };
 
@@ -279,7 +279,7 @@ angular.module('TOX2ADMINAPP')
           $scope.selectAllSwitch = false;
         }
       }, function(err) {
-        $window.location = '/';
+        //$window.location = '/';
       });
     };
 
@@ -306,7 +306,7 @@ angular.module('TOX2ADMINAPP')
           }
         }
       }, function(err) {
-        $window.location = '/';
+        //$window.location = '/';
       });
     };
 

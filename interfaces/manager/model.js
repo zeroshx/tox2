@@ -2,6 +2,20 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Model = new Schema({
+  realtime: {
+    deposit: {
+      type: Number,
+      default: 0
+    },
+    withdrawal: {
+      type: Number,
+      default: 0
+    },
+    question: {
+      type: Number,
+      default: 0
+    }
+  },
   signup: {
     bonus: {
       phone: {
@@ -12,29 +26,16 @@ var Model = new Schema({
       }
     }
   },
-  distributor: {
-    setup: {
-      statusPoint: {
-        type: Number
-      }
-    },
-    level: [{
+  messenger: {
+    room: [{
       name: {
-        type: Number
+        type: String
       },
-      maxHeadcount: {
-        type: Number
-      },
-      statusPoint: {
-        type: Number
-      },
-      requirement: {
-        type: Number
+      createdAt: {
+        type: Date,
+        default: Date.now
       }
     }]
-  },
-  modifiedAt: {
-    type: String
   }
 });
 
@@ -52,31 +53,17 @@ Model.statics.One = function(callback) {
   });
 };
 
-Model.statics.Upsert = function(
-  bonusPhone,
-  bonusEmail,
-  statusPoint,
-  level,
+Model.statics.SetSignupConfig = function(
+  item,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
 
-  Document.update({}, {
+  Document.findOneAndUpdate({}, {
     $set: {
-      'signup.bonus': {
-        phone: bonusPhone,
-        email: bonusEmail,
-      },
-      'distributor.setup': {
-        statusPoint: statusPoint
-      },
-      'distributor.level': level,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      signup: item
     }
-  }, {
-    upsert: true
   }, (err, doc) => {
     if (err) return callback(err);
     if (!doc) return callback(null, 'failure');
@@ -95,29 +82,145 @@ Model.statics.GetSingupConfig = function(callback) {
   });
 };
 
-Model.statics.GetDistributorSetupConfig = function(callback) {
+Model.statics.AddMessengerRoom = function(
+  item,
+  callback
+) {
 
   var Document = this;
 
-  Document.findOne({}, (err, doc) => {
+  Document.findOne({
+    'messenger.room': {
+      $elemMatch: {
+        name: item.name
+      }
+    }
+  }, (err, doc) => {
     if (err) return callback(err);
-    if (!doc) return callback(null, 'not-found');
-    callback(null, null, doc.distributor.setup);
+    if (doc) return callback(null, 'exist');
+    Document.findOneAndUpdate({}, {
+      $addToSet: {
+        'messenger.room': {
+          name: item.name
+        }
+      }
+    }, (err, doc) => {
+      if (err) return callback(err);
+      if (!doc) return callback(null, 'failure');
+      callback(null, null, doc);
+    });
   });
 };
 
-Model.statics.GetDistributorLevelConfig = function(callback) {
+Model.statics.RemoveMessengerRoom = function(
+  id,
+  callback
+) {
 
   var Document = this;
 
-  Document.findOne({}, (err, doc) => {
+  Document.findOneAndUpdate({}, {
+    $pull: {
+      'messenger.room': {
+        _id: id
+      }
+    }
+  }, (err, doc) => {
     if (err) return callback(err);
-    if (!doc) return callback(null, 'not-found');
-    callback(null, null, doc.distributor.level);
+    if (!doc) return callback(null, 'failure');
+    callback(null, null, doc);
   });
 };
 
+Model.statics.IncDepositCase = function(callback) {
 
+  var Document = this;
+
+  Document.findOneAndUpdate({}, {
+    $inc: {
+      'realtime.deposit': 1
+    }
+  }, (err, doc) => {
+    if (err) return callback(err);
+    if (!doc) return callback(null, 'failure');
+    callback(null, null, doc);
+  });
+};
+
+Model.statics.ResetDepositCase = function(callback) {
+
+  var Document = this;
+
+  Document.findOneAndUpdate({}, {
+    $set: {
+      'realtime.deposit': 0
+    }
+  }, (err, doc) => {
+    if (err) return callback(err);
+    if (!doc) return callback(null, 'failure');
+    callback(null, null, doc);
+  });
+};
+
+Model.statics.IncWithdrawalCase = function(callback) {
+
+  var Document = this;
+
+  Document.findOneAndUpdate({}, {
+    $inc: {
+      'realtime.withdrawal': 1
+    }
+  }, (err, doc) => {
+    if (err) return callback(err);
+    if (!doc) return callback(null, 'failure');
+    callback(null, null, doc);
+  });
+};
+
+Model.statics.ResetWithdrawalCase = function(callback) {
+
+  var Document = this;
+
+  Document.findOneAndUpdate({}, {
+    $set: {
+      'realtime.withdrawal': 0
+    }
+  }, (err, doc) => {
+    if (err) return callback(err);
+    if (!doc) return callback(null, 'failure');
+    callback(null, null, doc);
+  });
+};
+
+Model.statics.IncQuestionCase = function(callback) {
+
+  var Document = this;
+
+  Document.findOneAndUpdate({}, {
+    $inc: {
+      'realtime.question': 1
+    }
+  }, (err, doc) => {
+    if (err) return callback(err);
+    if (!doc) return callback(null, 'failure');
+    callback(null, null, doc);
+  });
+};
+
+Model.statics.ResetQuestionCase = function(callback) {
+
+  var Document = this;
+
+  Document.findOneAndUpdate({}, {
+    $set: {
+      'realtime.question': 0
+    }
+  }, (err, doc) => {
+    if (err) return callback(err);
+    if (!doc) return callback(null, 'failure');
+    callback(null, null, doc);
+  });
+};
 
 /******************************************************************
 Model's Statics End.

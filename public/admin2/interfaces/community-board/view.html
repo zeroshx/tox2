@@ -152,7 +152,7 @@
               <button type="button" class="btn btn-xs green-seagreen" data-ng-click="ShowToggle(doc._id, 'WRITING')" data-ng-show="doc.show">공개</button>
               <button type="button" class="btn btn-xs purple-wisteria" data-ng-click="ShowToggle(doc._id, 'WRITING')" data-ng-hide="doc.show">비공개</button>
             </td>
-            <td>{{ doc.createdAt }}</td>
+            <td>{{ doc.createdAt | datetime }}</td>
             <td stop-click>
               <button type="button" class="btn btn-xs yellow" data-ng-click="ModifyForm(doc)">수정</button>
               <button type="button" class="btn btn-xs red-soft" data-ng-click="Remove(doc._id)">삭제</button>
@@ -178,39 +178,6 @@
 
         <detail-view detail-view-format-bind="_detailViewFormat"></detail-view>
 
-        <div class="detail-view">
-          <div class="detail-view-row row last-row">
-            <div class="col-sm-2 detail-view-label">
-              댓글({{_item.reply.length}})
-            </div>
-            <div class="col-sm-10 detail-view-column last-column">
-              <button class="btn btn-circle yellow" data-ng-click="GetReply(_item)" data-ng-show="_item.reply.length > 0 && !_dvfReplyShow">펼치기</button>
-              <span data-ng-show="_item.reply.length === 0 && !_dvfReplyShow">(없음)</span>
-              <div data-ng-repeat="rp in _item.reply" data-ng-show="_item.reply.length > 0 && _dvfReplyShow">
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <div class="row">
-                      <div class="col-sm-9">
-                        {{rp.nick}}
-                      </div>
-                      <div class="col-sm-3">
-                        <button class="btn btn-xs" data-ng-class="{'purple': rp.show, 'green': !rp.show}" data-ng-click="ShowToggle(rp._id, 'REPLY')">
-                          <span data-ng-show="rp.show"><i class="fa fa-toggle-off"></i> 비공개</span>
-                          <span data-ng-hide="rp.show"><i class="fa fa-toggle-on"></i> 공개</span>
-                        </button>
-                        <button class="btn btn-xs red" data-ng-click="RemoveReply(rp._id)"><i class="fa fa-trash"></i> 삭제</button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="panel-body">
-                    {{rp.content}}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div data-ng-show="_dvfReplyCreate">
           <form class="form-horizontal" role="form">
             <div class="form-group">
@@ -223,7 +190,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="inputPassword12" class="col-sm-2 control-label">내용</label>
+              <label class="col-sm-2 control-label">내용</label>
               <div class="col-sm-9">
                 <textarea type="text" class="form-control textarea-fixed-row" rows="3" data-ng-model="_reply.content"></textarea>
               </div>

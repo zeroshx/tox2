@@ -2,92 +2,50 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Model = new Schema({
-  home: {
+  content: [{
+    status: {
+      type: String
+    },
     name: {
-      type: String,
-      index: true
-    },
-    score: {
-      type: Number
-    },
-    rate: {
       type: String
-    },
-    bet: {
-      type: Number
-    },
-    count: {
-      type: Number
     }
-  },
-  tie: {
-    rate: {
-      type: String
-    },
-    bet: {
-      type: Number
-    },
-    count: {
-      type: Number
-    }
-  },
-  away: {
+  }],
+  market: [{
     name: {
-      type: String,
-      index: true
-    },
-    score: {
-      type: Number
-    },
-    rate: {
       type: String
     },
-    bet: {
-      type: Number
-    },
-    count: {
-      type: Number
-    }
-  },
-  variety: {
-    subject: {
+    btype: {  // NORMAL, HANDICAP, UNDEROVER
       type: String
     },
-    option: [{
-      name: {
+    game: [{
+      offset: {
         type: String
       },
-      pick: {
-        type: String
+      show: {
+        type: Boolean
       },
-      rate: {
-        type: String
-      },
-      bet: {
-        type: Number
-      },
-      count: {
-        type: Number
-      }
+      pick: [{
+        name: {
+          type: String
+        },
+        rate: {
+          type: String
+        },
+        count: {
+          type: Number
+        },
+        pot: {
+          type: Number
+        }
+      }]
     }]
-  },
-  offset: {
+  }],
+  mtype: {
     type: String
   },
   state: {
     type: String,
     index: true
-  },
-  btype: { // betting type
-    type: String,
-    index: true
-  },
-  mtype: { // match type
-    type: String,
-    index: true
-  },
-  group: {
-    type: Schema.Types.ObjectId
   },
   kind: {
     type: String,
@@ -97,17 +55,15 @@ var Model = new Schema({
     type: String,
     index: true
   },
-  schedule: {
-    type: String
-  },
   result: {
     type: String
   },
-  createdAt: {
-    type: String
+  schedule: {
+    type: Date
   },
-  modifiedAt: {
-    type: String
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -119,47 +75,33 @@ Model.statics.List = function(
   pageSize,
   filter,
   keyword,
-  listMode,
   state,
-  mtype,
   kind,
-  league,
-  result,
+  beginDate,
+  endDate,
   callback
 ) {
 
   var Document = this;
 
-  var query = {};
-  if (listMode === 'WAY') {
-    query.$and = [{
-      $or: [{
-        btype: '2-WAY'
-      }, {
-        btype: '3-WAY'
-      }]
-    }];
-  } else if (listMode === '2-WAY'){
-    query.$and = [{
-      btype: '2-WAY'
-    }];
-  } else if (listMode === '3-WAY') {
-    query.$and = [{
-      btype: '3-WAY'
-    }];
-  } else {
-    query.$and = [{
-      btype: 'VARIETY'
-    }];
-  }
+  var query = {
+    '$and': []
+  };
 
-  if (mtype !== '전체') {
+  query.$and.push({
+    schedule: {
+      $gte: new Date(beginDate),
+      $lte: new Date(endDate)
+    }
+  });
+
+  if (state === '전체') {
     query.$and.push({
-      mtype: mtype
+      state: {
+        $ne: '종료'
+      }
     });
-  }
-
-  if (state !== '전체') {
+  } else {
     query.$and.push({
       state: state
     });
@@ -171,38 +113,27 @@ Model.statics.List = function(
     });
   }
 
-  if (league !== '전체') {
-    query.$and.push({
-      league: league
-    });
-  }
-
-  if (result !== '전체') {
-    query.$and.push({
-      result: result
-    });
-  }
-
-
   var subquery = {};
   if (typeof(keyword) === 'string' && keyword.length > 0) {
-    if (filter === '홈팀') {
+    if (filter === '친정팀') {
       subquery = {
-        'home.name': {
+        'team.status': 'HOME',
+        'team.name': {
           $regex: '.*' + keyword + '.*'
-        }
+        },
       };
     } else if (filter === '원정팀') {
       subquery = {
-        'away.name': {
+        'team.status': 'AWAY',
+        'team.name': {
           $regex: '.*' + keyword + '.*'
-        }
+        },
       };
-    } else if (filter === '매치주제') {
+    } else if (filter === '리그') {
       subquery = {
-        'variety.subject': {
+        'league': {
           $regex: '.*' + keyword + '.*'
-        }
+        },
       };
     }
     query.$and.push(subquery);
@@ -229,59 +160,22 @@ Model.statics.List = function(
 };
 
 Model.statics.Create = function(
-  homeName, homeScore, homeRate,
-  tieRate,
-  awayName, awayScore, awayRate,
-  varietySubject, varietyOption,
-  offset,
-  state, btype, mtype,
-  kind, league, group,
-  schedule,
+  item,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
   var newDoc = new Document();
 
-  newDoc.home.name = homeName;
-  newDoc.home.score = homeScore;
-  newDoc.home.rate = homeRate;
-  newDoc.tie.rate = tieRate;
-  newDoc.away.name = awayName;
-  newDoc.away.score = awayScore;
-  newDoc.away.rate = awayRate;
-  newDoc.variety.subject = varietySubject;
-  newDoc.variety.option = varietyOption;
-  newDoc.offset = offset;
-  newDoc.state = state;
-  newDoc.btype = btype;
-  newDoc.mtype = mtype;
-  newDoc.kind = kind;
-  newDoc.league = league;
-  newDoc.group = group;
-  newDoc.schedule = schedule;
+  newDoc.state = item.state;
+  newDoc.mtype = item.mtype;
+  newDoc.kind = item.kind;
+  newDoc.league = item.league;
+  newDoc.schedule = item.schedule;
+  newDoc.content = item.content;
+  newDoc.market = item.market;
+  newDoc.result = null;
 
-  if (btype === '2-WAY') {
-    newDoc.home.bet = 0;
-    newDoc.home.count = 0;
-    newDoc.away.bet = 0;
-    newDoc.away.count = 0;
-  } else if (btype === '3-WAY') {
-    newDoc.home.bet = 0;
-    newDoc.home.count = 0;
-    newDoc.away.bet = 0;
-    newDoc.away.count = 0;
-    newDoc.tie.bet = 0;
-    newDoc.tie.count = 0;
-  } else {
-    for (var i = 0; i < newDoc.variety.option.length; i++) {
-      newDoc.variety.option[i].bet = 0;
-      newDoc.variety.option[i].count = 0;
-    }
-  }
-  newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
-  newDoc.modifiedAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
   newDoc.save((err, doc) => {
     if (err) return callback(err);
     if (!doc) return callback(null, 'failure');
@@ -290,51 +184,43 @@ Model.statics.Create = function(
 };
 
 Model.statics.Update = function(
-  id,
-  homeName, homeScore, homeRate,
-  tieRate,
-  awayName, awayScore, awayRate,
-  varietySubject, varietyOption,
-  offset,
-  state, btype, mtype,
-  kind, league, group,
-  schedule,
+  item,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
+
+  Document.findOneAndUpdate({
+    _id: item._id
+  }, {
+    $set: {
+      mtype: item.mtype,
+      kind: item.kind,
+      league: item.league,
+      schedule: item.schedule,
+      content: item.content,
+      market: item.market,
+    }
+  }, (err, doc) => {
+    if (err) return callback(err);
+    if (!doc) return callback(null, 'failure');
+    callback(null, null, doc);
+  });
+};
+
+Model.statics.ModifyState = function(
+  id,
+  state,
+  callback
+) {
+
+  var Document = this;
 
   Document.findOneAndUpdate({
     _id: id
   }, {
     $set: {
-      home: {
-        name: homeName,
-        score: homeScore,
-        rate: homeRate
-      },
-      tie: {
-        rate: tieRate
-      },
-      away: {
-        name: awayName,
-        score: awayScore,
-        rate: awayRate
-      },
-      variety: {
-        subject: varietySubject,
-        option: varietyOption
-      },
-      offset: offset,
-      state: state,
-      btype: btype,
-      mtype: mtype,
-      kind: kind,
-      league: league,
-      group: group,
-      schedule: schedule,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      state: state
     }
   }, (err, doc) => {
     if (err) return callback(err);

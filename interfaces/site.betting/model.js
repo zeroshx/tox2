@@ -34,13 +34,8 @@ var Model = new Schema({
     type: String
   },
   createdAt: {
-    type: String
-  },
-  modifier: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -107,14 +102,14 @@ Model.statics.Create = function(
   }, (err, doc) => {
     if (err) return callback(err);
     if (doc) return callback(null, 'exist');
-    var timer = new Date();
     var newDoc = new Document();
+
     newDoc.site = item.site;
     newDoc.betCancelLimit = item.betCancelLimit;
     newDoc.betCancelCount = item.betCancelCount;
     newDoc.kindConfig = item.kindConfig;
     newDoc.creator = operator;
-    newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
+
     newDoc.save((err, doc) => {
       if (err) return callback(err);
       if (!doc) return callback(null, 'failure');
@@ -125,12 +120,10 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
   item,
-  operator,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: item._id
@@ -138,9 +131,7 @@ Model.statics.Update = function(
     $set: {
       betCancelLimit: item.betCancelLimit,
       betCancelCount: item.betCancelCount,
-      kindConfig: item.kindConfig,
-      modifier: operator,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      kindConfig: item.kindConfig
     }
   }, (err, doc) => {
     if (err) return callback(err);

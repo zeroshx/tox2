@@ -1,41 +1,45 @@
-TOX2ADMINAPP.service('AuthService', ['$q', '$http', '$window', '$rootScope',
-  function($q, $http, $window, $rootScope) {
+TOX2ADMINAPP.service('AuthService', ['$q', '$window', '$rootScope', 'CRUDFactory',
+  function($q, $window, $rootScope, CRUDFactory) {
+    var __ = this;
 
-    this.Me =  function (success, failure) {
+    __.Auth = function(success, error) {
+      return __.Me(success, error)
+        .then(function(legacy) {
+          __.GetNewMessages();
+        });
+    };
+
+    __.Me = function(success, failure) {
       var defer = $q.defer();
 
-      $http.get('/user/me').then(
-        function(response) {
-          $rootScope.__SetUser('me', response.data);
-          if (typeof success === 'function') return success(response.data, defer);
+      CRUDFactory.READ(
+        '/user/me', {},
+        function(data) {
+          $rootScope.__SetUser('me', data);
+          if (typeof success === 'function') return success(data, defer);
           defer.resolve();
         },
-        function(response) {
+        function(error) {
           $rootScope.__DeleteUser();
-          if (typeof failure === 'function') failure(response);
           defer.reject();
-          $window.location = '/';
-        }
-      );
+        });
+
       return defer.promise;
     };
 
-    this.GetNewMessages =  function (success, failure) {
+    __.GetNewMessages = function(success, failure) {
       var defer = $q.defer();
-
-      $http.get('/client/message/customer/new-received-list').then(
-        function(response) {
-          $rootScope.__SetUser('messages', response.data);
-          if (typeof success === 'function') return success(response.data, defer);
+      CRUDFactory.READ(
+        '/client/message/customer/new-received-list', {},
+        function(data) {
+          $rootScope.__SetUser('messages', data);
+          if (typeof success === 'function') return success(data, defer);
           defer.resolve();
         },
-        function(response) {
+        function(error) {
           $rootScope.__DeleteUser();
-          if (typeof failure === 'function') failure(response);
           defer.reject();
-          $window.location = '/';
-        }
-      );
+        });
       return defer.promise;
     };
   }

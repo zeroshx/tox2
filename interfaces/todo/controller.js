@@ -37,7 +37,6 @@ exports.Update = (req, res) => {
   new Promise((resolve, reject) => {
     var auth = session.GetAuthSession(req);
     req.body.item.state = '완료';
-    console.log(req.body.item);
     Model.Update(
       req.body.item,
       auth.uid,

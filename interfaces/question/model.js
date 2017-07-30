@@ -34,14 +34,12 @@ var Model = new Schema({
   operator: {
     type: String
   },
-  createdAt: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
-  },
   operatedAt: {
-    type: String
+    type: Date
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -193,7 +191,6 @@ Model.statics.Create = function(
   callback
 ) {
   var Document = this;
-  var timer = new Date();
   var newDoc = new Document();
 
   newDoc.uid = uid;
@@ -206,7 +203,6 @@ Model.statics.Create = function(
   newDoc.answer = answer;
   newDoc.state = state;
   newDoc.style = style;
-  newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
 
   newDoc.save((err, doc) => {
     if (err) return callback(err);
@@ -228,7 +224,6 @@ Model.statics.Update = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
@@ -242,8 +237,7 @@ Model.statics.Update = function(
       },
       answer: answer,
       state: state,
-      style: style,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      style: style
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -268,9 +262,9 @@ Model.statics.Answer = function(
   }, {
     $set: {
       answer: answer,
-      operator: operator,
       state: state,
-      operatedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      operator: operator,
+      operatedAt: timer.getTime()
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -287,7 +281,6 @@ Model.statics.Postpone = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id

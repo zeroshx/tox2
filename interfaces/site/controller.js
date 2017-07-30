@@ -149,10 +149,8 @@ exports.Update = (req, res) => {
   if (rep) return response.Exception(req, res, rep.msg);
 
   new Promise((resolve, reject) => {
-    var auth = session.GetAuthSession(req);
     Model.Update(
       req.body.item,
-      auth.uid,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '문서 수정에 실패하였습니다.'));

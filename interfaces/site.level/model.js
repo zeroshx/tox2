@@ -49,13 +49,8 @@ var Model = new Schema({
     type: String
   },
   createdAt: {
-    type: String
-  },
-  modifier: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -128,14 +123,14 @@ Model.statics.Create = function(
     if (err) return callback(err);
     if (doc) return callback(null, 'exist');
     var newDoc = new Document();
-    var timer = new Date();
+
     newDoc.name = item.name;
     newDoc.site = item.site;
     newDoc.bonus = item.bonus;
     newDoc.single = item.single;
     newDoc.multi = item.multi;
     newDoc.creator = operator;
-    newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
+
     newDoc.save((err, doc) => {
       if (err) return callback(err);
       if (!doc) return callback(null, 'failure');
@@ -146,12 +141,10 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
   item,
-  operator,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: item._id
@@ -159,9 +152,7 @@ Model.statics.Update = function(
     $set: {
       bonus: item.bonus,
       single: item.single,
-      multi: item.multi,
-      modifier: operator,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      multi: item.multi
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -209,9 +200,7 @@ Model.statics.ListAll = function(callback) {
     .sort('_id')
     .exec((err, docs) => {
       if (err) return callback(err);
-      callback(null, null, {
-        docs: docs
-      });
+      callback(null, null, docs);
     });
 };
 /******************************************************************

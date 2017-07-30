@@ -5,6 +5,7 @@ var capi = require('../common.api.js');
 
 var Model = require('mongoose').model('Blacklist');
 var UserModel = require('mongoose').model('User');
+var Loger = require('mongoose').model('Loger');
 
 exports.List = (req, res) => {
 
@@ -74,19 +75,21 @@ exports.Create = function(req, res) {
         });
     }
   }).then(legacy => {
-    var auth = session.GetAuthSession(req);
-    req.body.item.uid = legacy.user.uid;
-    req.body.item.nick = legacy.user.nick;
-    req.body.item.site = legacy.user.site;
-    Model.Create(
-      req.body.item,
-      auth.uid,
-      (err, exc, doc) => {
-        if (err) return response.Error(req, res, err);
-        if (exc === 'failure') return response.Exception(req, res, '문서 생성에 실패하였습니다.');
-        if (exc === 'exist') return response.Exception(req, res, '이미 등록된 회원입니다.');
-        response.Status(req, res, 200);
-      });
+    return new Promise((resolve, reject) => {
+      var auth = session.GetAuthSession(req);
+      req.body.item.uid = legacy.user.uid;
+      req.body.item.nick = legacy.user.nick;
+      req.body.item.site = legacy.user.site;
+      Model.Create(
+        req.body.item,
+        auth.uid,
+        (err, exc, doc) => {
+          if (err) return response.Error(req, res, err);
+          if (exc === 'failure') return response.Exception(req, res, '문서 생성에 실패하였습니다.');
+          if (exc === 'exist') return response.Exception(req, res, '이미 등록된 회원입니다.');
+          resolve(response.Status(req, res, 200));
+        });
+    });
   });
 };
 
@@ -101,14 +104,12 @@ exports.Update = function(req, res) {
   if (rep) return response.Exception(req, res, rep.msg);
 
   new Promise((resolve, reject) => {
-    var auth = session.GetAuthSession(req);
     Model.Update(
       req.body.item,
-      auth.uid,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '문서 수정에 실패하였습니다.'));
-        resolve(response.Finish(req, res, doc));
+        resolve(response.Status(req, res, 200));
       });
   });
 };
@@ -120,7 +121,11 @@ exports.Delete = function(req, res) {
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '문서 삭제에 실패하였습니다.'));
-        resolve(response.Finish(req, res, doc));
+        resolve(doc);
       });
+  }).then(legacy => {
+    var auth = session.GetAuthSession(req);
+    Loger.Create(auth.uid, '블랙리스트 해제 : ' + legacy.uid);
+    response.Status(req, res, 200);
   });
 };

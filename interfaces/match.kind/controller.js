@@ -38,7 +38,6 @@ exports.Create = (req, res) => {
     var form = new formidable.IncomingForm();
     form.parse(req, (err, body, file) => {
       if (err) return response.Error(req, res, err);
-
       var rep = validator.run([{
         required: true,
         value: body.name,
@@ -90,7 +89,7 @@ exports.Create = (req, res) => {
     });
   }).then(legacy => {
     return new Promise((resolve, reject) => {
-      if (!legacy.imgExist) return reject(response.Finish(req, res, legacy.kind));
+      if (!legacy.imgExist) return reject(response.Status(req, res, 200));
       fs.readFile(legacy.tempImgPath, function(err, data) {
         if (err) return reject(response.Error(req, res, err));
         legacy.image = data;
@@ -108,7 +107,7 @@ exports.Create = (req, res) => {
     return new Promise((resolve, reject) => {
       fs.unlink(legacy.tempImgPath, function(err) {
         if (err) return reject(response.Error(req, res, err));
-        resolve(response.Finish(req, res, legacy.kind));
+        resolve(response.Status(req, res, 200));
       });
     });
   });
@@ -119,7 +118,6 @@ exports.Update = (req, res) => {
     var form = new formidable.IncomingForm();
     form.parse(req, (err, body, file) => {
       if (err) return response.Error(req, res, err);
-
       var rep = validator.run([{
         required: true,
         value: body.group,
@@ -154,7 +152,7 @@ exports.Update = (req, res) => {
   }).then(legacy => {
     return new Promise((resolve, reject) => {
       Model.Update(
-        req.params.id,
+        legacy.body._id,
         legacy.body.group,
         legacy.imgPath,
         (err, exc, doc) => {
@@ -166,7 +164,7 @@ exports.Update = (req, res) => {
     });
   }).then(legacy => {
     return new Promise((resolve, reject) => {
-      if (!legacy.kind.imagePath) return resolve(legacy);
+      if (!legacy.imgExist || !legacy.kind.imagePath) return resolve(legacy);
       var preImgPath = __dirname + "/../../public" + legacy.kind.imagePath;
       if (!fs.existsSync(preImgPath)) return resolve(legacy);
       fs.unlink(preImgPath, function(err) {
@@ -176,7 +174,7 @@ exports.Update = (req, res) => {
     });
   }).then(legacy => {
     return new Promise((resolve, reject) => {
-      if (!legacy.imgExist) return reject(response.Finish(req, res, legacy.kind));
+      if (!legacy.imgExist) return reject(response.Status(req, res, 200));
       fs.readFile(legacy.tempImgPath, function(err, data) {
         if (err) return reject(response.Error(req, res, err));
         legacy.image = data;
@@ -194,7 +192,7 @@ exports.Update = (req, res) => {
     return new Promise((resolve, reject) => {
       fs.unlink(legacy.tempImgPath, function(err) {
         if (err) return reject(response.Error(req, res, err));
-        resolve(response.Finish(req, res, legacy.kind));
+        resolve(response.Status(req, res, 200));
       });
     });
   });
@@ -213,12 +211,12 @@ exports.Delete = (req, res) => {
       });
   }).then(legacy => {
     return new Promise((resolve, reject) => {
-      if (!legacy.kind.imagePath) return resolve(response.Finish(req, res, legacy.kind));
+      if (!legacy.kind.imagePath) return resolve(response.Status(req, res, 200));
       var targetPath = __dirname + "/../../public" + legacy.kind.imagePath;
-      if (!fs.existsSync(targetPath)) return resolve(response.Finish(req, res, legacy.kind));
+      if (!fs.existsSync(targetPath)) return resolve(response.Status(req, res, 200));
       fs.unlink(targetPath, function(err) {
         if (err) return reject(response.Error(req, res, err));
-        resolve(response.Finish(req, res, legacy.kind));
+        resolve(response.Status(req, res, 200));
       });
     });
   });

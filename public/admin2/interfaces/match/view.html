@@ -1,0 +1,121 @@
+<breadcrumb current-path-bind="_path"></breadcrumb>
+
+<view-title title-info-bind="_viewTitle"></view-title>
+
+<form-control item-bind="_item" format-bind="_formFormat" action-bind="_formAction" switch-bind="_formSwitch" create-function-bind="Add" modify-function-bind="Modify" cancel-function-bind="CloseForm"></form-control>
+
+<search-form query-bind="_query" search-filter-bind="_searchFilter" action-function-bind="List"></search-form>
+
+<div class="portlet light">
+  <div class="portlet-body">
+
+    <div class="row" data-ng-show="!_actionMode">
+      <div class="col-xs-12">
+        <button class="btn btn-circle red-soft" data-ng-click="OpenGroupResultMode()">결과처리</button>
+        <button class="btn btn-circle green-dark" data-ng-click="CreateForm()">등록</button>
+        <div class="btn-group pull-right">
+          <button type="button" class="btn btn-default">상태변경</button>
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true" aria-expanded="true">
+              <i class="fa fa-angle-down"></i>
+          </button>
+          <ul class="dropdown-menu arrow-right" role="menu">
+            <li><a href="javascript:;" data-ng-click="ChangeState('대기')">대기</a></li>
+            <li><a href="javascript:;" data-ng-click="ChangeState('배팅')">배팅</a></li>
+            <li><a href="javascript:;" data-ng-click="ChangeState('마감')">마감</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" data-ng-show="_actionMode === 'GROUP_RESULT'">
+      <div class="col-xs-12">
+        <button class="btn btn-outline green-meadow" data-ng-click="GroupResultMode()">완료</button>
+        <button class="btn btn-outline red" data-ng-click="CancelGroupResultMode()">취소</button>
+      </div>
+    </div>
+
+    <div class="table-scrollable">
+      <table class="table table-hover table-center table-align-center table-nowrap">
+        <thead>
+          <tr class="active">
+            <th><input type="checkbox" data-ng-click="SelectAll()" data-ng-model="_selectLeader"></th>
+            <th>상태</th>
+            <th>일시</th>
+            <th>종목</th>
+            <th>리그</th>
+            <th>매치</th>
+            <th>결과</th>
+            <th>옵션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable" data-ng-repeat-start="doc in _list">
+            <td stop-click><input type="checkbox" data-ng-init="_list[$index]._cbExist = true" data-ng-model="_list[$index]._cbSelected"></td>
+            <td>
+              <span class="text-info" data-ng-if="doc.state === '대기'">{{ doc.state }}</span>
+              <span class="text-success" data-ng-if="doc.state === '배팅'">{{ doc.state }}</span>
+              <span class="text-warning" data-ng-if="doc.state === '마감'">{{ doc.state }}</span>
+              <span class="text-danger" data-ng-if="doc.state === '종료'">{{ doc.state }}</span>
+            </td>
+            <td>{{ doc.schedule | datetime }}</td>
+            <td>{{ doc.kind }}</td>
+            <td>{{ doc.league }}</td>
+            <td>
+              <span data-ng-repeat="n in doc.content">
+                <span data-ng-if="!$first">{{' : '}}</span>{{n.name}}
+              </span>
+            </td>
+            <td>
+              <span class="text-danger" data-ng-if="!doc.result">미처리</span>
+              <span data-ng-if="doc.result">{{ doc.result }}</span>
+            </td>
+            <td stop-click>
+              <button type="button" class="btn btn-xs yellow" data-ng-click="ModifyForm(doc)">수정</button>
+              <button type="button" class="btn btn-xs red-soft" data-ng-click="OpenResultMode($index)">결과처리</button>
+            </td>
+          </tr>
+          <tr data-ng-repeat-end data-ng-show="_list[$index]._show">
+            <td colspan="8" data-ng-if="doc.mtype === '스포츠'">
+              스포츠
+            </td>
+            <td colspan="8" data-ng-if="doc.mtype === '버라이어티'">
+              버라이어티
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pagination last-page-bind="_lastPage" query-bind="_query" action-function-bind="List"></pagination>
+
+    <div class="row">
+      <div class="col-xs-12">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="detailView" tabindex="-1" role="dialog" data-backdrop="static" style="height: 80%">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">총판 정보</h4>
+      </div>
+      <div class="modal-body">
+
+        <detail-view detail-view-format-bind="_detailViewFormat"></detail-view>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-circle yellow" data-dismiss="modal" data-ng-click="ModifyForm(_item)">수정</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn blue-sharp" data-dismiss="modal">확인</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -187,7 +187,7 @@ exports.CustomerList = (req, res) => {
     var auth = session.GetAuthSession(req);
     Model.CustomerList(
       auth.site,
-      auth.distributor.name,
+      auth.distributor,
       auth.uid,
       req.query.page,
       req.query.pageSize,
@@ -210,9 +210,9 @@ exports.CustomerMessage = (req, res) => {
         if (exc === 'not-found') return reject(response.Exception(req, res, '해당 쪽지를 찾을 수 없습니다.'));
         if (doc.category === '전체') return resolve();
         if (doc.category === '사이트' && auth.site === doc.receiver.site) return resolve();
-        if (doc.category === '총판' && auth.distributor.name === doc.receiver.distributor) return resolve();
+        if (doc.category === '총판' && auth.distributor === doc.receiver.distributor) return resolve();
         if (doc.category === '회원' && auth.uid === doc.receiver.uid) return resolve();
-        reject(response.Finish(req, res, doc));        
+        reject(response.Finish(req, res, doc));
       });
   }).then(legacy => {
     return new Promise((resolve, reject) => {

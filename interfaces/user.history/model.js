@@ -24,10 +24,8 @@ var Model = new Schema({
     type: String
   },
   createdAt: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -118,7 +116,6 @@ Model.statics.Create = function(
   callback
 ) {
   var Document = this;
-  var timer = new Date();
   var newDoc = new Document();
 
   newDoc.uid = uid;
@@ -127,7 +124,6 @@ Model.statics.Create = function(
   newDoc.domain = domain;
   newDoc.ip = ip;
   newDoc.state = state;
-  newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
   newDoc.save((err, doc) => {
     if (err) return callback(err);
     if (!doc) return callback(null, 'failure');
@@ -144,7 +140,6 @@ Model.statics.Update = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
@@ -152,8 +147,7 @@ Model.statics.Update = function(
     $set: {
       nick: nick,
       site: site,
-      state: state,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      state: state
     }
   }, (err, doc) => {
     if (err) return callback(err);

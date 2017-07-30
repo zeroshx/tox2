@@ -7,14 +7,17 @@ var UserModel = require('mongoose').model('User');
 var SiteModel = require('mongoose').model('Site');
 var ManagerModel = require('mongoose').model('Manager');
 
+var exceptionMsg = '새로고침 후에 다시 시도 바랍니다. 문제가 지속될 경우 로그인 화면에서 고객센터로 문의 바랍니다.';
+
 exports.CustomerConfig = (req, res) => {
   new Promise((resolve, reject) => {
+    console.log('1');
     var auth = session.GetAuthSession(req);
     UserModel.CheckBasicSetting(
       auth.id,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
-        if (exc === 'not-found') return reject(response.Error(req, res, '회원 기본설정 셋팅을 찾을 수 없습니다.'));
+        if (exc === 'not-found') return reject(response.Exception(req, res, exceptionMsg));
         if (doc) return reject(response.Redirect(req, res, '/customer'));
         resolve({
           auth: auth,
@@ -25,7 +28,7 @@ exports.CustomerConfig = (req, res) => {
     return new Promise((resolve, reject) => {
       SiteModel.ListAll(function(err, exc, doc) {
         if (err) return reject(response.Error(req, res, err));
-        legacy.siteList = doc.docs;
+        legacy.siteList = doc;
         resolve(legacy);
       });
     });
@@ -33,7 +36,7 @@ exports.CustomerConfig = (req, res) => {
     return new Promise((resolve, reject) => {
       ManagerModel.GetSingupConfig((err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
-        if (msg) return reject(response.Error(req, res, msg));
+        if (exc === 'not-found') return reject(response.Exception(req, res, exceptionMsg));
         resolve(response.Render(req, res, 'customer-config/index', {
           siteList: legacy.siteList,
           bonusEmail: capi.Number2Currency(doc.bonus.email),
@@ -76,7 +79,7 @@ exports.SubmitCustomerConfig = (req, res) => {
       auth.id,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
-        if (exc === 'not-found') return reject(response.Error(req, res, '회원 기본설정 셋팅을 찾을 수 없습니다.'));
+        if (exc === 'not-found') return reject(response.Exception(req, res, exceptionMsg));
         if (doc) return reject(response.Finish(req, res, {
           redirectTo: '/customer'
         }));
@@ -100,7 +103,7 @@ exports.SubmitCustomerConfig = (req, res) => {
         req.body.site,
         (err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
-          if (exc === 'not-found') return reject(response.Exception(req, res, '선택하신 사이트 정보를 찾을 수 없습니다.'));
+          if (exc === 'not-found') return reject(response.Exception(req, res, exceptionMsg));
           if (doc.state === '정지') return reject(response.Exception(req, res, '선택하신 사이트는 정지되어 이용할 수 없습니다.'));
           legacy.site = doc;
           resolve(legacy);
@@ -111,7 +114,7 @@ exports.SubmitCustomerConfig = (req, res) => {
       ManagerModel.GetSingupConfig(
         (err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
-          if (exc === 'not-found') return reject(response.Error(req, res, '회원가입 보너스 정보를 찾을 수 없습니다.'));
+          if (exc === 'not-found') return reject(response.Exception(req, res, exceptionMsg));
           var chip = Number(legacy.site.config.chip);
           if (req.body.phone) {
             chip += Number(doc.bonus.phone);
@@ -141,8 +144,8 @@ exports.SubmitCustomerConfig = (req, res) => {
         req.body.recommander,
         (err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
-          if (exc === 'exist') return reject(response.Error(req, res, '이미 존재하는 닉네임입니다.'));
-          if (exc === 'failure') return reject(response.Error(req, res, '회원 기본설정에 실패하였습니다.'));
+          if (exc === 'exist') return reject(response.Exception(req, res, '이미 존재하는 닉네임입니다.'));
+          if (exc === 'failure') return reject(response.Exception(req, res, exceptionMsg));
           legacy.user = doc;
           resolve(legacy);
         });
@@ -154,7 +157,7 @@ exports.SubmitCustomerConfig = (req, res) => {
         1,
         (err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
-          if (exc === 'failure') return reject(response.Error(req, res, '사이트 회원수 정보 수정에 실패하였습니다.'));
+          if (exc === 'failure') return reject(response.Exception(req, res, exceptionMsg));
           session.SetAuthSession(req, legacy.user);
           resolve(response.Finish(req, res, {
             redirectTo: '/customer'

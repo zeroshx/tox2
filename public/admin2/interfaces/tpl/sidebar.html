@@ -67,6 +67,26 @@
 
     <li class="nav-item">
       <a href class="nav-link nav-toggle">
+        <i class="{{menu.betting.icon}}"></i>
+        <span class="title">{{menu.betting.name}}</span>
+        <span class="arrow"></span>
+      </a>
+      <ul class="sub-menu">
+        <li>
+          <a ui-sref="{{menu.betting.submenu[0].path}}">
+            <i class="{{menu.betting.submenu[0].icon}}"></i> {{menu.betting.submenu[0].name}}</span>
+          </a>
+        </li>
+        <li>
+          <a ui-sref="{{menu.betting.submenu[1].path}}">
+            <i class="{{menu.betting.submenu[1].icon}}"></i> {{menu.betting.submenu[1].name}}</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a href class="nav-link nav-toggle">
         <i class="{{menu.match.icon}}"></i>
         <span class="title">{{menu.match.name}}</span>
         <span class="arrow"></span>
@@ -85,16 +105,6 @@
         <li>
           <a ui-sref="{{menu.match.submenu[2].path}}">
             <i class="{{menu.match.submenu[2].icon}}"></i> {{menu.match.submenu[2].name}}</span>
-          </a>
-        </li>
-        <li>
-          <a ui-sref="{{menu.match.submenu[3].path}}">
-            <i class="{{menu.match.submenu[3].icon}}"></i> {{menu.match.submenu[3].name}}</span>
-          </a>
-        </li>
-        <li>
-          <a ui-sref="{{menu.match.submenu[4].path}}">
-            <i class="{{menu.match.submenu[4].icon}}"></i> {{menu.match.submenu[4].name}}</span>
           </a>
         </li>
       </ul>
@@ -185,6 +195,11 @@
         <li>
           <a ui-sref="{{menu.distributor.submenu[0].path}}">
             <i class="{{menu.distributor.submenu[0].icon}}"></i> {{menu.distributor.submenu[0].name}}</span>
+          </a>
+        </li>
+        <li>
+          <a ui-sref="{{menu.distributor.submenu[1].path}}">
+            <i class="{{menu.distributor.submenu[1].icon}}"></i> {{menu.distributor.submenu[1].name}}</span>
           </a>
         </li>
       </ul>

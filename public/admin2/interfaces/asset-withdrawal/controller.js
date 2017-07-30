@@ -144,7 +144,7 @@ angular.module('TOX2ADMINAPP').controller('WithdrawalCtrl', [
       });
     };
 
-    $scope.List = function() {
+    $rootScope.__WithdrawalList = $scope.List = function() {
       PApi.StartLoading();
       WithdrawalService.List($scope._query, function(data) {
         if(data.failure) return PApi.Alert(data.failure);

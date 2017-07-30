@@ -13,6 +13,7 @@ angular.module('TOX2ADMINAPP').service('SiteService', [
     };
 
     __.Init = function() {
+      console.log('site');
       return __.List(_query,
         function(data, defer) {
           defer.resolve({

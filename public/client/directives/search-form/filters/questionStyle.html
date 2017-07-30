@@ -1,0 +1,13 @@
+<div class="input-group">
+  <input type="text" class="form-control" data-ng-model="_query.questionStyle">
+  <div class="input-group-btn">
+    <button type="button" id="btn-questionStyle" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    분류 <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li><a href data-ng-click="_query.questionStyle = '전체'">전체</a></li>
+      <li><a href data-ng-click="_query.questionStyle = '회원'">회원</a></li>
+      <li><a href data-ng-click="_query.questionStyle = '비회원'">비회원</a></li>
+    </ul>
+  </div>
+</div>

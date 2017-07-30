@@ -1,9 +1,9 @@
 /* Setup blank page controller */
 angular.module('TOX2ADMINAPP').controller('MessageCtrl', [
-  '$rootScope', '$scope',
+  '$rootScope', '$scope', '$filter',
   'MessageService', 'PApi', 'settings', 'init', 'sites', 'distributors',
   function(
-    $rootScope, $scope,
+    $rootScope, $scope, $filter,
     MessageService, PApi, settings, init, sites, distributors
   ) {
     $scope.$on('$viewContentLoaded', function() {
@@ -38,11 +38,11 @@ angular.module('TOX2ADMINAPP').controller('MessageCtrl', [
       element: [{
         label: '제목',
         type: 'text',
-        bind: '.title'
+        bind: 'title'
       }, {
         label: '내용',
         type: 'multi-text',
-        bind: '.content',
+        bind: 'content',
         rows: 5
       }]
     };
@@ -51,7 +51,7 @@ angular.module('TOX2ADMINAPP').controller('MessageCtrl', [
     //// Common Member Functions.
 
     $scope.DetailView = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._detailViewFormat = [
         [{
           label: '보낸이',
@@ -75,12 +75,12 @@ angular.module('TOX2ADMINAPP').controller('MessageCtrl', [
         [{
           label: '보낸 일시',
           type: 'text',
-          value: doc.createdAt,
+          value: $filter('datetime')(doc.createdAt),
           width: [2, 4]
         }, {
           label: '받은 일시',
           type: 'text',
-          value: doc.confirmedAt,
+          value: $filter('datetime')(doc.confirmedAt),
           width: [2, 4]
         }],
       ];
@@ -146,7 +146,7 @@ angular.module('TOX2ADMINAPP').controller('MessageCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();
@@ -264,11 +264,11 @@ angular.module('TOX2ADMINAPP').controller('MessageCtrl', [
       $scope._formFormatCopy.element.unshift({
         label: '사이트',
         type: 'text-dropdown',
-        bind: '.receiver.site',
+        bind: 'receiver.site',
         dropdown: {
           class: 'btn-default',
           property: 'name',
-          list: sites.docs
+          list: sites
         }
       });
       $scope.CreateForm();
@@ -281,11 +281,11 @@ angular.module('TOX2ADMINAPP').controller('MessageCtrl', [
       $scope._formFormatCopy.element.unshift({
         label: '총판',
         type: 'text-dropdown',
-        bind: '.receiver.distributor',
+        bind: 'receiver.distributor',
         dropdown: {
           class: 'btn-default',
           property: 'name',
-          list: distributors.docs
+          list: distributors
         }
       });
       $scope.CreateForm();
@@ -299,11 +299,11 @@ angular.module('TOX2ADMINAPP').controller('MessageCtrl', [
       $scope._formFormatCopy.element.unshift({
         label: '아이디',
         type: 'text',
-        bind: '.receiver.uid'
+        bind: 'receiver.uid'
       },{
         label: '닉네임',
         type: 'text',
-        bind: '.receiver.nick'
+        bind: 'receiver.nick'
       });
       $scope.CreateForm();
       $scope._item.category = '회원';

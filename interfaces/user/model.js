@@ -50,10 +50,10 @@ var Model = new Schema({
       type: Number
     },
     joinDate: {
-      type: String
+      type: Date
     },
     dropOutDate: {
-      type: String
+      type: Date
     }
   },
   level: {
@@ -69,7 +69,7 @@ var Model = new Schema({
       type: String
     },
     date: {
-      type: String
+      type: Date
     }
   }],
   account: {
@@ -102,7 +102,8 @@ var Model = new Schema({
       type: String
     },
     date: {
-      type: String
+      type: Date,
+      default: Date.now
     }
   },
   signup: {
@@ -113,13 +114,11 @@ var Model = new Schema({
       type: String
     },
     date: {
-      type: String
+      type: Date,
+      default: Date.now
     }
   },
   recommander: {
-    type: String
-  },
-  modifiedAt: {
     type: String
   }
 });
@@ -226,6 +225,19 @@ Model.statics.List = function(
   });
 };
 
+
+Model.statics.AllMember = function(
+  callback
+) {
+  var Document = this;
+  Document.find({})
+  .lean()
+  .exec((err, docs) => {
+    if (err) return callback(err);
+    callback(null, null, docs);
+  });
+};
+
 Model.statics.DistributorMember = function(
   page,
   pageSize,
@@ -279,12 +291,11 @@ Model.statics.Create = function(
   }, function(err, doc) {
     if (err) return callback(err);
     if (doc) {
-      if(doc.uid === item.uid) return callback(null, 'exist-uid');
-      if(doc.nick === item.nick) return callback(null, 'exist-nick');
+      if (doc.uid === item.uid) return callback(null, 'exist-uid');
+      if (doc.nick === item.nick) return callback(null, 'exist-nick');
     }
     var newDoc = new Document();
-    var timer = new Date();
-    var datetime = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
+
     newDoc.uid = item.uid;
     newDoc.nick = item.nick;
     newDoc.password = GenerateHash(item.password);
@@ -302,13 +313,11 @@ Model.statics.Create = function(
     newDoc.recommander = item.recommander;
     newDoc.signup = {
       domain: item.domain,
-      ip: item.ip,
-      date: datetime
+      ip: item.ip
     };
     newDoc.login = {
       domain: item.domain,
-      ip: item.ip,
-      date: datetime
+      ip: item.ip
     };
 
     newDoc.cash = 0;
@@ -341,7 +350,6 @@ Model.statics.Update = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: item._id
@@ -360,8 +368,7 @@ Model.statics.Update = function(
         number: item.account.number,
         pin: item.account.pin
       },
-      recommander: item.recommander,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      recommander: item.recommander
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -399,8 +406,7 @@ Model.statics.Signup = function(
     if (err) return callback(err);
     if (doc) return callback(null, 'exist');
     var newDoc = new Document();
-    var timer = new Date();
-    var datetime = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
+
     newDoc.uid = uid;
     newDoc.password = GenerateHash(password);
     newDoc.distributor = {
@@ -422,14 +428,13 @@ Model.statics.Signup = function(
     };
     newDoc.signup = {
       domain: domain,
-      ip: ip,
-      date: datetime
+      ip: ip
     };
     newDoc.login = {
       domain: domain,
-      ip: ip,
-      date: datetime
+      ip: ip
     };
+
     newDoc.save((err, doc) => {
       if (err) return callback(err);
       if (!doc) return callback(null, 'failure');
@@ -456,7 +461,7 @@ Model.statics.Login = function(
     // hash = GenerateHash(password);
     if (doc.password == password) {
       var timer = new Date();
-      doc.login.date = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
+      doc.login.date = timer.getTime();
       doc.login.domain = domain;
       doc.login.ip = ip;
       doc.save((err, doc) => {
@@ -555,7 +560,6 @@ Model.statics.UpdateBasicSetting = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOne({
     nick: nick
@@ -576,8 +580,7 @@ Model.statics.UpdateBasicSetting = function(
         level: level,
         state: state,
         site: site,
-        recommander: recommander,
-        modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+        recommander: recommander
       }
     }, {
       new: true
@@ -603,7 +606,6 @@ Model.statics.ModifyMoney = function(
   }
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
@@ -613,9 +615,6 @@ Model.statics.ModifyMoney = function(
       chip: chip,
       point: point,
       debt: debt
-    },
-    $set: {
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
     }
   }, {
     new: true
@@ -638,7 +637,6 @@ Model.statics.ModifyStat = function(
   }
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
@@ -646,9 +644,6 @@ Model.statics.ModifyStat = function(
     $inc: {
       'stat.deposit': deposit,
       'stat.withdrawal': withdrawal
-    },
-    $set: {
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -675,10 +670,9 @@ Model.statics.JoinDistributor = function(
         name: distributorName,
         rank: distributorRank,
         contribution: 0,
-        joinDate: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString(),
-        dropOutDate: null
-      },
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+        dropOutDate: null,
+        joinDate: timer.getTime()
+      }
     }
   }, {
     new: true
@@ -696,14 +690,12 @@ Model.statics.ModifyDistributor = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
   }, {
     $set: {
-      'distributor.rank': distributorRank,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      'distributor.rank': distributorRank
     }
   }, {
     new: true
@@ -731,9 +723,8 @@ Model.statics.DropOutDistributor = function(
         rank: null,
         contribution: null,
         joinDate: null,
-        dropOutDate: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
-      },
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+        dropOutDate: timer.getTime()
+      }
     }
   }, {
     new: true
@@ -744,9 +735,9 @@ Model.statics.DropOutDistributor = function(
   });
 };
 
-Model.statics.ModifyMemo = function(
+Model.statics.AddMemo = function(
   id,
-  memo,
+  content,
   callback
 ) {
 
@@ -756,8 +747,36 @@ Model.statics.ModifyMemo = function(
   Document.findOneAndUpdate({
     _id: id
   }, {
-    $set: {
-      memo: memo
+    $push: {
+      memo: {
+        content: content,
+        date: timer.getTime()
+      }
+    }
+  }, {
+    new: true
+  }, (err, doc) => {
+    if (err) return callback(err);
+    if (!doc) return callback(null, 'failure');
+    callback(null, null, doc);
+  });
+};
+
+Model.statics.RemoveMemo = function(
+  id,
+  mid,
+  callback
+) {
+  var Document = this;
+  var timer = new Date();
+
+  Document.findOneAndUpdate({
+    _id: id
+  }, {
+    $pull: {
+      memo: {
+        _id: mid
+      }
     }
   }, {
     new: true

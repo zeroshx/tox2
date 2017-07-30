@@ -13,6 +13,7 @@ var helmet = require('helmet');
 var exfig = require('./configs/express.js');
 var mongoose = require('./setup/mongoose.js');
 var app = express();
+
 /********************************************************************
   EXPRESS CONFIGURATION
 ********************************************************************/
@@ -33,7 +34,7 @@ app.use(session({
   name: exfig.session_name,
   secret: exfig.session_secret,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     path: '/',
     httpOnly: true,
@@ -57,6 +58,7 @@ app.use(helmet());
   EXTERNAL MODULES CONFIGURATION
 ********************************************************************/
 mongoose();
+app.messenger = require('./setup/messenger.js');
 /********************************************************************
   ROUTING & MOUNTING
 ********************************************************************/
@@ -89,5 +91,5 @@ app.use(function(err, req, res, next) {
   res.sendStatus(err.status || 500);
 });
 
-console.log(app.get('env'));
+
 module.exports = app;

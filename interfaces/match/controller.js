@@ -1,136 +1,8 @@
 var response = require('../response.handler.js');
 var validator = require('../validation.handler.js');
+var capi = require('../common.api.js');
 
 var Model = require('mongoose').model('Match');
-
-function validation(body) {
-
-  var rep = validator.run([{
-    required: true,
-    value: body.btype,
-    validator: 'btype'
-  }, {
-    required: true,
-    value: body.mtype,
-    validator: 'mtype'
-  }, {
-    required: true,
-    value: body.state,
-    validator: 'matchState'
-  }, {
-    required: true,
-    value: body.schedule,
-    validator: 'schedule'
-  }, {
-    required: true,
-    value: body.kind,
-    validator: 'kind'
-  }, {
-    required: true,
-    value: body.league,
-    validator: 'league'
-  }]);
-
-  if (rep) return rep;
-
-  var valueList = [];
-  if (body.btype === '2-WAY') {
-
-    valueList = [{
-      required: true,
-      value: body.homeName,
-      validator: 'team'
-    }, {
-      required: true,
-      value: body.homeRate,
-      validator: 'rate'
-    }, {
-      required: true,
-      value: body.awayName,
-      validator: 'team'
-    }, {
-      required: true,
-      value: body.awayRate,
-      validator: 'rate'
-    }];
-
-    if (body.mtype === '핸디캡' || body.mtype === '언더오버') {
-      valueList.push({
-        required: true,
-        value: body.offset,
-        validator: 'offset'
-      });
-    } else {
-      body.offset = null;
-    }
-
-    body.result = null;
-    body.homeScore = null;
-    body.awayScore = null;
-    body.tieRate = null;
-    body.varietySubject = null;
-    body.varietyOption = null;
-
-    return validator.run(valueList);
-
-  } else if (body.btype === '3-WAY') {
-
-    valueList = [{
-      required: true,
-      value: body.homeName,
-      validator: 'team'
-    }, {
-      required: true,
-      value: body.homeRate,
-      validator: 'rate'
-    }, {
-      required: true,
-      value: body.awayName,
-      validator: 'team'
-    }, {
-      required: true,
-      value: body.awayRate,
-      validator: 'rate'
-    }, {
-      required: true,
-      value: body.tieRate,
-      validator: 'rate'
-    }];
-
-    body.homeScore = null;
-    body.awayScore = null;
-    body.result = null;
-    body.offset = null;
-    body.varietySubject = null;
-    body.varietyOption = null;
-
-    return validator.run(valueList);
-
-  } else { // req.body.btype === 'VARIETY'
-
-    valueList = [{
-      required: true,
-      value: body.varietySubject,
-      validator: 'subject'
-    }, {
-      required: true,
-      value: body.varietyOption,
-      validator: 'option'
-    }];
-
-    body.result = null;
-    body.homeName = null;
-    body.homeScore = null;
-    body.homeRate = null;
-    body.tieRate = null;
-    body.awayName = null;
-    body.awayScore = null;
-    body.awayRate = null;
-    body.offset = null;
-
-    return validator.run(valueList);
-  }
-}
 
 exports.List = (req, res) => {
 
@@ -142,12 +14,10 @@ exports.List = (req, res) => {
       req.query.pageSize,
       req.query.searchFilter,
       req.query.searchKeyword,
-      req.query.listMode,
-      req.query.state,
-      req.query.mtype,
-      req.query.kind,
-      req.query.league,
-      req.query.result,
+      req.query.matchState,
+      req.query.matchKind,
+      req.query.date1,
+      req.query.date2,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         resolve(response.Finish(req, res, doc));
@@ -157,47 +27,156 @@ exports.List = (req, res) => {
 
 exports.Create = (req, res) => {
 
-  var rep = validation(req.body);
+  var item = req.body.item;
+
+  if(item.mtype === '스포츠') {
+    item.temp = [];
+    var l = item.content.length;
+    for(i = 0; i < l; i++) {
+      if(item.content[i].status === 'HOME' || item.content[i].status === 'AWAY') {
+        item.temp.push({
+          status: item.content[i].status,
+          name: item.content[i].name
+        });
+      }
+    }
+  } else if(item.mtype === '버라이어티') {
+    item.temp = [];
+    var l = item.content.length;
+    for(i = 0; i < l; i++) {
+      if(item.content[i].status === 'VARIETY') {
+        item.temp.push({
+          status: item.content[i].status,
+          name: item.content[i].name
+        });
+      }
+    }
+  }
+  item.content = item.temp;
+
+  var rep = validator.run([{
+    required: true,
+    value: req.body.item.state,
+    validator: 'matchState'
+  }, {
+    required: true,
+    value: req.body.item.mtype,
+    validator: 'mtype'
+  }, {
+    required: true,
+    value: req.body.item.kind,
+    validator: 'kind'
+  }, {
+    required: true,
+    value: req.body.item.league,
+    validator: 'league'
+  }, {
+    required: true,
+    value: req.body.item.content,
+    validator: 'matchContent'
+  }, {
+    required: true,
+    value: req.body.item.market,
+    validator: 'market'
+  }]);
+
   if (rep) return response.Exception(req, res, rep.msg);
 
   new Promise((resolve, reject) => {
     Model.Create(
-      req.body.homeName, req.body.homeScore, req.body.homeRate,
-      req.body.tieRate,
-      req.body.awayName, req.body.awayScore, req.body.awayRate,
-      req.body.varietySubject, req.body.varietyOption,
-      req.body.offset,
-      req.body.state, req.body.btype, req.body.mtype,
-      req.body.kind, req.body.league, /*group*/ null,
-      req.body.schedule,
+      req.body.item,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '문서 생성에 실패하였습니다.'));
-        resolve(response.Finish(req, res, doc));
+        resolve(response.Status(req, res, 200));
       });
   });
 };
 
 exports.Update = function(req, res) {
 
-  var rep = validation(req.body);
+  var item = req.body.item;
+
+  if(item.mtype === '스포츠') {
+    item.temp = [];
+    var l = item.content.length;
+    for(i = 0; i < l; i++) {
+      if(item.content[i].status === 'HOME' || item.content[i].status === 'AWAY') {
+        item.temp.push({
+          status: item.content[i].status,
+          name: item.content[i].name
+        });
+      }
+    }
+  } else if(item.mtype === '버라이어티') {
+    item.temp = [];
+    var l = item.content.length;
+    for(i = 0; i < l; i++) {
+      if(item.content[i].status === 'VARIETY') {
+        item.temp.push({
+          status: item.content[i].status,
+          name: item.content[i].name
+        });
+      }
+    }
+  }
+  item.content = item.temp;
+
+  var rep = validator.run([{
+    required: true,
+    value: req.body.item.mtype,
+    validator: 'mtype'
+  }, {
+    required: true,
+    value: req.body.item.kind,
+    validator: 'kind'
+  }, {
+    required: true,
+    value: req.body.item.league,
+    validator: 'league'
+  }, {
+    required: true,
+    value: req.body.item.content,
+    validator: 'matchContent'
+  }, {
+    required: true,
+    value: req.body.item.market,
+    validator: 'market'
+  }]);
+
   if (rep) return response.Exception(req, res, rep.msg);
 
   new Promise((resolve, reject) => {
     Model.Update(
-      req.params.id,
-      req.body.homeName, req.body.homeScore, req.body.homeRate,
-      req.body.tieRate,
-      req.body.awayName, req.body.awayScore, req.body.awayRate,
-      req.body.varietySubject, req.body.varietyOption,
-      req.body.offset,
-      req.body.state, req.body.btype, req.body.mtype,
-      req.body.kind, req.body.league, /*group*/ null,
-      req.body.schedule,
+      req.body.item,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '문서 수정에 실패하였습니다.'));
-        resolve(response.Finish(req, res, doc));
+        resolve(response.Status(req, res, 200));
+      });
+  });
+};
+
+exports.State = function(req, res) {
+
+  if(req.body.state === '종료') return response.Exception(req, res, '임의로 \'종료\' 상태로 변경할 수 없습니다.');
+
+  var rep = validator.run([{
+    required: true,
+    value: req.body.state,
+    validator: 'matchState'
+  }]);
+
+  if (rep) return response.Exception(req, res, rep.msg);
+
+  new Promise((resolve, reject) => {
+    Model.ModifyState(
+      req.body.id,
+      req.body.state,
+      (err, exc, doc) => {
+        if (err) return reject(response.Error(req, res, err));
+        if (exc === 'failure') return reject(response.Exception(req, res, '문서 수정에 실패하였습니다.'));
+        resolve(response.Status(req, res, 200));
       });
   });
 };
@@ -209,7 +188,7 @@ exports.Delete = function(req, res) {
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '문서 삭제에 실패하였습니다.'));
-        resolve(response.Finish(req, res, doc));
+        resolve(response.Status(req, res, 200));
       });
   });
 };

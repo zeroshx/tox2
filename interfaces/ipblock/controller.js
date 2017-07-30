@@ -44,7 +44,7 @@ exports.Create = (req, res) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'exist') return reject(response.Exception(req, res, '이미 차단된 아이피 주소입니다.'));
         if (exc === 'failure') return reject(response.Exception(req, res, '문서 생성에 실패하였습니다.'));
-        resolve(response.Finish(req, res, doc));
+        resolve(response.Status(req, res, 200));
       });
   });
 };
@@ -60,14 +60,12 @@ exports.Update = (req, res) => {
   if (rep) return response.Exception(req, res, rep.msg);
 
   new Promise((resolve, reject) => {
-    var auth = session.GetAuthSession(req);
     Model.Update(
       req.body.item,
-      auth.uid,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '문서 수정에 실패하였습니다.'));
-        resolve(response.Finish(req, res, doc));
+        resolve(response.Status(req, res, 200));
       });
   });
 };
@@ -79,7 +77,7 @@ exports.Delete = (req, res) => {
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '문서 삭제에 실패하였습니다.'));
-        resolve(response.Finish(req, res, doc));
+        resolve(response.Status(req, res, 200));
       });
   });
 };

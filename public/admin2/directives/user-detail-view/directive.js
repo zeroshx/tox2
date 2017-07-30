@@ -12,7 +12,7 @@ angular.module('TOX2ADMINAPP')
         _target: '@targetBind'
       },
       link: function(scope, element, attrs, ctrl, transclude) {
-        transclude(scope.$parent, function(clone, scope) {
+        transclude(function(clone, scope) {
           element.append(clone);
         });
         element.on({
@@ -92,6 +92,7 @@ angular.module('TOX2ADMINAPP')
             if (data.account.bank && data.account.number) {
               accountValue = '[' + data.account.bank + '] ' + data.account.number;
             }
+            $ctrl._user = data;
             $ctrl._detailViewFormat = [
               [{
                 label: '아이디',
@@ -174,17 +175,25 @@ angular.module('TOX2ADMINAPP')
               [{
                 label: '가입일시',
                 type: 'text',
-                value: data.signup.date,
+                value: $filter('datetime')(data.signup.date),
                 width: [2, 4]
               }, {
                 label: '최근 로그인',
                 type: 'text',
-                value: data.login.date,
+                value: $filter('datetime')(data.login.date),
                 width: [2, 4]
+              }],
+              [{
+                label: '메모',
+                type: 'user-memo',
+                value: $ctrl._user,
+                api: {
+                  RemoveMemo: $ctrl.RemoveMemo,
+                  AddMemo: $ctrl.AddMemo,
+                },
+                width: [2, 10]
               }]
             ];
-            $ctrl.memo = data.memo;
-            $ctrl._user = data;
             defer.resolve();
           },
           function(error) {
@@ -204,13 +213,13 @@ angular.module('TOX2ADMINAPP')
           });
       };
 
-      $ctrl.ModifyMemoAPI = function(memo) {
+      $ctrl.AddMemoAPI = function(memo) {
         var defer = $q.defer();
-        CRUDFactory.UPDATE(
+        CRUDFactory.CREATE(
           '/user/memo', {
             mode: source.mode,
             target: source.target,
-            memo: memo
+            content: memo
           },
           function(data) {
             if (data.failure) return defer.reject(data.failure);
@@ -222,11 +231,15 @@ angular.module('TOX2ADMINAPP')
         return defer.promise;
       }
 
-      $ctrl.ModifyMemo = function(memo, comment) {
+      $ctrl.AddMemo = function(memo) {
+        if (!memo) return;
         PApi.StartLoading();
-        $ctrl.ModifyMemoAPI(memo)
+        $ctrl.AddMemoAPI(memo)
           .then(function(legacy) {
-            PApi.Alert(comment);
+            return $ctrl.GetUserAPI();
+          })
+          .then(function(legacy) {
+            PApi.Alert('추가되었습니다.');
           })
           .catch(function(legacy) {
             PApi.Alert(legacy);
@@ -236,23 +249,43 @@ angular.module('TOX2ADMINAPP')
           });
       };
 
-      $ctrl.AddMemo = function() {
-        if (!$ctrl.iMemo) return;
-        $ctrl.memo.push({
-          date: $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss'),
-          content: $ctrl.iMemo
-        });
-        $ctrl.iMemo = '';
-        $ctrl.ModifyMemo($ctrl.memo, '추가되었습니다.');
-      };
+      $ctrl.RemoveMemoAPI = function(id) {
+        var defer = $q.defer();
+        CRUDFactory.UPDATE(
+          '/user/memo',
+          {
+            mode: source.mode,
+            target: source.target,
+            id: id
+          },
+          function(data) {
+            if (data.failure) return defer.reject(data.failure);
+            defer.resolve();
+          },
+          function(error) {
+            defer.reject();
+          });
+        return defer.promise;
+      }
 
-      $ctrl.RemoveMemo = function(i) {
-        bootbox.confirm('정말 삭제하시겠습니까?', function(confirm) {
-          if (confirm) {
-            $ctrl.memo.splice(i, 1);
-            $ctrl.ModifyMemo($ctrl.memo, '삭제되었습니다.');
-          }
-        });
+      $ctrl.RemoveMemo = function(id) {
+        PApi.Confirm('정말 삭제하시겠습니까?')
+          .then(function(legacy) {
+            PApi.StartLoading();
+            return $ctrl.RemoveMemoAPI(id);
+          })
+          .then(function(legacy) {
+            return $ctrl.GetUserAPI();
+          })
+          .then(function(legacy) {
+            PApi.Alert('삭제되었습니다.');
+          })
+          .catch(function(legacy) {
+            PApi.Alert(legacy);
+          })
+          .finally(function(legacy) {
+            PApi.EndLoading();
+          });
       };
 
       $ctrl.Reset = function() {
@@ -298,16 +331,16 @@ angular.module('TOX2ADMINAPP')
         var uesrMsg = $ctrl._user.nick + '(' + $ctrl._user.uid + ')';
         var amountMsg = $filter('number')($ctrl.modifyMoney.amount);
         var typeMsg = '';
-        if($ctrl.modifyMoney.selected === 'cash') {
+        if ($ctrl.modifyMoney.selected === 'cash') {
           typeMsg = '캐시';
-        } else if($ctrl.modifyMoney.selected === 'chip') {
+        } else if ($ctrl.modifyMoney.selected === 'chip') {
           typeMsg = '칩';
-        } else if($ctrl.modifyMoney.selected === 'point') {
+        } else if ($ctrl.modifyMoney.selected === 'point') {
           typeMsg = '포인트';
         }
         var styleMsg = '';
-        if(style === 'INC') styleMsg = '증가';
-        else if(style === 'DEC') styleMsg = '감소';
+        if (style === 'INC') styleMsg = '증가';
+        else if (style === 'DEC') styleMsg = '감소';
 
         var msg = uesrMsg + '의 ' + typeMsg + '을(를) ' + amountMsg + ' ' + styleMsg + '시키겠습니까?';
 
@@ -431,8 +464,7 @@ angular.module('TOX2ADMINAPP')
       $ctrl.MoneyReportAPI = function() {
         var defer = $q.defer();
         CRUDFactory.READ(
-          '/asset/report/for-user',
-          {
+          '/asset/report/for-user', {
             mode: 'UID',
             target: $ctrl._user.uid
           },

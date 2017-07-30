@@ -6,12 +6,12 @@ var permission = require('../permission.handler.js');
 var ctrl = require('./controller.js');
 
 router.get('/',
-  permission.VerifyAdmin,
+  permission.VerifySupervisor,
   ctrl.AdminApp
 );
 
 router.get('/menu',
-  permission.VerifyAdmin,
+  permission.VerifySupervisor,
   ctrl.AdminMenu
 );
 

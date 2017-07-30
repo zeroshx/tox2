@@ -1,9 +1,9 @@
 /* Setup blank page controller */
 angular.module('TOX2ADMINAPP').controller('SiteLevelCtrl', [
-  '$rootScope', '$scope',
+  '$rootScope', '$scope', '$filter',
   'SiteLevelService', 'PApi', 'settings', 'init', 'sites',
   function(
-    $rootScope, $scope,
+    $rootScope, $scope, $filter,
     SiteLevelService, PApi, settings, init, sites
   ) {
     $scope.$on('$viewContentLoaded', function() {
@@ -39,62 +39,62 @@ angular.module('TOX2ADMINAPP').controller('SiteLevelCtrl', [
       element: [{
         label: '사이트',
         type: 'text-dropdown',
-        bind: '.site',
+        bind: 'site',
         readonly: 'MODIFY',
         dropdown: {
           class: 'btn-default',
           property: 'name',
-          list: sites.docs
+          list: sites
         }
       }, {
         label: '레벨명',
         type: 'text',
-        bind: '.name',
+        bind: 'name',
         readonly: 'MODIFY'
       }, {
         label: '당첨 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.win'
+        bind: 'bonus.win'
       }, {
         label: '낙첨 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.lose'
+        bind: 'bonus.lose'
       }, {
         label: '입금 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.charge'
+        bind: 'bonus.charge'
       }, {
         label: '추천인 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.recommender'
+        bind: 'bonus.recommender'
       }, {
         label: '단일 배팅 최소액',
         type: 'text-unit',
         unit: '원',
-        bind: '.single.minBet'
+        bind: 'single.minBet'
       }, {
         label: '단일 배팅 최대액',
         type: 'text-unit',
         unit: '원',
-        bind: '.single.maxBet'
+        bind: 'single.maxBet'
       }, {
         label: '단일 배팅 최대 배당',
         type: 'text',
-        bind: '.single.maxRate'
+        bind: 'single.maxRate'
       }, {
         label: '조합 배팅 최소액',
         type: 'text-unit',
         unit: '원',
-        bind: '.multi.minBet'
+        bind: 'multi.minBet'
       }, {
         label: '조합 배팅 최대액',
         type: 'text-unit',
         unit: '원',
-        bind: '.multi.maxBet'
+        bind: 'multi.maxBet'
       }, {
         label: '조합 배팅 최대 배당',
         type: 'text',
-        bind: '.multi.maxRate'
+        bind: 'multi.maxRate'
       }]
     };
 
@@ -102,7 +102,7 @@ angular.module('TOX2ADMINAPP').controller('SiteLevelCtrl', [
     //// Common Member Functions.
 
     $scope.DetailView = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._detailViewFormat = [
         [{
           label: '사이트',
@@ -178,24 +178,10 @@ angular.module('TOX2ADMINAPP').controller('SiteLevelCtrl', [
           width: [2, 2]
         }],
         [{
-          label: '최근 수정 정보',
-          type: 'text',
-          value: doc.modifier,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.modifiedAt,
-          width: [0, 5]
-        }],
-        [{
           label: '등록 정보',
           type: 'text',
-          value: doc.creator,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.createdAt,
-          width: [0, 5]
+          value: doc.creator + '(' + $filter('datetime')(doc.createdAt) + ')',
+          width: [2, 10]
         }]
       ];
     };
@@ -247,7 +233,7 @@ angular.module('TOX2ADMINAPP').controller('SiteLevelCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();

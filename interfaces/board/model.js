@@ -66,10 +66,8 @@ var Model = new Schema({
     type: String
   },
   createdAt: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -212,7 +210,7 @@ Model.statics.CustomerList = function(page, pageSize, filter, keyword, site, sor
   Document.count(query, (err, count) => {
     if (err) return callback(err);
     if (count === 0) return callback(null, null, {
-      lastPage: Math.ceil(count / pageSize),
+      lastPage: 1,
       docs: []
     });
     Document.find(query)
@@ -269,7 +267,6 @@ Model.statics.Create = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   var newDoc = new Document();
   newDoc.uid = item.uid;
@@ -294,7 +291,6 @@ Model.statics.Create = function(
     list: []
   };
 
-  newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
   newDoc.save((err, doc) => {
     if (err) return callback(err);
     if (!doc) return callback(null, 'failure');
@@ -308,7 +304,6 @@ Model.statics.Update = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: item._id
@@ -323,8 +318,7 @@ Model.statics.Update = function(
       show: item.show,
       top: item.top,
       writerType: item.writerType,
-      ip: item.ip,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      ip: item.ip
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -340,7 +334,6 @@ Model.statics.ModifyShow = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
@@ -387,7 +380,7 @@ Model.statics.ReplyPop = function(
   Document.findOneAndUpdate({
     _id: id
   }, {
-    $pop: {
+    $pull: {
       reply: reply
     }
   }, (err, doc) => {

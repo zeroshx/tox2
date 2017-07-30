@@ -6,48 +6,48 @@ var permission = require('../permission.handler.js');
 var ctrl = require('./controller.js');
 
 router.post('/',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.Create
 );
 
 router.get('/',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.List
 );
 
 router.get('/one',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.One
 );
 
 router.put('/',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.Update
 );
 
 router.put('/show',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.ShowToggle
 );
 
 router.delete('/:id',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.Delete
 );
 
 /* Reply part */
 router.post('/reply',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.CreateReply
 );
 
 router.get('/reply',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.ReplyList
 );
 
 router.put('/reply',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.DeleteReply
 );
 

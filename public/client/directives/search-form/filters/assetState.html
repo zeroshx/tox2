@@ -1,0 +1,14 @@
+<div class="input-group">
+  <input type="text" class="form-control" data-ng-model="_query.assetState">
+  <div class="input-group-btn">
+    <button type="button" id="btn-assetState" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    상태 <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li><a href data-ng-click="_query.assetState = '전체'">전체</a></li>
+      <li><a href data-ng-click="_query.assetState = '신청'">신청</a></li>
+      <li><a href data-ng-click="_query.assetState = '승인'">승인</a></li>
+      <li><a href data-ng-click="_query.assetState = '취소'">취소</a></li>
+    </ul>
+  </div>
+</div>

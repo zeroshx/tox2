@@ -28,7 +28,7 @@
             <td>{{doc.nick}}</td>
             <td>{{doc.domain}}</td>
             <td>{{doc.ip}}</td>
-            <td>{{doc.createdAt}}</td>
+            <td>{{doc.createdAt | datetime}}</td>
             <td data-ng-class="{'text-danger': doc.state === '비밀번호 틀림', 'text-info': doc.state === '아이디 틀림'}">{{doc.state}}</td>
             <td stop-click>
               <button type="button" class="btn btn-xs red-soft" data-ng-click="Ban(doc)">차단</button>

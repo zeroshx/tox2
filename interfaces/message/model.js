@@ -39,13 +39,11 @@ var Model = new Schema({
     type: String
   },
   confirmedAt: {
-    type: String
+    type: Date
   },
   createdAt: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -100,7 +98,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, confirm, callback
     query = subquery;
   }
 
-  Document.count(query, function(err, count) {
+  Document.count(query, (err, count) => {
     if (err) return callback(err);
     if (count === 0) return callback(null, null, {
       lastPage: 1,
@@ -110,7 +108,7 @@ Model.statics.List = function(page, pageSize, filter, keyword, confirm, callback
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .sort('-createdAt')
-      .exec(function(err, docs) {
+      .exec((err, docs) => {
         if (err) return callback(err);
         callback(null, null, {
           lastPage: Math.ceil(count / pageSize),
@@ -152,7 +150,7 @@ Model.statics.CustomerList = function(site, distributor, uid, page, pageSize, ty
     });
   }
 
-  Document.count(query, function(err, count) {
+  Document.count(query, (err, count) => {
     if (err) return callback(err);
     if (count === 0) return callback(null, null, {
       lastPage: 1,
@@ -162,7 +160,7 @@ Model.statics.CustomerList = function(site, distributor, uid, page, pageSize, ty
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .sort('-createdAt')
-      .exec(function(err, docs) {
+      .exec((err, docs) => {
         if (err) return callback(err);
         callback(null, null, {
           lastPage: Math.ceil(count / pageSize),
@@ -190,7 +188,6 @@ Model.statics.Create = function(
   callback
 ) {
   var Document = this;
-  var timer = new Date();
   var newDoc = new Document();
 
   newDoc.category = item.category;
@@ -199,7 +196,6 @@ Model.statics.Create = function(
   newDoc.title = item.title;
   newDoc.content = item.content;
   newDoc.confirm = item.confirm;
-  newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
 
   newDoc.save((err, doc) => {
     if (err) return callback(err);
@@ -216,15 +212,13 @@ Model.statics.Update = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
   }, {
     $set: {
       title: title,
-      content: content,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      content: content
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -247,7 +241,7 @@ Model.statics.Check = function(
   }, {
     $set: {
       confirm: confirm,
-      confirmedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      confirmedAt: timer.getTime()
     }
   }, {
     new: true

@@ -55,13 +55,8 @@ var Model = new Schema({
     type: String
   },
   createdAt: {
-    type: String
-  },
-  modifier: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -147,7 +142,6 @@ Model.statics.Create = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOne({
     name: item.name
@@ -163,7 +157,6 @@ Model.statics.Create = function(
     newDoc.memo = item.memo;
     newDoc.headcount = 0;
     newDoc.creator = operator;
-    newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
     newDoc.save((err, doc) => {
       if (err) return callback(err);
       if (!doc) return callback(null, 'failure');
@@ -174,12 +167,10 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
   item,
-  operator,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: item._id
@@ -188,9 +179,7 @@ Model.statics.Update = function(
       manager: item.manager,
       bonus: item.bonus,
       joinStyle: item.joinStyle,
-      memo: item.memo,
-      modifier: operator,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      memo: item.memo
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -203,21 +192,17 @@ Model.statics.CustomerUpdate = function(
   id,
   joinStyle,
   memo,
-  operator,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
   }, {
     $set: {
       joinStyle: joinStyle,
-      memo: memo,
-      modifier: operator,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      memo: memo
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -233,14 +218,13 @@ Model.statics.ModifyHeadcount = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
   }, {
     $inc: {
       headcount: value
-    }  
+    }
   }, {
     new: true
   }, (err, doc) => {
@@ -255,12 +239,10 @@ Model.statics.SetDistributorExtra = function(
   level,
   statusPoint,
   contribution,
-  operator,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: id
@@ -268,9 +250,7 @@ Model.statics.SetDistributorExtra = function(
     $set: {
       level: level,
       statusPoint: statusPoint,
-      contribution: contribution,
-      modifier: operator,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      contribution: contribution
     }
   }, {
     new: true
@@ -302,9 +282,7 @@ Model.statics.ListAll = function(callback) {
     .select('name')
     .exec((err, docs) => {
       if (err) return callback(err);
-      callback(null, null, {
-        docs: docs
-      });
+      callback(null, null, docs);
     });
 };
 
@@ -419,7 +397,7 @@ Model.statics.RemoveJoinAwaiter = function(id, uid, callback) {
   Document.findOneAndUpdate({
       _id: id
     }, {
-      $pop: {
+      $pull: {
         awaiter: uid
       }
     })
@@ -448,7 +426,12 @@ Model.statics.RemoveJoinAwaiterAll = function(id, callback) {
     });
 };
 
-Model.statics.ModifyManager = function(id, uid, nick, operator, callback) {
+Model.statics.ModifyManager = function(
+  id,
+  uid,
+  nick,
+  callback
+) {
 
   var Document = this;
 
@@ -457,9 +440,7 @@ Model.statics.ModifyManager = function(id, uid, nick, operator, callback) {
     }, {
       $set: {
         'manager.uid': uid,
-        'manager.nick': nick,
-        modifier: operator,
-        modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+        'manager.nick': nick
       }
     })
     .exec((err, doc) => {

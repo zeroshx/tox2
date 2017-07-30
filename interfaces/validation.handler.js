@@ -76,10 +76,10 @@ exports.CheckValidBoolean = function(value) {
 };
 
 exports.CheckValidArray = function(value) {
-  if(value === null || value === undefined || value === '') {
-    return null;
-  } else if(!Array.isArray(value)) {
+  if(!Array.isArray(value)) {
     return undefined;
+  } else if(value.length === 0) {
+    return null;
   }
   return value;
 };
@@ -131,11 +131,11 @@ exports.chip = function(value, required) {
   if (value === null && required === false) {
     return null;
   } else if (value === null && required === true) {
-    return '게임머니는 필수 입력 항목입니다.';
+    return '칩은 필수 입력 항목입니다.';
   } else if (value === undefined) {
-    return '게임머니에 적합한 입력이 아닙니다.';
+    return '칩에 적합한 입력이 아닙니다.';
   } else if (value < 0) {
-    return '게임머니는 0원 미만이 될 수 없습니다.';
+    return '칩은 0원 미만이 될 수 없습니다.';
   }
   return null;
 };
@@ -178,6 +178,48 @@ exports.bonus = function(value, required) {
     return '보너스에 적합한 입력이 아닙니다.';
   } else if (value < 0 || value > 100) {
     return '보너스는 최소 0%, 최대 100%까지 가능합니다.';
+  }
+  return null;
+};
+
+exports.order = function(value, required) {
+  value = this.CheckValidNumber(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '레벨 등급은 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '레벨 등급에 적합한 입력이 아닙니다.';
+  } else if (value < 1) {
+    return '레벨 등급은 1이상의 수만 가능합니다.';
+  }
+  return null;
+};
+
+exports.headcount = function(value, required) {
+  value = this.CheckValidNumber(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '회원수는 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '회원수에 적합한 입력이 아닙니다.';
+  } else if (value < 0) {
+    return '회원수는 음수가 될 수 없습니다.';
+  }
+  return null;
+};
+
+exports.requirement = function(value, required) {
+  value = this.CheckValidNumber(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '레벨 상승 요구치는 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '레벨 상승 요구치에 적합한 입력이 아닙니다.';
+  } else if (value < 0) {
+    return '레벨 상승 요구치는 음수가 될 수 없습니다.';
   }
   return null;
 };
@@ -538,7 +580,7 @@ exports.kind = function(value, required) {
     return '종목명은(는) 필수 입력 항목입니다.';
   } else if (value === undefined) {
     return '종목명에 적합한 입력이 아닙니다.';
-  } else if (!(/^[가-힣a-zA-Z0-9\s]{2,30}$/.test(value))) {
+  } else if (!(/^[가-힣a-zA-Z0-9\s\-\,\.]{2,30}$/.test(value))) {
     return '종목명은 한글, 영문, 숫자, 띄어쓰기를 포함하여 최소 2자, 최대 30자까지 가능합니다.';
   }
   return null;
@@ -566,8 +608,50 @@ exports.league = function(value, required) {
     return '리그명은(는) 필수 입력 항목입니다.';
   } else if (value === undefined) {
     return '리그명에 적합한 입력이 아닙니다.';
-  } else if (!(/^[가-힣a-zA-Z0-9\s]{2,30}$/.test(value))) {
+  } else if (!(/^[가-힣a-zA-Z0-9\s\-\,\.]{2,30}$/.test(value))) {
     return '리그명은 한글, 영문, 숫자, 띄어쓰기를 포함하여 최소 2자, 최대 30자까지 가능합니다.';
+  }
+  return null;
+};
+
+exports.marketName = function(value, required) {
+  value = this.CheckValidString(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '마켓명은 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '마켓명에 적합한 입력이 아닙니다.';
+  } else if (!(/^[가-힣a-zA-Z0-9\s\-\,\.]{2,30}$/.test(value))) {
+    return '마켓명은 한글, 영문, 숫자, 띄어쓰기를 포함하여 최소 2자, 최대 30자까지 가능합니다.';
+  }
+  return null;
+};
+
+exports.roomName = function(value, required) {
+  value = this.CheckValidString(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '채팅방 이름은 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '채팅방 이름에 적합한 입력이 아닙니다.';
+  } else if (!(/^[가-힣a-zA-Z0-9\s\-\,\.]{2,30}$/.test(value))) {
+    return '채팅방 이름은 한글, 영문, 숫자, 띄어쓰기를 포함하여 최소 2자, 최대 30자까지 가능합니다.';
+  }
+  return null;
+};
+
+exports.pickName = function(value, required) {
+  value = this.CheckValidString(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '선택지는 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '선택지에 적합한 입력이 아닙니다.';
+  } else if (!(/^[가-힣a-zA-Z0-9\s\-\,\.]{2,30}$/.test(value))) {
+    return '선택지는 한글, 영문, 숫자, 띄어쓰기를 포함하여 최소 2자, 최대 30자까지 가능합니다.';
   }
   return null;
 };
@@ -769,19 +853,6 @@ exports.userMemoDate = function(value, required) {
   return null;
 };
 
-exports.optionName = function(value, required) {
-  value = this.CheckValidString(value);
-  if (value === null && required === false) {
-    return null;
-  } else if (value === null && required === true) {
-    return '선택지은(는) 필수 입력 항목입니다.';
-  } else if (value === undefined) {
-    return '선택지에 적합한 입력이 아닙니다.';
-  } else if (!(/^[ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s]{2,20}$/.test(value))) {
-    return '선택지는 한글, 영문, 띄어쓰기를 포함하여 2자 이상 20자 이내로 가능합니다.';
-  }
-};
-
 exports.btype = function(value, required) {
   value = this.CheckValidString(value);
   if (value === null && required === false) {
@@ -791,9 +862,25 @@ exports.btype = function(value, required) {
   } else if (value === undefined) {
     return '배팅 타입에 적합한 입력이 아닙니다.';
   }
-  var _enum = ['2-WAY', '3-WAY', 'VARIETY']
+  var _enum = ['일반', '핸디캡', '언더오버'];
   if(_enum.indexOf(value) === -1) {
       return '허용되지 않은 배팅타입입니다.';
+  };
+  return null;
+};
+
+exports.mtype = function(value, required) {
+  value = this.CheckValidString(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '매치 타입은(는) 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '매치 타입에 적합한 입력이 아닙니다.';
+  }
+  var _enum = ['스포츠', '버라이어티'];
+  if(_enum.indexOf(value) === -1) {
+      return '허용되지 않은 매치 타입입니다.';
   };
   return null;
 };
@@ -814,22 +901,6 @@ exports.kindBtype = function(value, required) {
   return null;
 };
 
-exports.mtype = function(value, required) {
-  value = this.CheckValidString(value);
-  if (value === null && required === false) {
-    return null;
-  } else if (value === null && required === true) {
-    return '매치 타입은(는) 필수 입력 항목입니다.';
-  } else if (value === undefined) {
-    return '매치 타입에 적합한 입력이 아닙니다.';
-  }
-  var _enum = ['일반', '핸디캡', '언더오버'];
-  if(_enum.indexOf(value) === -1) {
-      return '허용되지 않은 매치 타입입니다.';
-  };
-  return null;
-};
-
 exports.matchState = function(value, required) {
   value = this.CheckValidString(value);
   if (value === null && required === false) {
@@ -839,7 +910,7 @@ exports.matchState = function(value, required) {
   } else if (value === undefined) {
     return '매치 상태에 적합한 입력이 아닙니다.';
   }
-  var _enum = ['등록', '배팅', '마감', '종료'];
+  var _enum = ['대기', '배팅', '마감', '종료'];
   if(_enum.indexOf(value) === -1) {
       return '허용되지 않은 매치 상태입니다.';
   };
@@ -1110,22 +1181,81 @@ exports.userMemo = function(value, required) {
   return null;
 };
 
-exports.option = function(value, required) {
+exports.matchContent = function(value, required) {
   value = this.CheckValidArray(value);
   if (value === null && required === false) {
     return null;
   } else if (value === null && required === true) {
-    return '선택지은(는) 필수 입력 항목입니다.';
+    return '팀명 또는 매치 내용은 필수 입력 항목입니다.';
   } else if (value === undefined) {
-    return '선택지에 적합한 입력이 아닙니다.';
-  } else if (value.length < 4) {
-    return '선택지는 최소 4개여야 합니다.';
+    return '팀명 또는 매치 내용에 적합한 입력이 아닙니다.';
   }
+  var msg = null;
   for (var i = 0; i < value.length; i++) {
-    var msg = null;
-    msg = this.optionName(value[i].name, true);
+    msg = this.team(value[i].name, true);
     if(msg) return msg;
+  }
+  return null;
+};
+
+exports.pick = function(value, required) {
+  value = this.CheckValidArray(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '매치 게임 픽은 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '매치 게임 픽에 적합한 입력이 아닙니다.';
+  }
+  var msg = null;
+  for (var i = 0; i < value.length; i++) {
     msg = this.rate(value[i].rate, true);
+    if(msg) return msg;
+    msg = this.pickName(value[i].name, true);
+    if(msg) return msg;
+  }
+  return null;
+};
+
+exports.game = function(value, btype, required) {
+  value = this.CheckValidArray(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '매치 게임은 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '매치 게임에 적합한 입력이 아닙니다.';
+  }
+  var msg = null;
+  for (var i = 0; i < value.length; i++) {
+    if(btype !== '일반') {
+      msg = this.offset(value[i].offset, true);
+      if(msg) return msg;
+    } else {
+      value[i].offset = null;
+    }
+    msg = this.pick(value[i].pick, true);
+    if(msg) return msg;
+  }
+  return null;
+};
+
+exports.market = function(value, required) {
+  value = this.CheckValidArray(value);
+  if (value === null && required === false) {
+    return null;
+  } else if (value === null && required === true) {
+    return '매치 마켓은 필수 입력 항목입니다.';
+  } else if (value === undefined) {
+    return '매치 마켓에 적합한 입력이 아닙니다.';
+  }
+  var msg = null;
+  for (var i = 0; i < value.length; i++) {
+    msg = this.marketName(value[i].name, false);
+    if(msg) return msg;
+    msg = this.btype(value[i].btype, true);
+    if(msg) return msg;
+    msg = this.game(value[i].game, value[i].btype, true);
     if(msg) return msg;
   }
   return null;

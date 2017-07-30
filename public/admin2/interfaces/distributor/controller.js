@@ -1,9 +1,9 @@
 /* Setup blank page controller */
 angular.module('TOX2ADMINAPP').controller('DistributorCtrl', [
-  '$rootScope', '$scope',
+  '$rootScope', '$scope', '$filter',
   'DistributorService', 'PApi', 'settings', 'init', 'sites',
   function(
-    $rootScope, $scope,
+    $rootScope, $scope, $filter,
     DistributorService, PApi, settings, init, sites
   ) {
     $scope.$on('$viewContentLoaded', function() {
@@ -39,30 +39,30 @@ angular.module('TOX2ADMINAPP').controller('DistributorCtrl', [
       element: [{
         label: '사이트',
         type: 'text-dropdown',
-        bind: '.site',
+        bind: 'site',
         readonly: 'MODIFY',
         dropdown: {
           class: 'btn-default',
           property: 'name',
-          list: sites.docs
+          list: sites
         }
       }, {
         label: '총판명',
         type: 'text',
-        bind: '.name',
+        bind: 'name',
         readonly: 'MODIFY'
       }, {
         label: '총판장 아이디',
         type: 'text',
-        bind: '.manager.uid'
+        bind: 'manager.uid'
       }, {
         label: '메모',
         type: 'multi-text',
-        bind: '.memo'
+        bind: 'memo'
       }, {
         label: '가입 방식',
         type: 'button-group',
-        bind: '.joinStyle',
+        bind: 'joinStyle',
         button: [{
           value: '승인',
           class: 'green-soft'
@@ -76,11 +76,11 @@ angular.module('TOX2ADMINAPP').controller('DistributorCtrl', [
       }, {
         label: '당첨 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.win'
+        bind: 'bonus.win'
       }, {
         label: '낙첨 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.lose'
+        bind: 'bonus.lose'
       }]
     };
 
@@ -88,7 +88,7 @@ angular.module('TOX2ADMINAPP').controller('DistributorCtrl', [
     //// Common Member Functions.
 
     $scope.DetailView = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._detailViewFormat = [
         [{
           label: '사이트',
@@ -149,23 +149,10 @@ angular.module('TOX2ADMINAPP').controller('DistributorCtrl', [
           value: doc.memo,
           width: [2, 10]
         }], [{
-          label: '최근 수정 정보',
-          type: 'text',
-          value: doc.modifier,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.modifiedAt,
-          width: [0, 5]
-        }], [{
           label: '등록 정보',
           type: 'text',
-          value: doc.creator,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.createdAt,
-          width: [0, 5]
+          value: doc.creator + '(' + $filter('datetime')(doc.createdAt) + ')',
+          width: [2, 10]
         }]
       ];
     };
@@ -209,7 +196,7 @@ angular.module('TOX2ADMINAPP').controller('DistributorCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();

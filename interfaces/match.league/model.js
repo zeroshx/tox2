@@ -15,10 +15,8 @@ var Model = new Schema({
     type: String
   },
   createdAt: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -68,9 +66,7 @@ Model.statics.ListAll = function(callback) {
 
   Document.find((err, docs) => {
     if (err) return callback(err);
-    callback(null, null, {
-      docs: docs
-    });
+    callback(null, null, docs);
   });
 };
 
@@ -84,12 +80,11 @@ Model.statics.Create = function(name, country, imagePath, callback) {
     if (err) return callback(err);
     if (doc) return callback(null, 'exist');
     var newDoc = new Document();
-    var timer = new Date();
+
     newDoc.name = name;
     newDoc.country = country;
     newDoc.imagePath = imagePath;
-    newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
-    newDoc.modifiedAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
+
     newDoc.save((err, doc) => {
       if (err) return callback(err);
       if (!doc) return callback(null, 'failure');
@@ -101,19 +96,15 @@ Model.statics.Create = function(name, country, imagePath, callback) {
 Model.statics.Update = function(id, country, imagePath, callback) {
 
   var Document = this;
-  var timer = new Date();
 
   var query = {
     $set: {
-      country: country,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      country: country
     }
   };
 
   if (typeof(imagePath) === 'string' && imagePath.length > 0) {
     query.$set.imagePath = imagePath;
-  } else {
-    query.$set.imagePath = undefined;
   }
 
   Document.findOneAndUpdate({

@@ -4,6 +4,7 @@ var validator = require('../validation.handler.js');
 var nodemailer = require('../nodemailer.handler.js');
 
 var Model = require('mongoose').model('Question');
+var ManagerModel = require('mongoose').model('Manager');
 
 exports.List = (req, res) => {
 
@@ -20,11 +21,30 @@ exports.List = (req, res) => {
       req.query.questionStyle,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
+        resolve({
+          list: doc
+        });
+      });
+  }).then(legacy => {
+    ManagerModel.ResetQuestionCase((err, exc, doc) => {
+      if (err) return response.Error(req, res, err);
+      response.Finish(req, res, legacy.list);
+    });
+  });;
+};
+
+exports.One = (req, res) => {
+
+  new Promise((resolve, reject) => {
+    Model.One(
+      req.query.id,
+      (err, exc, doc) => {
+        if (err) return reject(response.Error(req, res, err));
+        if (exc === 'not-found') return reject(response.Exception(req, res, '해당 문서를 찾을 수 없습니다.'));
         resolve(response.Finish(req, res, doc));
       });
   });
 };
-
 
 exports.Create = (req, res) => {
 
@@ -283,7 +303,13 @@ exports.CustomerCreate = (req, res) => {
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '문의 등록에 실패하였습니다.'));
-        resolve(response.Status(req, res, 200));
+        resolve();
       });
+  }).then(legacy => {
+    ManagerModel.IncQuestionCase((err, exc, doc) => {
+      if (err) return response.Error(req, res, err);
+      if (exc === 'failure') return response.Exception(req, res, '문의 등록에 실패하였습니다.');
+      response.Status(req, res, 200);
+    });
   });
 };

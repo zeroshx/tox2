@@ -11,6 +11,7 @@ module.exports = function() {
   var SiteBetting = require('../interfaces/site.betting/model.js');
 
   var Distributor = require('../interfaces/distributor/model.js');
+  var DistributorLevel = require('../interfaces/distributor.level/model.js');
 
   var User = require('../interfaces/user/model.js');
   var UserHistory = require('../interfaces/user.history/model.js');
@@ -34,6 +35,10 @@ module.exports = function() {
   var Todo = require('../interfaces/todo/model.js');
 
   var Manager = require('../interfaces/manager/model.js');
+
+  var Loger = require('../interfaces/loger/model.js');
+
+  var Messenger = require('../interfaces/messenger/model.js');
 
   // access to db
   var connection = mongoose.connection;
@@ -60,6 +65,7 @@ module.exports = function() {
   SiteLevel();
   SiteBetting();
   Distributor();
+  DistributorLevel();
   Match();
   MatchKind();
   MatchLeague();
@@ -73,6 +79,8 @@ module.exports = function() {
   Todo();
   Manager();
   Board();
+  Loger();
+  Messenger();
 
   return mdb;
 };

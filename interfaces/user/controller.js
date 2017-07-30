@@ -2,11 +2,11 @@ var ipaddr = require('../ipaddr.handler.js');
 var response = require('../response.handler.js');
 var session = require('../session.handler.js');
 var validator = require('../validation.handler.js');
+var fs = require('fs');
+var CsvBuilder = require('csv-builder');
 
 var Model = require('mongoose').model('User');
 var AssetReportModel = require('mongoose').model('AssetReport');
-
-var root = 'controller/user.js';
 
 exports.List = (req, res) => {
 
@@ -26,6 +26,69 @@ exports.List = (req, res) => {
         if (err) return reject(response.Error(req, res, err));
         resolve(response.Finish(req, res, doc));
       });
+  });
+};
+
+exports.Download = (req, res) => {
+
+  var usersBuilder = new CsvBuilder({
+    headers: ['아이디', '패스워드', '닉네임', '사이트', '총판', '레벨', '회원상태',
+              '캐시', '칩', '빚', '포인트', '은행', '계좌', '계좌인증코드', '예금주',
+              '입금', '출금', '수익', '연락처', '이메일', '최근 로그인', '회원가입',
+              '메모', '추천인'],
+    constraints: {
+      '아이디': 'uid',
+      '패스워드': 'password',
+      '닉네임': 'nick',
+      '사이트': 'site',
+      '총판': 'distributor.name',
+      '레벨': 'level',
+      '회원상태': 'state',
+      '캐시': 'cash',
+      '칩': 'chip',
+      '포인트': 'point',
+      '빚': 'debt',
+      '은행': 'account.bank',
+      '계좌': 'account.number',
+      '계좌인증코드': 'account.pin',
+      '예금주': 'account.holder',
+      '입금': 'stat.deposit',
+      '출금': 'stat.withdrawal',
+      '이메일': 'email',
+      '추천인': 'recommander'
+    }
+  })
+  .virtual('수익', function (doc) {
+    return doc.stat.deposit - doc.stat.withdrawal;
+  })
+  .virtual('최근 로그인', function (doc) {
+    return doc.login.date.toLocaleDateString() + ' ' + doc.login.date.toLocaleTimeString();
+  })
+  .virtual('회원가입', function (doc) {
+    return doc.signup.date.toLocaleDateString() + ' ' + doc.signup.date.toLocaleTimeString();
+  })
+  .virtual('연락처', function (doc) {
+    return '#' + doc.phone;
+  })
+  .virtual('메모', function (doc) {
+    var memo = '';
+    for(i in doc.memo) {
+      var temp = '';
+      temp = '[' + doc.memo[i].date.toLocaleDateString() + ' ' + doc.memo[i].date.toLocaleTimeString() + ']';
+      temp += doc.memo[i].content + '/';
+      memo += temp;
+    }
+    return memo;
+  });
+
+  Model.AllMember((err, exc, docs) => {
+    if (err) return reject(response.Error(req, res, err));
+    var filename = './members.csv';
+    var file = fs.createWriteStream(filename);
+    file.on('finish', function () {
+      res.download(filename, 'members.txt');
+    });
+    usersBuilder.createReadStream(docs).pipe(file);
   });
 };
 
@@ -89,8 +152,6 @@ exports.Create = (req, res) => {
 
   req.body.item.domain = req.hostname;
   req.body.item.ip = ipaddr.GetUserIP(req.ip);
-
-  console.log(req.body.item);
 
   new Promise((resolve, reject) => {
     Model.Create(
@@ -191,7 +252,6 @@ exports.Me = function(req, res) {
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'not-found') return reject(response.Exception(req, res, '회원정보를 찾을 수 없습니다.'));
-        session.SetAuthSession(req, doc);
         resolve(response.Finish(req, res, doc));
       });
   });
@@ -341,7 +401,7 @@ exports.Money = function(req, res) {
   });
 };
 
-exports.Memo = function(req, res) {
+exports.AddMemo = function(req, res) {
 
   var v = [];
   if(req.body.mode === 'UID') {
@@ -388,9 +448,67 @@ exports.Memo = function(req, res) {
       reject(response.Exception(req, res, '인식할 수 없는 요청입니다.'));
     }
   }).then(legacy => {
-    Model.ModifyMemo(
+    Model.AddMemo(
       legacy.user._id,
-      req.body.memo,
+      req.body.content,
+      (err, exc, doc) => {
+        if (err) return reject(response.Error(req, res, err));
+        if (exc === 'failure') return reject(response.Exception(req, res, '메모 수정에 실패하였습니다.'));
+        response.Status(req, res, 200);
+      });
+  });
+};
+
+exports.RemoveMemo = function(req, res) {
+
+  var v = [];
+  if(req.body.mode === 'UID') {
+    v.push({
+      required: true,
+      value: req.body.target,
+      validator: 'uid'
+    });
+  } else if (req.body.mode === 'NICK') {
+    v.push({
+      required: true,
+      value: req.body.target,
+      validator: 'nick'
+    });
+  }  else {
+    response.Exception(req, res, '인식할 수 없는 요청입니다.');
+  }
+
+  var rep = validator.run(v);
+  if (rep) return response.Exception(req, res, rep.msg);
+
+  new Promise((resolve, reject) => {
+    if (req.body.mode === 'UID') {
+      Model.OneUid(
+        req.body.target,
+        (err, exc, doc) => {
+          if (err) return reject(response.Error(req, res, err));
+          if (exc === 'not-found') return reject(response.Exception(req, res, '회원정보를 찾을 수 없습니다.'));
+          resolve({
+            user: doc
+          });
+        });
+    } else if (req.body.mode === 'NICK') {
+      Model.OneNick(
+        req.body.target,
+        (err, exc, doc) => {
+          if (err) return reject(response.Error(req, res, err));
+          if (exc === 'not-found') return reject(response.Exception(req, res, '회원정보를 찾을 수 없습니다.'));
+          resolve({
+            user: doc
+          });
+        });
+    } else {
+      reject(response.Exception(req, res, '인식할 수 없는 요청입니다.'));
+    }
+  }).then(legacy => {
+    Model.RemoveMemo(
+      legacy.user._id,
+      req.body.id,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '메모 수정에 실패하였습니다.'));

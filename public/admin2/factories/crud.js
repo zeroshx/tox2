@@ -1,5 +1,7 @@
-TOX2ADMINAPP.factory('CRUDFactory', ['$window', '$http', '$httpParamSerializer', 'PApi', function($window, $http, $httpParamSerializer, PApi) {
+TOX2ADMINAPP.factory('CRUDFactory', ['$window', '$http', '$httpParamSerializer', function($window, $http, $httpParamSerializer) {
+
   var baseUrl = '';
+
   return {
 
     READ: function(url, query, success, error, always) {
@@ -10,14 +12,9 @@ TOX2ADMINAPP.factory('CRUDFactory', ['$window', '$http', '$httpParamSerializer',
           success(response.data);
         },
         function(response) {
+          console.error(response);
           if(typeof always === 'function') always();
-          if(typeof error === 'function') {
-            error(response);
-            $window.location = '/';
-          }
-          else PApi.Alert('일시적인 문제가 발생하였습니다. 로그인 페이지로 이동합니다.', function () {
-            $window.location = '/';
-          });
+          if(typeof error === 'function') error(response);
         });
     },
 
@@ -29,14 +26,9 @@ TOX2ADMINAPP.factory('CRUDFactory', ['$window', '$http', '$httpParamSerializer',
           success(response.data);
         },
         function(response) {
+          console.error(response);
           if(typeof always === 'function') always();
-          if(typeof error === 'function') {
-            error(response);
-            $window.location = '/';
-          }
-          else PApi.Alert('일시적인 문제가 발생하였습니다. 로그인 페이지로 이동합니다.', function () {
-            $window.location = '/';
-          });
+          if(typeof error === 'function') error(response);
         });
     },
 
@@ -48,14 +40,9 @@ TOX2ADMINAPP.factory('CRUDFactory', ['$window', '$http', '$httpParamSerializer',
           success(response.data);
         },
         function(response) {
+          console.error(response);
           if(typeof always === 'function') always();
-          if(typeof error === 'function') {
-            error(response);
-            $window.location = '/';
-          }
-          else PApi.Alert('일시적인 문제가 발생하였습니다. 로그인 페이지로 이동합니다.', function () {
-            $window.location = '/';
-          });
+          if(typeof error === 'function') error(response);
         });
     },
 
@@ -67,14 +54,9 @@ TOX2ADMINAPP.factory('CRUDFactory', ['$window', '$http', '$httpParamSerializer',
           success(response.data);
         },
         function(response) {
+          console.error(response);
           if(typeof always === 'function') always();
-          if(typeof error === 'function') {
-            error(response);
-            $window.location = '/';
-          }
-          else PApi.Alert('일시적인 문제가 발생하였습니다. 로그인 페이지로 이동합니다.', function () {
-            $window.location = '/';
-          });
+          if(typeof error === 'function') error(response);
         });
     }
   };

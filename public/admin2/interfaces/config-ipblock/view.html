@@ -32,7 +32,7 @@
             <td stop-click><input type="checkbox" data-ng-init="_list[$index]._cbExist = true" data-ng-model="_list[$index]._cbSelected"></td>
             <td>{{ doc.ip }}</td>
             <td>{{ doc.memo | truncate: 20 }}</td>
-            <td>{{ doc.createdAt }}</td>
+            <td>{{ doc.createdAt | datetime }}</td>
             <td stop-click>
               <button type="button" class="btn btn-xs red-soft" data-ng-click="Release(doc._id)">해제</button>
             </td>

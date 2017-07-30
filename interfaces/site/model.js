@@ -59,13 +59,8 @@ var Model = new Schema({
     type: String
   },
   createdAt: {
-    type: String
-  },
-  modifier: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -125,9 +120,7 @@ Model.statics.ListAll = function(callback) {
     .select('name')
     .exec((err, docs) => {
       if (err) return callback(err);
-      callback(null, null, {
-        docs: docs
-      });
+      callback(null, null, docs);
     });
 };
 
@@ -145,7 +138,7 @@ Model.statics.Create = function(
     if (err) return callback(err);
     if (doc) return callback(null, 'exist');
     var newDoc = new Document();
-    var timer = new Date();
+
     newDoc.state = item.state;
     newDoc.name = item.name;
     newDoc.memo = item.memo;
@@ -154,7 +147,7 @@ Model.statics.Create = function(
     newDoc.answer = item.answer;
     newDoc.headcount = 0;
     newDoc.creator = operator;
-    newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
+
     newDoc.save((err, doc) => {
       if (err) return callback(err);
       if (!doc) return callback(null, 'failure');
@@ -165,12 +158,10 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
   item,
-  operator,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: item._id
@@ -180,9 +171,7 @@ Model.statics.Update = function(
       config: item.config,
       bonus: item.bonus,
       answer: item.answer,
-      memo: item.memo,
-      modifier: operator,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      memo: item.memo
     }
   }, (err, doc) => {
     if (err) return callback(err);
@@ -220,7 +209,6 @@ Model.statics.OneName = function(name, callback) {
 Model.statics.ModifyHeadcount = function(name, value, callback) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     name: name

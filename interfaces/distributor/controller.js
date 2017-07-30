@@ -4,7 +4,7 @@ var validator = require('../validation.handler.js');
 var capi = require('../common.api.js');
 
 var Model = require('mongoose').model('Distributor');
-var ManagerModel = require('mongoose').model('Manager');
+var LevelModel = require('mongoose').model('DistributorLevel');
 var UserModel = require('mongoose').model('User');
 
 exports.List = (req, res) => {
@@ -65,17 +65,6 @@ exports.CustomerListForSite = (req, res) => {
   });
 };
 
-exports.Config = (req, res) => {
-  new Promise((resolve, reject) => {
-    ManagerModel.GetDistributorSetupConfig(
-      (err, exc, doc) => {
-        if (err) return reject(response.Error(req, res, err));
-        if (exc === 'not-found') return reject(response.Exception(req, res, '총판 설정 정보를 찾을 수 없습니다.'));
-        resolve(response.Finish(req, res, doc));
-      });
-  });
-};
-
 exports.CustomerDistributor = (req, res) => {
 
   new Promise((resolve, reject) => {
@@ -105,11 +94,11 @@ exports.CustomerDistributor = (req, res) => {
   })
   .then(legacy => {
     return new Promise((resolve, reject) => {
-      ManagerModel.GetDistributorLevelConfig((err, exc, doc) => {
+      LevelModel.ListAll((err, exc, docs) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'not-found') return reject(response.Exception(req, res, '총판 레벨 설정 정보를 찾을 수 없습니다.'));
         resolve(response.Finish(req, res, {
-          levelInfo: doc,
+          levelInfo: docs,
           distributor: legacy.distributor
         }));
       });
@@ -210,11 +199,11 @@ exports.Create = (req, res) => {
     });
   }).then(legacy => {
     return new Promise((resolve, reject) => {
-      ManagerModel.GetDistributorLevelConfig(
-        (err, exc, doc) => {
+      LevelModel.ListAll(
+        (err, exc, docs) => {
           if (err) return reject(response.Error(req, res, err));
-          if (exc === 'not-found') return reject(response.Exception(req, res, '총판 설정 정보를 찾을 수 없습니다.'));
-          legacy.config = doc;
+          if (exc === 'not-found') return reject(response.Exception(req, res, '총판 레벨 설정 정보를 찾을 수 없습니다.'));
+          legacy.config = docs;
           resolve(legacy);
         });
     });
@@ -225,7 +214,6 @@ exports.Create = (req, res) => {
         legacy.config[0].name,
         legacy.config[0].statusPoint,
         0,
-        legacy.auth.uid,
         (err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
           if (exc === 'failure') return reject(response.Exception(req, res, '총판 부가 정보 수정에 실패하였습니다.'));
@@ -286,12 +274,12 @@ exports.CustomerCreate = (req, res) => {
   if (rep) return response.Exception(req, res, rep.msg);
 
   new Promise((resolve, reject) => {
-    ManagerModel.GetDistributorSetupConfig(
+    LevelModel.GetInitLevel(
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'not-found') return reject(response.Exception(req, res, '총판 설정 정보를 찾을 수 없습니다.'));
         if (doc.statusPoint < req.body.bonusWin + req.body.bonusLose)
-          return reject(response.Exception(req, res, '비정상적인 접근입니다.'));
+          return reject(response.Exception(req, res, '스탯포인트가 초과되었습니다.'));
         if (doc.statusPoint > req.body.bonusWin + req.body.bonusLose)
           return reject(response.Exception(req, res, '잔여 스탯 포인트를 모두 사용하세요.'));
         resolve({
@@ -344,7 +332,6 @@ exports.CustomerCreate = (req, res) => {
         1,
         legacy.config.statusPoint,
         0,
-        legacy.auth.uid,
         (err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
           if (exc === 'failure') return reject(response.Exception(req, res, '총판 부가 정보 수정에 실패하였습니다.'));
@@ -417,10 +404,8 @@ exports.Update = (req, res) => {
   }).then(legacy => {
     return new Promise((resolve, reject) => {
       req.body.item.manager.nick = legacy.user.nick;
-      var auth = session.GetAuthSession(req);
       Model.Update(
         req.body.item,
-        auth.uid,
         (err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
           if (exc === 'failure') return reject(response.Exception(req, res, '문서 수정에 실패하였습니다.'));
@@ -468,12 +453,10 @@ exports.CustomerUpdate = (req, res) => {
   if (rep) return response.Exception(req, res, rep.msg);
 
   new Promise((resolve, reject) => {
-    var auth = session.GetAuthSession(req);
     Model.CustomerUpdate(
       req.body.pid,
       req.body.joinStyle,
       req.body.memo,
-      auth.uid,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
         if (exc === 'failure') return reject(response.Exception(req, res, '총판 정보 수정에 실패하였습니다.'));
@@ -509,11 +492,11 @@ exports.CheckJoinCondition = (req, res, next) => {
       });
   }).then(legacy => {
     return new Promise((resolve, reject) => {
-      ManagerModel.GetDistributorLevelConfig(
-        (err, exc, doc) => {
+      LevelModel.ListAll(
+        (err, exc, docs) => {
           if (err) return reject(response.Error(req, res, err));
           if (exc === 'not-found') return reject(response.Exception(req, res, '총판 레벨 설정 정보를 찾을 수 없습니다.'));
-          legacy.levels = doc;
+          legacy.levels = docs;
           resolve(legacy);
         });
     });
@@ -619,11 +602,11 @@ exports.AwaiterAccept = (req, res) => {
     });
   }).then(legacy => {
     return new Promise((resolve, reject) => {
-      ManagerModel.GetDistributorLevelConfig(
-        (err, exc, doc) => {
+      LevelModel.ListAll(
+        (err, exc, docs) => {
           if (err) return reject(response.Error(req, res, err));
           if (exc === 'not-found') return reject(response.Exception(req, res, '총판 레벨 설정 정보를 찾을 수 없습니다.'));
-          legacy.levels = doc;
+          legacy.levels = docs;
           resolve(legacy);
         });
     });
@@ -842,7 +825,6 @@ exports.HandOver = (req, res) => {
         req.body.pid,
         legacy.nextBoss.uid,
         legacy.nextBoss.nick,
-        legacy.auth.uid,
         (err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
           if (exc === 'failure') return reject(response.Exception(req, res, '총판장 수정에 실패하였습니다.'));

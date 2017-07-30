@@ -1,9 +1,9 @@
 /* Setup blank page controller */
 angular.module('TOX2ADMINAPP').controller('BlacklistCtrl', [
-  '$rootScope', '$scope',
+  '$rootScope', '$scope', '$filter',
   'BlacklistService', 'PApi', 'settings', 'init',
   function(
-    $rootScope, $scope,
+    $rootScope, $scope, $filter,
     BlacklistService, PApi, settings, init
   ) {
 
@@ -41,7 +41,7 @@ angular.module('TOX2ADMINAPP').controller('BlacklistCtrl', [
       element: [{
         label: '등록 형식',
         type: 'button-group',
-        bind: '.type',
+        bind: 'type',
         button: [{
           value: '아이디',
           class: 'green-soft'
@@ -52,11 +52,11 @@ angular.module('TOX2ADMINAPP').controller('BlacklistCtrl', [
       }, {
         label: '아이디 또는 닉네임',
         type: 'text',
-        bind: '.target'
+        bind: 'target'
       }, {
         label: '메모',
         type: 'multi-text',
-        bind: '.memo'
+        bind: 'memo'
       }]
     };
 
@@ -64,7 +64,7 @@ angular.module('TOX2ADMINAPP').controller('BlacklistCtrl', [
     //// Common Member Functions.
 
     $scope.DetailView = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._detailViewFormat = [
         [{
           label: '사이트',
@@ -89,12 +89,8 @@ angular.module('TOX2ADMINAPP').controller('BlacklistCtrl', [
         }], [{
           label: '등록 정보',
           type: 'text',
-          value: doc.creator,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.createdAt,
-          width: [0, 5]
+          value: doc.creator + '(' + $filter('datetime')(doc.createdAt) + ')',
+          width: [2, 10]
         }]
       ];
     };
@@ -130,7 +126,7 @@ angular.module('TOX2ADMINAPP').controller('BlacklistCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();

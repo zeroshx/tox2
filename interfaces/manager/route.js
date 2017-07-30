@@ -6,13 +6,38 @@ var permission = require('../permission.handler.js');
 var ctrl = require('./controller.js');
 
 router.get('/',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.One
 );
 
-router.post('/',
-  permission.VerifyAdminApi,
-  ctrl.Upsert
+router.post('/signup',
+  permission.VerifySupervisorApi,
+  ctrl.SignupConfig
+);
+
+router.get('/messenger/room',
+  permission.VerifySupervisorApi,
+  ctrl.GetMessengerRoom
+);
+
+router.post('/messenger/room',
+  permission.VerifySupervisorApi,
+  ctrl.AddMessengerRoom
+);
+
+router.put('/messenger/room',
+  permission.VerifySupervisorApi,
+  ctrl.RemoveMessengerRoom
+);
+
+router.get('/realtime',
+  permission.VerifySupervisorApi,
+  ctrl.GetRealtimeNotification
+);
+
+router.put('/realtime',
+  permission.VerifySupervisorApi,
+  ctrl.CheckRealtimeNotification
 );
 
 module.exports = router;

@@ -22,7 +22,8 @@ var Model = new Schema({
       type: String
     },
     date: {
-      type: String
+      type: Date,
+      default: Date.now
     }
   },
   completion: {
@@ -30,7 +31,7 @@ var Model = new Schema({
       type: String
     },
     date: {
-      type: String
+      type: Date
     }
   }
 });
@@ -57,7 +58,6 @@ Model.statics.Create = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   var newDoc = new Document();
   newDoc.importance = item.importance;
@@ -72,8 +72,7 @@ Model.statics.Create = function(
   newDoc.task = item.task;
   newDoc.state = item.state;
   newDoc.registration = {
-    operator: operator,
-    date: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+    operator: operator
   };
   newDoc.save((err, doc) => {
     if (err) return callback(err);
@@ -99,7 +98,7 @@ Model.statics.Update = function(
       state: item.state,
       completion: {
         operator: operator,
-        date: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+        date: timer.getTime()
       }
     }
   }, (err, doc) => {

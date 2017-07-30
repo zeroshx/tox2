@@ -1,9 +1,9 @@
 /* Setup blank page controller */
 angular.module('TOX2ADMINAPP').controller('IPBlockCtrl', [
-  '$rootScope', '$scope',
+  '$rootScope', '$scope', '$filter',
   'IPBlockService', 'PApi', 'settings', 'init',
   function(
-    $rootScope, $scope,
+    $rootScope, $scope, $filter,
     IPBlockService, PApi, settings, init
   ) {
 
@@ -41,12 +41,12 @@ angular.module('TOX2ADMINAPP').controller('IPBlockCtrl', [
       element: [{
         label: '아이피 주소',
         type: 'text',
-        bind: '.ip',
+        bind: 'ip',
         placeholder: 'xxx.xxx.xxx.xxx'
       }, {
         label: '메모',
         type: 'multi-text',
-        bind: '.memo'
+        bind: 'memo'
       }]
     };
 
@@ -55,7 +55,7 @@ angular.module('TOX2ADMINAPP').controller('IPBlockCtrl', [
     //// Common Member Functions.
 
     $scope.DetailView = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._detailViewFormat = [
         [{
           label: '아이피',
@@ -70,12 +70,8 @@ angular.module('TOX2ADMINAPP').controller('IPBlockCtrl', [
         }], [{
           label: '등록 정보',
           type: 'text',
-          value: doc.creator,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.createdAt,
-          width: [0, 5]
+          value: doc.creator + '(' + $filter('datetime')(doc.createdAt) + ')',
+          width: [2, 10]
         }]
       ];
     };
@@ -110,7 +106,7 @@ angular.module('TOX2ADMINAPP').controller('IPBlockCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();

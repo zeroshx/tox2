@@ -6,27 +6,27 @@ var permission = require('../permission.handler.js');
 var ctrl = require('./controller.js');
 
 router.post('/',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.Create
 );
 
 router.get('/',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.List
 );
 
 router.get('/for-user',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.ListForUser
 );
 
 router.put('/:id',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.Update
 );
 
 router.delete('/:id',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.Delete
 );
 

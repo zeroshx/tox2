@@ -1,0 +1,13 @@
+<div class="input-group">
+  <input type="text" class="form-control" data-ng-model="_query.messageConfirm">
+  <div class="input-group-btn">
+    <button type="button" id="btn-messageConfirm" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    상태 <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li><a href data-ng-click="_query.messageConfirm = '전체'">전체</a></li>
+      <li><a href data-ng-click="_query.messageConfirm = '읽음'">읽음</a></li>
+      <li><a href data-ng-click="_query.messageConfirm = '안읽음'">안읽음</a></li>
+    </ul>
+  </div>
+</div>

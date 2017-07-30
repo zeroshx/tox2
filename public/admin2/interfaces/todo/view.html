@@ -68,7 +68,7 @@
             </thead>
             <tbody>
               <tr data-ng-repeat="doc in _list | orderBy:'completion.date':true" data-ng-if="doc.state === '완료'">
-                <td>{{ doc.completion.date }}</td>
+                <td>{{ doc.completion.date | datetime }}</td>
                 <td>{{ doc.importance }}</td>
                 <td>{{ doc.task }}</td>
               </tr>

@@ -4,7 +4,7 @@ exports.SetAuthSession = (req, user) => {
     uid: user.uid,
     nick: user.nick,
     site: user.site,
-    distributor: user.distributor,
+    distributor: user.distributor.name,
     level: user.level,
     state: user.state
   };
@@ -24,8 +24,10 @@ exports.GetAuthSession = (req) => {
 
 exports.DestroyAuthSession = (req, callback) => {
   req.session.destroy(err => {
-    if (err) {}
-    callback();
+    if (err) {
+      console.error(err);
+    }
+    if(typeof callback === 'function') callback();
   });
   return;
 };

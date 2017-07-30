@@ -47,8 +47,8 @@
               <span stop-click data-ng-if="doc.category === '회원'" data-ng-click="SendUserDirectly(doc.receiver.uid, doc.receiver.nick)">{{ doc.receiver.nick }}({{doc.receiver.uid}})</span>
             </td>
             <td>{{ doc.title }}</td>
-            <td>{{ doc.createdAt }}</td>
-            <td>{{ doc.confirmedAt }}</td>
+            <td>{{ doc.createdAt | datetime }}</td>
+            <td>{{ doc.confirmedAt | datetime }}</td>
             <td stop-click>
               <button type="button" class="btn btn-xs red-soft" data-ng-click="Remove(doc._id)">삭제</button>
             </td>

@@ -39,23 +39,23 @@ angular.module('TOX2ADMINAPP').controller('UserCtrl', [
       element: [{
         label: '아이디',
         type: 'text',
-        bind: '.uid',
+        bind: 'uid',
         placeholder: '영문 소자, 숫자를 이용하여 5자 이상 16자',
         readonly: 'MODIFY'
       }, {
         label: '닉네임',
         type: 'text',
-        bind: '.nick',
+        bind: 'nick',
         placeholder: '한글, 영문, 숫자를 이용하여 2자 이상 16자'
       }, {
         label: '패스워드',
         type: 'text',
-        bind: '.password',
+        bind: 'password',
         placeholder: '8자 이상 30자 이내'
       }, {
         label: '회원 상태',
         type: 'button-group',
-        bind: '.state',
+        bind: 'state',
         button: [{
           value: '정지',
           class: 'red-soft'
@@ -69,55 +69,55 @@ angular.module('TOX2ADMINAPP').controller('UserCtrl', [
       }, {
         label: '사이트',
         type: 'text-dropdown',
-        bind: '.site',
+        bind: 'site',
         dropdown: {
           class: 'btn-default',
           property: 'name',
-          list: sites.docs
+          list: sites
         }
       }, {
         label: '레벨',
         type: 'text-dropdown',
-        bind: '.level',
+        bind: 'level',
         dropdown: {
           class: 'btn-default',
           property: '_id',
-          list: levels.docs
+          list: levels
         }
       }, {
         label: '예금주',
         type: 'text',
-        bind: '.account.holder'
+        bind: 'account.holder'
       }, {
         label: '은행',
         type: 'text-dropdown',
-        bind: '.account.bank',
+        bind: 'account.bank',
         dropdown: {
           class: 'btn-default',
           property: 'name',
-          list: banks.docs
+          list: banks
         }
       }, {
         label: '계좌',
         type: 'text',
-        bind: '.account.number'
+        bind: 'account.number'
       }, {
         label: '계좌 인증코드',
         type: 'text',
-        bind: '.account.pin',
+        bind: 'account.pin',
         placeholder: '4~8자리 숫자'
       }, {
         label: '이메일',
         type: 'text',
-        bind: '.email'
+        bind: 'email'
       }, {
         label: '연락처',
         type: 'text',
-        bind: '.phone'
+        bind: 'phone'
       }, {
         label: '추천인',
         type: 'text',
-        bind: '.recommander'
+        bind: 'recommander'
       }]
     };
 
@@ -167,7 +167,7 @@ angular.module('TOX2ADMINAPP').controller('UserCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();

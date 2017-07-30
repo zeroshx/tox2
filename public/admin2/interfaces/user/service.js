@@ -15,7 +15,7 @@ angular.module('TOX2ADMINAPP').service('UserService', [
       userLevel: '전체',
       userState: '전체'
     };
-    
+
     __.Init = function() {
       return __.List(_query,
         function(data, defer) {
@@ -43,7 +43,7 @@ angular.module('TOX2ADMINAPP').service('UserService', [
         });
       return defer.promise;
     };
-
+    
     __.Add = function(data, success, failure) {
       var defer = $q.defer();
       CRUDFactory.CREATE(

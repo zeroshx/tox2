@@ -50,10 +50,8 @@ var Model = new Schema({
     type: String
   },
   createdAt: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -150,7 +148,6 @@ Model.statics.Create = function(
   callback
 ) {
   var Document = this;
-  var timer = new Date();
   var newDoc = new Document();
 
   newDoc.uid = item.uid;
@@ -160,7 +157,6 @@ Model.statics.Create = function(
   newDoc.after = item.after;
   newDoc.match = item.match;
   newDoc.memo = item.memo;
-  newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
 
   newDoc.save((err, doc) => {
     if(err) return callback(err);
@@ -175,7 +171,6 @@ Model.statics.Update = function(
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: item._id
@@ -184,8 +179,7 @@ Model.statics.Update = function(
       before: item.before,
       after: item.after,
       match: item.match,
-      memo: item.memo,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      memo: item.memo
     }
   }, (err, doc) => {
     if (err) return callback(err);

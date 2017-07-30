@@ -5,6 +5,8 @@ var validator = require('../validation.handler.js');
 var Model = require('mongoose').model('Deposit');
 var UserModel = require('mongoose').model('User');
 var AssetReportModel = require('mongoose').model('AssetReport');
+var ManagerModel = require('mongoose').model('Manager');
+var Loger = require('mongoose').model('Loger');
 
 exports.List = (req, res) => {
 
@@ -21,8 +23,15 @@ exports.List = (req, res) => {
       req.query.assetState,
       (err, exc, doc) => {
         if (err) return reject(response.Error(req, res, err));
-        resolve(response.Finish(req, res, doc));
+        resolve({
+          list: doc
+        });
       });
+  }).then(legacy => {
+    ManagerModel.ResetDepositCase((err, exc, doc) => {
+      if (err) return response.Error(req, res, err);
+      response.Finish(req, res, legacy.list);
+    });
   });
 };
 
@@ -220,7 +229,7 @@ exports.Accept = (req, res) => {
         (err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
           if (exc === 'failure') return reject(response.Exception(req, res, '승인 작업에 실패하였습니다.'));
-          resolve(response.Finish(req, res, doc));
+          resolve(response.Status(req, res, 200));
         });
     });
   });
@@ -318,6 +327,14 @@ exports.CustomerCreate = (req, res) => {
         req.body.cash,
         '신청',
         (err, exc, doc) => {
+          if (err) return reject(response.Error(req, res, err));
+          if (exc === 'failure') return reject(response.Exception(req, res, '입금 신청에 실패하였습니다.'));
+          resolve();
+        });
+    });
+  }).then(legacy => {
+    return new Promise((resolve, reject) => {
+      ManagerModel.IncDepositCase((err, exc, doc) => {
           if (err) return reject(response.Error(req, res, err));
           if (exc === 'failure') return reject(response.Exception(req, res, '입금 신청에 실패하였습니다.'));
           resolve(response.Status(req, res, 200));

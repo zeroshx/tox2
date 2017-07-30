@@ -115,5 +115,28 @@ angular.module('TOX2ADMINAPP').service('CommonListService', [
       return defer.promise;
     };
 
+    __.MatchLeagues = function() {
+      return __.MatchLeagueList(
+        function(data, defer) {
+          defer.resolve(data);
+        });
+    };
+
+    __.MatchLeagueList = function(success, failure) {
+      var defer = $q.defer();
+      CRUDFactory.READ(
+        '/match/league/all',
+        {},
+        function(data) {
+          if (typeof success === 'function') return success(data, defer);
+          defer.resolve();
+        },
+        function(error) {
+          if (typeof failure === 'function') return failure(error, defer);
+          defer.reject();
+        });
+      return defer.promise;
+    };
+
   }
 ]);

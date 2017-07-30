@@ -1,0 +1,25 @@
+<center>
+  <ul class="pagination">
+    <li>
+      <a href aria-label="Next" data-ng-click="_FirstPage()">
+        <span aria-hidden="true">처음</span>
+      </a>
+    </li>
+    <li>
+      <a href aria-label="Previous" data-ng-click="_PreviousPage()">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li data-ng-repeat="page in _pages" data-ng-class="{active : page.active}"><a href data-ng-click="_MovePage(page.number)">{{page.number}}</a></li>
+    <li>
+      <a href aria-label="Next" data-ng-click="_NextPage()">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+    <li>
+      <a href aria-label="Next" data-ng-click="_LastPage()">
+        <span aria-hidden="true">마지막</span>
+      </a>
+    </li>
+  </ul>
+</center>

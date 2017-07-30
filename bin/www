@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('tox2:server');
+var debug = require('debug')();
 var http = require('http');
 
 /**
@@ -20,6 +20,9 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+app.messenger.attach(server, {
+  path: '/messenger'
+});
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -84,5 +87,5 @@ function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  console.log('Listening on ' + bind);
 }

@@ -6,11 +6,8 @@ TOX2ADMINAPP.config(['$stateProvider', '$urlRouterProvider', function($stateProv
   function StateOptionWrapper(config) {
 
     var _commonResolve = {
-      me: ['AuthService', function(AuthService) {
-        return AuthService.Me();
-      }],
-      messages: ['AuthService', function(AuthService) {
-        return AuthService.GetNewMessages();
+      auth: ['AuthService', function(AuthService) {
+        return AuthService.Auth();
       }]
     };
 
@@ -37,40 +34,61 @@ TOX2ADMINAPP.config(['$stateProvider', '$urlRouterProvider', function($stateProv
       ]
     };
 
-    if(!config.resolve.preDeps) config.resolve.preDeps = [];
-    for(i in _commonFiles.preDeps) {
+    if (!config.resolve.preDeps) config.resolve.preDeps = [];
+    for (var i = 0; i < _commonFiles.preDeps.length; i++) {
       config.resolve.preDeps.push(_commonFiles.preDeps[i]);
     }
 
-    if(!config.resolve.postDeps) config.resolve.postDeps = [];
-    for(i in _commonFiles.postDeps) {
+    if (!config.resolve.postDeps) config.resolve.postDeps = [];
+    for (var i = 0; i < _commonFiles.postDeps.length; i++) {
       config.resolve.postDeps.push(_commonFiles.postDeps[i]);
     }
 
     (function(preDeps) {
-      config.resolve.preDeps = ['$ocLazyLoad', function($ocLazyLoad) {
-        return $ocLazyLoad.load({
-          name: 'TOX2ADMINAPP',
-          insertBefore: '#ng_load_plugins_before',
-          files: preDeps
-        });
+      config.resolve.preDeps = ['auth', '$ocLazyLoad', function(auth, $ocLazyLoad) {
+        if (preDeps.length > 0) {
+          return $ocLazyLoad.load({
+            insertBefore: '#ng_load_plugins_before',
+            files: preDeps
+          });
+        }
+        return true;
       }];
     })(config.resolve.preDeps);
 
     (function(postDeps) {
       config.resolve.postDeps = ['preDeps', '$ocLazyLoad', function(preDeps, $ocLazyLoad) {
-        return $ocLazyLoad.load({
-          name: 'TOX2ADMINAPP',
-          insertBefore: '#ng_load_plugins_before',
-          files: postDeps
-        });
+        if (postDeps.length > 0) {
+          return $ocLazyLoad.load({
+            insertBefore: '#ng_load_plugins_before',
+            files: postDeps
+          });
+        }
+        return true;
       }];
     })(config.resolve.postDeps);
 
     return config;
   }
 
-  $stateProvider
+  $stateProvider.state('error', {
+      url: "/error",
+      templateUrl: "interfaces/error/view.html",
+      data: {
+        pageTitle: '오류'
+      },
+      controller: "ErrorCtrl",
+      resolve: {
+        deps: ['$ocLazyLoad', function($ocLazyLoad) {
+          return $ocLazyLoad.load({
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              'interfaces/error/controller.js'
+            ]
+          });
+        }]
+      }
+    })
 
     // Dashboard
     .state('home', StateOptionWrapper({
@@ -83,20 +101,6 @@ TOX2ADMINAPP.config(['$stateProvider', '$urlRouterProvider', function($stateProv
       resolve: {
         postDeps: [
           'interfaces/home/controller.js'
-        ]
-      }
-    }))
-
-    .state('error', StateOptionWrapper({
-      url: "/error",
-      templateUrl: "interfaces/error/view.html",
-      data: {
-        pageTitle: '오류'
-      },
-      controller: "ErrorCtrl",
-      resolve: {
-        postDeps: [
-          'interfaces/error/controller.js'
         ]
       }
     }))
@@ -155,6 +159,24 @@ TOX2ADMINAPP.config(['$stateProvider', '$urlRouterProvider', function($stateProv
       }
     }))
 
+    .state('config-manager', StateOptionWrapper({
+      url: "/config/manager",
+      templateUrl: "interfaces/config-manager/view.html",
+      data: {
+        pageTitle: '운영 관리'
+      },
+      controller: "ManagerCtrl",
+      resolve: {
+        postDeps: [
+          'interfaces/config-manager/service.js',
+          'interfaces/config-manager/controller.js',
+        ],
+        init: ['postDeps', 'ManagerService', function(postDeps, ManagerService) {
+          return ManagerService.Init();
+        }]
+      }
+    }))
+
     .state('config-ipblock', StateOptionWrapper({
       url: "/config/ipblock",
       templateUrl: "interfaces/config-ipblock/view.html",
@@ -206,7 +228,7 @@ TOX2ADMINAPP.config(['$stateProvider', '$urlRouterProvider', function($stateProv
         init: ['postDeps', 'SiteService', function(postDeps, SiteService) {
           return SiteService.Init();
         }],
-        levels: ['postDeps', 'CommonListService', function(postDeps, CommonListService) {
+        levels: ['init', 'CommonListService', function(init, CommonListService) {
           return CommonListService.Levels();
         }]
       }
@@ -275,6 +297,24 @@ TOX2ADMINAPP.config(['$stateProvider', '$urlRouterProvider', function($stateProv
         sites: ['postDeps', 'CommonListService', function(postDeps, CommonListService) {
           return CommonListService.Sites();
         }],
+      }
+    }))
+
+    .state('distributor-level', StateOptionWrapper({
+      url: "/distributor/level",
+      templateUrl: "interfaces/distributor-level/view.html",
+      data: {
+        pageTitle: '총판 레벨 설정'
+      },
+      controller: "DistributorLevelCtrl",
+      resolve: {
+        postDeps: [
+          'interfaces/distributor-level/service.js',
+          'interfaces/distributor-level/controller.js',
+        ],
+        init: ['postDeps', 'DistributorLevelService', function(postDeps, DistributorLevelService) {
+          return DistributorLevelService.Init();
+        }]
       }
     }))
 
@@ -405,6 +445,84 @@ TOX2ADMINAPP.config(['$stateProvider', '$urlRouterProvider', function($stateProv
         ],
         init: ['postDeps', 'UserHistoryService', function(postDeps, UserHistoryService) {
           return UserHistoryService.Init();
+        }]
+      }
+    }))
+
+    .state('match', StateOptionWrapper({
+      url: "/match",
+      templateUrl: "interfaces/match/view.html",
+      data: {
+        pageTitle: '매치 기본 설정'
+      },
+      controller: "MatchCtrl",
+      resolve: {
+        postDeps: [
+          'interfaces/match/service.js',
+          'interfaces/match/controller.js',
+        ],
+        init: ['postDeps', 'MatchService', function(postDeps, MatchService) {
+          return MatchService.Init();
+        }],
+        kinds: ['postDeps', 'CommonListService', function(postDeps, CommonListService) {
+          return CommonListService.MatchKinds();
+        }],
+        leagues: ['postDeps', 'CommonListService', function(postDeps, CommonListService) {
+          return CommonListService.MatchLeagues();
+        }]
+      }
+    }))
+
+    .state('match-kind', StateOptionWrapper({
+      url: "/match/kind",
+      templateUrl: "interfaces/match-kind/view.html",
+      data: {
+        pageTitle: '매치 종목 관리'
+      },
+      controller: "MatchKindCtrl",
+      resolve: {
+        postDeps: [
+          'interfaces/match-kind/service.js',
+          'interfaces/match-kind/controller.js',
+        ],
+        init: ['postDeps', 'MatchKindService', function(postDeps, MatchKindService) {
+          return MatchKindService.Init();
+        }]
+      }
+    }))
+
+    .state('match-league', StateOptionWrapper({
+      url: "/match/league",
+      templateUrl: "interfaces/match-league/view.html",
+      data: {
+        pageTitle: '매치 종목 관리'
+      },
+      controller: "MatchLeagueCtrl",
+      resolve: {
+        postDeps: [
+          'interfaces/match-league/service.js',
+          'interfaces/match-league/controller.js',
+        ],
+        init: ['postDeps', 'MatchLeagueService', function(postDeps, MatchLeagueService) {
+          return MatchLeagueService.Init();
+        }]
+      }
+    }))
+
+    .state('test', StateOptionWrapper({
+      url: "/test",
+      templateUrl: "interfaces/test/view.html",
+      data: {
+        pageTitle: '테스트'
+      },
+      controller: "TestCtrl",
+      resolve: {
+        postDeps: [
+          'interfaces/test/service.js',
+          'interfaces/test/controller.js',
+        ],
+        init: ['postDeps', 'TestService', function(postDeps, TestService) {
+          return TestService.Init();
         }]
       }
     }))

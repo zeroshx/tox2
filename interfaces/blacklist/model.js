@@ -23,13 +23,8 @@ var Model = new Schema({
     type: String
   },
   createdAt: {
-    type: String
-  },
-  modifier: {
-    type: String
-  },
-  modifiedAt: {
-    type: String
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -87,7 +82,6 @@ Model.statics.Create = function(
   callback
 ) {
   var Document = this;
-  var timer = new Date();
 
   Document.findOne({
     uid: item.uid
@@ -95,12 +89,13 @@ Model.statics.Create = function(
     if (err) return callback(err);
     if (doc) return callback(null, 'exist');
     var newDoc = new Document();
+
     newDoc.uid = item.uid;
     newDoc.nick = item.nick;
     newDoc.site = item.site;
     newDoc.memo = item.memo;
     newDoc.creator = operator;
-    newDoc.createdAt = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString();
+
     newDoc.save((err, doc) => {
       if (err) return callback(err);
       if (!doc) return callback(null, 'failure');
@@ -111,20 +106,16 @@ Model.statics.Create = function(
 
 Model.statics.Update = function(
   item,
-  operator,
   callback
 ) {
 
   var Document = this;
-  var timer = new Date();
 
   Document.findOneAndUpdate({
     _id: item.id
   }, {
     $set: {
-      memo: item.memo,
-      modifier: operator,
-      modifiedAt: timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString()
+      memo: item.memo
     }
   }, (err, doc) => {
     if (err) return callback(err);

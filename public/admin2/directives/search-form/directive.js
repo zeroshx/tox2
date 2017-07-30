@@ -47,7 +47,7 @@ angular.module('TOX2ADMINAPP')
             url, {},
             function(data) {
               lb.stop();
-              $scope._queryFilter[name].list = data.docs;
+              $scope._queryFilter[name].list = data;
               $('#' + target).dropdown('toggle');
             }
           );
@@ -59,6 +59,13 @@ angular.module('TOX2ADMINAPP')
 
         $scope.Search = function() {
           $scope._actionFunction();
+        };
+
+        $scope.dateOptions = {
+          formatDay: 'd',
+          formatMonth: 'M',
+          formatDayTitle: 'yyyy년 M월',
+          showWeeks: false
         };
 
       }]

@@ -144,7 +144,7 @@ angular.module('TOX2ADMINAPP').controller('DepositCtrl', [
       });
     };
 
-    $scope.List = function() {
+    $rootScope.__DepositList = $scope.List = function() {
       PApi.StartLoading();
       DepositService.List($scope._query, function(data) {
         if(data.failure) return PApi.Alert(data.failure);

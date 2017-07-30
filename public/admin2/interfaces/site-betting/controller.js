@@ -1,9 +1,9 @@
 /* Setup blank page controller */
 angular.module('TOX2ADMINAPP').controller('SiteBettingCtrl', [
-  '$rootScope', '$scope',
+  '$rootScope', '$scope', '$filter',
   'SiteBettingService', 'PApi', 'settings', 'init', 'sites', 'kinds',
   function(
-    $rootScope, $scope,
+    $rootScope, $scope, $filter,
     SiteBettingService, PApi, settings, init, sites, kinds
   ) {
     $scope.$on('$viewContentLoaded', function() {
@@ -39,32 +39,32 @@ angular.module('TOX2ADMINAPP').controller('SiteBettingCtrl', [
       element: [{
         label: '사이트',
         type: 'text-dropdown',
-        bind: '.site',
+        bind: 'site',
         readonly: 'MODIFY',
         dropdown: {
           class: 'btn-default',
           property: 'name',
-          list: sites.docs
+          list: sites
         }
       }, {
         label: '배팅 취소 제한',
         type: 'unit-text-unit',
-        bind: '.betCancelLimit',
+        bind: 'betCancelLimit',
         preUnit: '경기 시작',
         unit: '분 전까지'
       }, {
         label: '배팅 취소 횟수(일일)',
         type: 'text-unit',
-        bind: '.betCancelCount',
+        bind: 'betCancelCount',
         unit: '회'
       }, {
         label: '종목별 설정',
         type: 'kind-config',
-        bind: '.kindConfig',
+        bind: 'kindConfig',
         dropdown: {
           class: 'btn-default',
           property: 'name',
-          list: kinds.docs
+          list: kinds
         }
       }]
     };
@@ -74,7 +74,7 @@ angular.module('TOX2ADMINAPP').controller('SiteBettingCtrl', [
     //// Common Member Functions.
 
     $scope.DetailView = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._detailViewFormat = [
         [{
           label: '사이트',
@@ -102,24 +102,10 @@ angular.module('TOX2ADMINAPP').controller('SiteBettingCtrl', [
           width: [2, 10]
         }],
         [{
-          label: '최근 수정 정보',
-          type: 'text',
-          value: doc.modifier,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.modifiedAt,
-          width: [0, 5]
-        }],
-        [{
           label: '등록 정보',
           type: 'text',
-          value: doc.creator,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.createdAt,
-          width: [0, 5]
+          value: doc.creator + '(' + $filter('datetime')(doc.createdAt) + ')',
+          width: [2, 10]
         }]
       ];
     };
@@ -156,7 +142,7 @@ angular.module('TOX2ADMINAPP').controller('SiteBettingCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();

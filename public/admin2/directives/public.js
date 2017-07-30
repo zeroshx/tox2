@@ -33,7 +33,6 @@ angular.module("TOX2ADMINAPP")
           // handle errors
           $rootScope.$on('$stateChangeError', function() {
             element.addClass('hide'); // hide spinner bar
-            $state.go('error');
           });
         }
       };
@@ -131,6 +130,37 @@ angular.module("TOX2ADMINAPP")
         var name = $parse(elem.attr('dynamic-repeat'))(scope);
         elem.removeAttr('dynamic-repeat');
         elem.attr('data-ng-repeat', name);
+        $compile(elem)(scope);
+      }
+    };
+  }]);
+
+angular.module("TOX2ADMINAPP")
+  .directive('dynamicHide', ['$compile', '$parse', function($compile, $parse) {
+    return {
+      restrict: 'A',
+      terminal: true,
+      priority: 100000,
+      link: function(scope, elem) {
+        var name = $parse(elem.attr('dynamic-hide'))(scope);
+        elem.removeAttr('dynamic-hide');
+        elem.attr('data-ng-hide', name);
+        $compile(elem)(scope);
+      }
+    };
+  }]);
+
+
+angular.module("TOX2ADMINAPP")
+  .directive('dynamicNgfThumbnail', ['$compile', '$parse', function($compile, $parse) {
+    return {
+      restrict: 'A',
+      terminal: true,
+      priority: 100000,
+      link: function(scope, elem) {
+        var name = $parse(elem.attr('dynamic-ngf-thumbnail'))(scope);
+        elem.removeAttr('dynamic-ngf-thumbnail');
+        elem.attr('ngf-thumbnail', name);
         $compile(elem)(scope);
       }
     };

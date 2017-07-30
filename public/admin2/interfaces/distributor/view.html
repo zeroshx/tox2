@@ -37,7 +37,7 @@
             <td>{{ doc.manager.nick }}</td>
             <td>{{ doc.bonus.win }}% / {{ doc.bonus.lose }}%</td>
             <td>{{ doc.headcount }}명</td>
-            <td>{{ doc.createdAt }}</td>
+            <td>{{ doc.createdAt | datetime }}</td>
             <td stop-click>
               <button type="button" class="btn btn-xs yellow" data-ng-click="ModifyForm(doc)">수정</button>
             </td>

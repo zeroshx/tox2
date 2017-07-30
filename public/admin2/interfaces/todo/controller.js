@@ -36,7 +36,7 @@ angular.module('TOX2ADMINAPP').controller('TodoCtrl', [
       element: [{
         label: '중요도',
         type: 'button-group',
-        bind: '.importance',
+        bind: 'importance',
         button: [{
           value: '낮음',
           class: 'red-soft'
@@ -50,11 +50,11 @@ angular.module('TOX2ADMINAPP').controller('TodoCtrl', [
       }, {
         label: '프로젝트',
         type: 'text',
-        bind: '.project'
+        bind: 'project'
       }, {
         label: '할 일',
         type: 'text',
-        bind: '.task'
+        bind: 'task'
       }]
     };
 
@@ -92,7 +92,7 @@ angular.module('TOX2ADMINAPP').controller('TodoCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();
@@ -138,7 +138,7 @@ angular.module('TOX2ADMINAPP').controller('TodoCtrl', [
     };
 
     $scope.Complete = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       PApi.StartLoading();
       TodoService.Complete({
         item: $scope._item

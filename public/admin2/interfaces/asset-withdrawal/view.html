@@ -39,8 +39,8 @@
             <td>{{ doc.nick }}</td>
             <td>{{ doc.site }}</td>
             <td>{{ doc.distributor }}</td>
-            <td>{{ doc.createdAt }}</td>
-            <td>{{ doc.operatedAt }}</td>
+            <td>{{ doc.createdAt | datetime }}</td>
+            <td>{{ doc.operatedAt | datetime }}</td>
             <td>
               <button type="button" class="btn green-steel btn-xs" data-ng-if="doc.state == '신청'" data-ng-click="Accept(doc._id)">승인</button>
               <button type="button" class="btn red-haze btn-xs" data-ng-if="doc.state == '신청'" data-ng-click="Cancel(doc._id)">취소</button>

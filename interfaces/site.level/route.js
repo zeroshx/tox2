@@ -6,32 +6,32 @@ var permission = require('../permission.handler.js');
 var ctrl = require('./controller.js');
 
 router.post('/',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.Create
 );
 
 router.get('/',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.List
 );
 
 router.get('/all',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.ListAll
 );
 
 router.get('/forsite/:site',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.ListForSite
 );
 
 router.put('/',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.Update
 );
 
 router.delete('/:id',
-  permission.VerifyAdminApi,
+  permission.VerifySupervisorApi,
   ctrl.Delete
 );
 

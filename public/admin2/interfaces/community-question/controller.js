@@ -1,9 +1,9 @@
 /* Setup blank page controller */
 angular.module('TOX2ADMINAPP').controller('QuestionCtrl', [
-  '$rootScope', '$scope',
+  '$rootScope', '$scope', '$filter',
   'QuestionService', 'PApi', 'settings', 'init',
   function(
-    $rootScope, $scope,
+    $rootScope, $scope, $filter,
     QuestionService, PApi, settings, init
   ) {
     $scope.$on('$viewContentLoaded', function() {
@@ -37,72 +37,72 @@ angular.module('TOX2ADMINAPP').controller('QuestionCtrl', [
     //// Common Member Functions.
 
     $scope.DetailView = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._detailViewFormat = [
         [{
           label: '처리상태',
           type: 'text',
           value: doc.state,
-          width: [2,4]
+          width: [2, 4]
         }, {
           label: '분류',
           type: 'text',
           value: doc.style + '문의',
-          width: [2,4]
+          width: [2, 4]
         }],
         [{
           label: '담당자',
           type: 'text',
           value: doc.operator,
-          width: [2,4]
+          width: [2, 4]
         }],
         [{
           label: '문의 제목',
           type: 'text',
           value: doc.question.title,
-          width: [2,10]
+          width: [2, 10]
         }],
         [{
           label: '문의 내용',
           type: 'multi-text',
           value: doc.question.title,
-          width: [2,10]
+          width: [2, 10]
         }],
         [{
           label: '문의 일시',
           type: 'text',
-          value: doc.createdAt,
-          width: [2,4]
+          value: $filter('datetime')(doc.createdAt),
+          width: [2, 4]
         }, {
           label: '처리 일시',
           type: 'text',
-          value: doc.operatedAt,
-          width: [2,4]
+          value: $filter('datetime')(doc.operatedAt),
+          width: [2, 4]
         }]
       ];
 
-      if(doc.style === '비회원') {
+      if (doc.style === '비회원') {
         $scope._detailViewFormat[1].unshift({
           label: '문의 회원',
           type: 'text',
           value: doc.uid,
-          width: [2,4]
+          width: [2, 4]
         });
       } else if (doc.style === '회원') {
         $scope._detailViewFormat[1].unshift({
           label: '문의 회원',
           type: 'text',
           value: doc.nick + '(' + doc.uid + ')',
-          width: [2,4]
+          width: [2, 4]
         });
       }
 
-      if(doc.state === '완료') {
+      if (doc.state === '완료') {
         $scope._detailViewFormat.splice(4, 0, [{
           label: '답변 내용',
           type: 'multi-text',
           value: doc.answer,
-          width: [2,10]
+          width: [2, 10]
         }]);
       }
     };
@@ -113,7 +113,7 @@ angular.module('TOX2ADMINAPP').controller('QuestionCtrl', [
 
     $scope.SelectAll = function() {
       for (i in $scope._list) {
-        if($scope._list[i]._cbExist) $scope._list[i]._cbSelected = $scope._selectLeader;
+        if ($scope._list[i]._cbExist) $scope._list[i]._cbSelected = $scope._selectLeader;
       }
     };
 
@@ -134,7 +134,7 @@ angular.module('TOX2ADMINAPP').controller('QuestionCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();
@@ -193,6 +193,15 @@ angular.module('TOX2ADMINAPP').controller('QuestionCtrl', [
           defer.resolve();
         }
       ).then(function(legacy) {
+        return QuestionService.One({
+            id: id
+          },
+          function(data, defer) {
+            if (data.failure) return defer.reject(data.failure);
+            $scope.DetailView(data);
+            defer.resolve();
+          });
+      }).then(function(legacy) {
         return QuestionService.List(
           $scope._query,
           function(data, defer) {
@@ -202,12 +211,6 @@ angular.module('TOX2ADMINAPP').controller('QuestionCtrl', [
           });
       }).then(function(legacy) {
         PApi.Alert('처리되었습니다.');
-        $scope._detailViewFormat.splice(4, 0, [{
-          label: '답변 내용',
-          type: 'multi-text',
-          value: $scope._answer,
-          width: [2,10]
-        }]);
         $scope.CancelAnswer();
       }).catch(function(legacy) {
         PApi.Alert(legacy);
@@ -220,11 +223,15 @@ angular.module('TOX2ADMINAPP').controller('QuestionCtrl', [
       var list = $scope.GetSelectedList();
       if (list.length === 0) return;
       PApi.StartLoading();
-      var queue = QuestionService.Postpone({id: list[0]});
+      var queue = QuestionService.Postpone({
+        id: list[0]
+      });
       for (var i = 1; i < list.length; i++) {
         (function(ii) {
           queue = queue.then(function() {
-            return QuestionService.Postpone({id: list[ii]});
+            return QuestionService.Postpone({
+              id: list[ii]
+            });
           });
         })(i);
       }
@@ -241,7 +248,7 @@ angular.module('TOX2ADMINAPP').controller('QuestionCtrl', [
       });
     };
 
-    $scope.List = function() {
+    $rootScope.__QuestionList = $scope.List = function() {
       PApi.StartLoading();
       QuestionService.List($scope._query, function(data) {
         if (data.failure) return PApi.Alert(data.failure);

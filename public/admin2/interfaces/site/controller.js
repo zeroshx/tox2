@@ -1,9 +1,9 @@
 /* Setup blank page controller */
 angular.module('TOX2ADMINAPP').controller('SiteCtrl', [
-  '$rootScope', '$scope',
+  '$rootScope', '$scope', '$filter',
   'SiteService', 'PApi', 'settings', 'init', 'levels',
   function(
-    $rootScope, $scope,
+    $rootScope, $scope, $filter,
     SiteService, PApi, settings, init, levels
   ) {
     $scope.$on('$viewContentLoaded', function() {
@@ -38,7 +38,7 @@ angular.module('TOX2ADMINAPP').controller('SiteCtrl', [
       element: [{
         label: '사이트 상태',
         type: 'button-group',
-        bind: '.state',
+        bind: 'state',
         button: [{
           value: '정지',
           class: 'red-soft'
@@ -52,56 +52,56 @@ angular.module('TOX2ADMINAPP').controller('SiteCtrl', [
       }, {
         label: '사이트명',
         type: 'text',
-        bind: '.name',
+        bind: 'name',
         readonly: 'MODIFY'
       }, {
         label: '메모',
         type: 'multi-text',
-        bind: '.memo'
+        bind: 'memo'
       }, {
         label: '당첨 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.win'
+        bind: 'bonus.win'
       }, {
         label: '낙첨 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.lose'
+        bind: 'bonus.lose'
       }, {
         label: '첫입금 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.firstDeposit'
+        bind: 'bonus.firstDeposit'
       }, {
         label: '입금 보너스(%)',
         type: 'spinner',
-        bind: '.bonus.deposit'
+        bind: 'bonus.deposit'
       }, {
         label: '시작 레벨',
         type: 'text-dropdown',
-        bind: '.config.level',
+        bind: 'config.level',
         dropdown: {
           class: 'btn-default',
           property: '_id',
-          list: levels.docs
+          list: levels
         }
       }, {
         label: '가입 캐시',
         type: 'text-unit',
-        bind: '.config.cash',
+        bind: 'config.cash',
         unit: 'C'
       }, {
         label: '가입 칩',
         type: 'text-unit',
-        bind: '.config.chip',
+        bind: 'config.chip',
         unit: 'G'
       }, {
         label: '가입 포인트',
         type: 'text-unit',
-        bind: '.config.point',
+        bind: 'config.point',
         unit: 'P'
       }, {
         label: '안내 멘트',
         type: 'site-answer',
-        bind: '.answer'
+        bind: 'answer'
       }]
     };
 
@@ -109,7 +109,7 @@ angular.module('TOX2ADMINAPP').controller('SiteCtrl', [
     //// Common Member Functions.
 
     $scope.DetailView = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._detailViewFormat = [
         [{
           label: '사이트명',
@@ -179,23 +179,10 @@ angular.module('TOX2ADMINAPP').controller('SiteCtrl', [
           value: doc.answer,
           width: [2, 10]
         }], [{
-          label: '최근 수정 정보',
-          type: 'text',
-          value: doc.modifier,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.modifiedAt,
-          width: [0, 5]
-        }], [{
           label: '등록 정보',
           type: 'text',
-          value: doc.creator,
-          width: [2, 5]
-        }, {
-          type: 'text',
-          value: doc.createdAt,
-          width: [0, 5]
+          value: doc.creator + '(' + $filter('datetime')(doc.createdAt) + ')',
+          width: [2, 10]
         }]
       ];
     };
@@ -244,7 +231,7 @@ angular.module('TOX2ADMINAPP').controller('SiteCtrl', [
     };
 
     $scope.ModifyForm = function(doc) {
-      $scope._item = doc;
+      $scope._item = angular.copy(doc);
       $scope._formSwitch = true;
       $scope._formAction = 'MODIFY';
       PApi.ScrollTop();
